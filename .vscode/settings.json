@@ -1,0 +1,17 @@
+{
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "always",
+		"source.fixAll.tslint": "always",
+		"source.fixAll.stylelint": "always",
+		"source.removeUnused": "never"
+	},
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "file",
+	"eslint.workingDirectories": [
+		{
+			"pattern": "./dev/app/**",
+			"cwd": "${workspaceFolder}/dev/app"
+		}
+	]
+}
