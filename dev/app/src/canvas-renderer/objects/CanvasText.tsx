@@ -84,8 +84,10 @@ export default memo<CanvasTextProps>(function CanvasText({
 	onLineInfoChanged,
 }) {
 	const parentObjectContext = useCanvasObjectContext();
-	const maxWidthPx = maxWidthPxProps ?? parentObjectContext.metadata.width;
-	const maxHeightPx = maxHeightPxProps ?? parentObjectContext.metadata.height;
+	const maxWidthPx =
+		maxWidthPxProps ?? parentObjectContext.metadata.width - relX;
+	const maxHeightPx =
+		maxHeightPxProps ?? parentObjectContext.metadata.height - relY;
 
 	const lineImagesPromise = useLineImagesPromise({
 		fontInfo,
@@ -101,6 +103,7 @@ export default memo<CanvasTextProps>(function CanvasText({
 		scaleX,
 		scaleY,
 		lineHeight,
+		maxWidthPx,
 		maxHeightPx,
 		skipLineCount,
 		align,
@@ -341,7 +344,8 @@ type DrawContentHookParams = {
 	scaleX: number;
 	scaleY: number;
 	lineHeight: number;
-	maxHeightPx?: number;
+	maxWidthPx: number;
+	maxHeightPx: number;
 	skipLineCount: number;
 	align: "left" | "center" | "right";
 	lineImagesPromise: Promise<LineImage[]>;
@@ -353,6 +357,7 @@ function useDrawContentPromise({
 	scaleX,
 	scaleY,
 	lineHeight,
+	maxWidthPx,
 	maxHeightPx,
 	skipLineCount,
 	align,
@@ -387,7 +392,7 @@ function useDrawContentPromise({
 			}
 
 			const scaledWidth = drawLine.width * scaleX;
-			const lineX = calculateXPosition(0, scaledWidth, maxWidth, align);
+			const lineX = calculateXPosition(0, scaledWidth, maxWidthPx, align);
 
 			lines.push({
 				x: lineX,
@@ -410,14 +415,15 @@ function useDrawContentPromise({
 		};
 	}, [
 		lineImagesPromise,
-		x,
-		y,
 		fontInfo.fontSize,
 		scaleY,
-		scaleX,
 		lineHeight,
+		x,
+		y,
 		maxHeightPx,
 		skipLineCount,
+		scaleX,
+		maxWidthPx,
 		align,
 	]);
 }
