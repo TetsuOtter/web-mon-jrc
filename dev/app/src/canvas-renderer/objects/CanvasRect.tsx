@@ -32,7 +32,7 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 	height,
 	fillColor,
 	strokeColor,
-	strokeWidth = 1,
+	strokeWidth,
 	onClick,
 	children,
 }) {
