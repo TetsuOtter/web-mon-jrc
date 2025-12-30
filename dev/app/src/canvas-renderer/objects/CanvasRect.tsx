@@ -50,14 +50,14 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 			// 塗りつぶし描画 - ストロークを含めて指定サイズ内に収める
 			if (fillColor) {
 				ctx.fillStyle = fillColor;
-				ctx.fillRect(ix + sw / 2, iy + sw / 2, iw - sw, ih - sw);
+				ctx.fillRect(ix + sw, iy + sw, iw - sw * 2, ih - sw * 2);
 			}
 
 			// 縁取り描画 - バウンディングボックスに沿って描画
-			if (strokeColor && sw > 0) {
+			if (strokeColor && 0 < sw) {
 				ctx.strokeStyle = strokeColor;
 				ctx.lineWidth = sw;
-				ctx.strokeRect(ix, iy, iw, ih);
+				ctx.strokeRect(ix + sw / 2, iy + sw / 2, iw - sw, ih - sw);
 			}
 
 			ctx.restore();
