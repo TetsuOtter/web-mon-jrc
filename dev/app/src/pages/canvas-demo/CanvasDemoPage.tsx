@@ -7,7 +7,7 @@ import {
 	CanvasCircle,
 	CanvasLine,
 	CanvasOrderDemoItem,
-} from "./canvas-renderer";
+} from "../../canvas-renderer";
 
 export const CanvasDemo: React.FC = () => {
 	const [clickedPoint, setClickedPoint] = useState<{
