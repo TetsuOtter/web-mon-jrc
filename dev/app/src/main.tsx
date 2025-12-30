@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
 
-import { CanvasDemo } from "./CanvasDemo";
+import { router } from "./router";
 
 const rootElement = document.getElementById("root");
 if (rootElement == null) {
@@ -9,7 +10,9 @@ if (rootElement == null) {
 } else {
 	ReactDOM.createRoot(rootElement).render(
 		<React.StrictMode>
-			<CanvasDemo />
+			<Suspense fallback={null}>
+				<RouterProvider router={router} />
+			</Suspense>
 		</React.StrictMode>
 	);
 }
