@@ -1,4 +1,9 @@
-import type { PropsWithChildren, ReactNode, RefCallback } from "react";
+import type {
+	CSSProperties,
+	PropsWithChildren,
+	ReactNode,
+	RefCallback,
+} from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import CanvasObjectContext from "./contexts/CanvasObjectContext";
@@ -16,11 +21,20 @@ import type {
 type CanvasRendererProps = {
 	width: number;
 	height: number;
+	fill?: CanvasFillStrokeStyles["fillStyle"];
+	style?: CSSProperties;
 	children: ReactNode;
 	renderRequestCount?: number;
 };
 export default memo<PropsWithChildren<CanvasRendererProps>>(
-	function CanvasRenderer({ width, height, children, renderRequestCount }) {
+	function CanvasRenderer({
+		width,
+		height,
+		fill,
+		style: styleProps,
+		children,
+		renderRequestCount,
+	}) {
 		const registeredObjectListRef = useRef<CanvasRenderFunctionObject[]>([]);
 
 		const [renderRequestedAreaList, setRenderRequestedAreaList] = useState<
@@ -53,15 +67,21 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 			if (renderRequestedAreaList.length === 0 || !ctx) {
 				return;
 			}
-			renderRequestedAreaList.forEach((area) => {
-				ctx.clearRect(area.absX, area.absY, area.width, area.height);
-			});
+			// 暫定で全消去＋全描画
+			ctx.clearRect(0, 0, width, height);
+			if (fill) {
+				ctx.fillStyle = fill;
+				ctx.fillRect(0, 0, width, height);
+			}
+			// renderRequestedAreaList.forEach((area) => {
+			// 	ctx.clearRect(area.absX, area.absY, area.width, area.height);
+			// });
 			// リスト順に従って描画
 			registeredObjectListRef.current.forEach((obj) => {
 				obj.onRender(ctx, obj.metadata, renderRequestedAreaList);
 			});
 			setRenderRequestedAreaList([]);
-		}, [ctx, renderRequestedAreaList]);
+		}, [ctx, height, renderRequestedAreaList, width, fill]);
 
 		useEffect(() => {
 			const targetCtx = ctx;
@@ -127,6 +147,15 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 			[]
 		);
 
+		const style = useMemo(
+			() => ({
+				width: `${width}px`,
+				height: `${height}px`,
+				...styleProps,
+			}),
+			[styleProps, width, height]
+		);
+
 		return (
 			<RenderRequesterContext.Provider value={requestRender}>
 				<canvas
@@ -134,12 +163,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 					onClick={handleCanvasClick}
 					height={height * scale}
 					width={width * scale}
-					style={{
-						border: "1px solid #ccc",
-						display: "block",
-						width: `${width}px`,
-						height: `${height}px`,
-					}}
+					style={style}
 				/>
 				<CanvasObjectContext
 					registeredObjectListRef={registeredObjectListRef}
