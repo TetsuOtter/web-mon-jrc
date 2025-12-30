@@ -36,10 +36,13 @@ export default memo<CanvasLineProps>(function CanvasLine({
 			ctx.save();
 
 			// キャンバス上の絶対座標で線の始点・終点を計算
-			const ix1 = Math.round(metadata.absX);
-			const iy1 = Math.round(metadata.absY);
-			const ix2 = Math.round(metadata.absX + metadata.width);
-			const iy2 = Math.round(metadata.absY + metadata.height);
+			// metadataは相対座標の左上からのオフセットなので、実際の線の座標に変換
+			const minX = Math.min(Math.round(relX1), Math.round(relX2));
+			const minY = Math.min(Math.round(relY1), Math.round(relY2));
+			const ix1 = Math.round(metadata.absX + (Math.round(relX1) - minX));
+			const iy1 = Math.round(metadata.absY + (Math.round(relY1) - minY));
+			const ix2 = Math.round(metadata.absX + (Math.round(relX2) - minX));
+			const iy2 = Math.round(metadata.absY + (Math.round(relY2) - minY));
 			const w = width || 1;
 
 			ctx.fillStyle = color;
@@ -75,7 +78,7 @@ export default memo<CanvasLineProps>(function CanvasLine({
 
 			ctx.restore();
 		},
-		[color, width]
+		[color, width, relX1, relY1, relX2, relY2]
 	);
 
 	const minX = Math.min(Math.round(relX1), Math.round(relX2));
@@ -101,27 +104,31 @@ export default memo<CanvasLineProps>(function CanvasLine({
 			}
 
 			// より正確な距離計算
-			const dx = maxX - minX;
-			const dy = maxY - minY;
+			const x1 = Math.round(relX1) - minX;
+			const y1 = Math.round(relY1) - minY;
+			const x2 = Math.round(relX2) - minX;
+			const y2 = Math.round(relY2) - minY;
+			const dx = x2 - x1;
+			const dy = y2 - y1;
 			const lengthSq = dx * dx + dy * dy;
 
 			if (lengthSq === 0) {
 				// 点と点の距離
-				const px = clickX - minX;
-				const py = clickY - minY;
+				const px = clickX - x1;
+				const py = clickY - y1;
 				return px * px + py * py <= w * w;
 			}
 
 			// 線分上の最近点までの距離
-			let t = ((clickX - minX) * dx + (clickY - minY) * dy) / lengthSq;
+			let t = ((clickX - x1) * dx + (clickY - y1) * dy) / lengthSq;
 			t = Math.max(0, Math.min(1, t));
-			const nearestX = minX + t * dx;
-			const nearestY = minY + t * dy;
+			const nearestX = x1 + t * dx;
+			const nearestY = y1 + t * dy;
 			const px = clickX - nearestX;
 			const py = clickY - nearestY;
 			return px * px + py * py <= w * w;
 		},
-		[width, minX, minY, maxX, maxY]
+		[width, maxX, minX, maxY, minY, relX1, relY1, relX2, relY2]
 	);
 
 	return (
