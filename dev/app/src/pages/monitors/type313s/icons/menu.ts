@@ -1,0 +1,83 @@
+import { EMPTY, getLine } from "./constants";
+
+import type { IconDataStrictType } from "./constants";
+
+const THROUGH = getLine(
+	"00111111",
+	"11111111",
+	"11111111",
+	"11111111",
+	"11111100"
+);
+const HEADER = getLine(
+	"00100000",
+	"00001000",
+	"00000001",
+	"00000000",
+	"01000100"
+);
+const OUTER_ONLY = getLine(
+	"00100000",
+	"00000000",
+	"00000000",
+	"00000000",
+	"00000100"
+);
+
+const INBOX_TB = getLine(
+	"00100111",
+	"11100111",
+	"11100111",
+	"11100111",
+	"11100100"
+);
+const INBOX_SIDE = getLine(
+	"00100100",
+	"00100100",
+	"00100100",
+	"00100100",
+	"00100100"
+);
+
+export default [
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	THROUGH,
+	HEADER,
+	HEADER,
+	THROUGH,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	INBOX_TB,
+	INBOX_SIDE,
+	INBOX_SIDE,
+	INBOX_TB,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	INBOX_TB,
+	INBOX_SIDE,
+	INBOX_SIDE,
+	INBOX_TB,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	OUTER_ONLY,
+	THROUGH,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+	EMPTY,
+] as const satisfies IconDataStrictType;
