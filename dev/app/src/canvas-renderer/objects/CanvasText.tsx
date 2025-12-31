@@ -26,6 +26,7 @@ type CanvasTextProps = {
 	readonly skipLineCount?: number;
 	readonly lineHeight?: number;
 	readonly align?: "left" | "center" | "right";
+	readonly verticalAlign?: "top" | "center" | "bottom";
 	readonly scaleX?: number;
 	readonly scaleY?: number;
 	readonly onClick?: ClickEventHandler;
@@ -75,6 +76,7 @@ export default memo<CanvasTextProps>(function CanvasText({
 	skipLineCount = 0,
 	lineHeight = 1,
 	align = "left",
+	verticalAlign = "top",
 	scaleX = 1,
 	scaleY = 1,
 	onClick,
@@ -104,6 +106,7 @@ export default memo<CanvasTextProps>(function CanvasText({
 		maxHeightPx,
 		skipLineCount,
 		align,
+		verticalAlign,
 		lineImagesPromise,
 	});
 
@@ -347,6 +350,7 @@ type DrawContentHookParams = {
 	maxHeightPx: number;
 	skipLineCount: number;
 	align: "left" | "center" | "right";
+	verticalAlign: "top" | "center" | "bottom";
 	lineImagesPromise: Promise<LineImage[]>;
 };
 function useDrawContentPromise({
@@ -360,6 +364,7 @@ function useDrawContentPromise({
 	maxHeightPx,
 	skipLineCount,
 	align,
+	verticalAlign,
 	lineImagesPromise,
 }: DrawContentHookParams): Promise<DrawContent> {
 	return useMemo(async () => {
@@ -405,12 +410,18 @@ function useDrawContentPromise({
 			totalHeight += lineHeightPx;
 		});
 
+		// 垂直アライメントに基づいて行のY位置を調整
+		const adjustedLines = lines.map((line) => ({
+			...line,
+			y: calculateYPosition(line.y, totalHeight, maxHeightPx, verticalAlign),
+		}));
+
 		return {
 			x,
 			y,
 			width: maxWidth,
 			height: totalHeight,
-			lines,
+			lines: adjustedLines,
 		};
 	}, [
 		lineImagesPromise,
@@ -424,6 +435,7 @@ function useDrawContentPromise({
 		scaleX,
 		maxWidthPx,
 		align,
+		verticalAlign,
 	]);
 }
 
@@ -502,5 +514,30 @@ function calculateXPosition(
 		case "left":
 		default:
 			return baseX;
+	}
+}
+
+function calculateYPosition(
+	currentY: number,
+	totalHeight: number,
+	maxHeight: number | undefined,
+	verticalAlign: "top" | "center" | "bottom"
+): number {
+	const availableHeight = maxHeight ?? totalHeight;
+
+	if (totalHeight >= availableHeight) {
+		return currentY;
+	}
+
+	const verticalOffset = availableHeight - totalHeight;
+
+	switch (verticalAlign) {
+		case "center":
+			return currentY + verticalOffset / 2;
+		case "bottom":
+			return currentY + verticalOffset;
+		case "top":
+		default:
+			return currentY;
 	}
 }
