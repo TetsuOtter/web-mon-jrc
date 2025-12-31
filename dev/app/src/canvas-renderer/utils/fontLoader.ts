@@ -5,6 +5,7 @@ import type { Font } from "bdfparser";
 export const AVAILABLE_FONTS = {
 	jiskan16: "jiskan16",
 	"8x16rk": "8x16rk",
+	MonNumFont: "MonNumFont",
 } as const satisfies Record<string, string>;
 export type AvailableFont =
 	(typeof AVAILABLE_FONTS)[keyof typeof AVAILABLE_FONTS];
@@ -12,6 +13,7 @@ export type AvailableFont =
 const AVAILABLE_FONT_PATHS = {
 	jiskan16: "/jiskan16-unicode.bdf",
 	"8x16rk": "/8x16rk.bdf",
+	MonNumFont: "/MonNumFont-16.bdf",
 } as const satisfies Record<AvailableFont, string>;
 
 async function* getLines(text: string): AsyncGenerator<string> {

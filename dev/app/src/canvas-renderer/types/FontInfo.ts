@@ -18,7 +18,7 @@ export type FontInfo = {
 export const DEFAULT_FONT_INFO: FontInfo = {
 	fontSize: 16,
 	fullWidth: AVAILABLE_FONTS.jiskan16,
-	halfWidth: AVAILABLE_FONTS["8x16rk"],
+	halfWidth: AVAILABLE_FONTS["MonNumFont"],
 };
 
 /**
