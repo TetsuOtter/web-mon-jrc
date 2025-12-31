@@ -28,5 +28,14 @@ export function isFullWidthChar(char: string): boolean {
 	const code = char.charCodeAt(0);
 
 	// ASCII範囲（U+0000 - U+007F）は半角
-	return !(0x0000 <= code && code <= 0x007f);
+	if (0x0000 <= code && code <= 0x007f) {
+		return false;
+	}
+
+	// 半角カタカナ範囲（U+FF61 - U+FF9F）は半角
+	if (0xff61 <= code && code <= 0xff9f) {
+		return false;
+	}
+
+	return true;
 }
