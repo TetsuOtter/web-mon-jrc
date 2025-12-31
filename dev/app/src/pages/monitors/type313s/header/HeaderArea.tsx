@@ -31,7 +31,7 @@ const PAGE_ICON_TOP = 0;
 
 const TEXT_TOP = Math.floor((HEADER_HEIGHT - FONT_SIZE_2X) / 2);
 
-const PAGE_NAME_LEFT = PAGE_ICON_LEFT + PAGE_ICON_SIZE;
+const PAGE_NAME_LEFT = PAGE_ICON_LEFT + PAGE_ICON_SIZE + 24;
 const PAGE_NAME_WIDTH = 200;
 
 const PAGE_NAME_TRAIN_NUMBER_SEPARATOR_X = 200;
@@ -46,8 +46,8 @@ const TRAIN_TYPE_TRAIN_DEST_SEPARATOR_XR_TOP =
 const TRAIN_DEST_TIME_SEPARATOR_X = 680;
 
 const TRAIN_NUMBER_LR_PADDING = 8;
-const TRAIN_TYPE_LEFT_PADDING = 4; // FONT_SIZE_1X
-const TRAIN_DEST_LEFT_PADDING = 8; // FONT_SIZE_1X * 2
+const TRAIN_TYPE_LEFT_PADDING = 16;
+const TRAIN_DEST_LEFT_PADDING = 32;
 
 const TRAIN_NUMBER_LEFT = 200 + TRAIN_NUMBER_LR_PADDING;
 const TRAIN_NUMBER_WIDTH = 120 - TRAIN_NUMBER_LR_PADDING * 2;
@@ -57,7 +57,7 @@ const TRAIN_TYPE_LEFT = 320 + TRAIN_TYPE_LEFT_PADDING;
 const TRAIN_DEST_LEFT = 520 + TRAIN_DEST_LEFT_PADDING;
 
 const TIME_LABEL_LEFT = 680;
-const TIME_LABEL_WIDTH = 120;
+const TIME_LABEL_WIDTH = 100;
 
 const LINE_WIDTH = 1;
 
@@ -72,7 +72,7 @@ export default memo<HeaderAreaProps>(function HeaderArea({
 	const timeLabel = useMemo(() => {
 		const hh = Math.floor(timeMinutes / 60) % 24;
 		const mm = timeMinutes % 60;
-		return `${hh.toString().padStart(2, "0")}:${mm.toString().padStart(2, "0")}`;
+		return `${hh}:${mm.toString().padStart(2, "0")}`;
 	}, [timeMinutes]);
 
 	const wideTrainNumber = useMemo(
@@ -134,9 +134,10 @@ export default memo<HeaderAreaProps>(function HeaderArea({
 			<CanvasText
 				relX={TIME_LABEL_LEFT}
 				relY={TEXT_TOP}
+				maxHeightPx={100}
 				text={timeLabel}
 				fillColor={COLORS.WHITE}
-				align="center"
+				align="right"
 				maxWidthPx={TIME_LABEL_WIDTH}
 				scaleX={2}
 				scaleY={2}
