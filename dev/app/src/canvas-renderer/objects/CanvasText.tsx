@@ -7,6 +7,7 @@ import {
 } from "../contexts/CanvasObjectContext";
 import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
+import { hexToRgb } from "../utils/colorUtil";
 import { loadFont } from "../utils/fontLoader";
 
 import CanvasObjectBase from "./CanvasObjectBase";
@@ -175,26 +176,6 @@ export default memo<CanvasTextProps>(function CanvasText({
 		/>
 	);
 });
-
-function hexToRgb(hex: string): { r: number; g: number; b: number } {
-	const result6 = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	if (result6) {
-		return {
-			r: parseInt(result6[1], 16),
-			g: parseInt(result6[2], 16),
-			b: parseInt(result6[3], 16),
-		};
-	}
-	const result3 = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
-	if (result3) {
-		return {
-			r: parseInt(result3[1] + result3[1], 16),
-			g: parseInt(result3[2] + result3[2], 16),
-			b: parseInt(result3[3] + result3[3], 16),
-		};
-	}
-	return { r: 0, g: 0, b: 0 };
-}
 
 type UseCharBitmapsHookParams = {
 	fontInfo: FontInfo;
