@@ -221,8 +221,24 @@ function useCharBitmaps({
 					const selectedFont = isFullWidth ? fullWidthFont : halfWidthFont;
 
 					const glyph = selectedFont.glyph(char);
-					const bitmap =
-						glyph?.draw(1) ?? (isFullWidth ? tofu.fullWidth : tofu.halfWidth);
+					const bitmap = (() => {
+						if (isFullWidth) {
+							return glyph?.draw(1) ?? tofu.fullWidth;
+						} else {
+							if (glyph == null) {
+								return tofu.halfWidth;
+							}
+							const expectedWidth = fontInfo.fontSize / 2;
+							return (
+								glyph.draw(-1, [
+									expectedWidth,
+									fontInfo.fontSize,
+									-(expectedWidth - glyph.meta.bbw) / 2,
+									0,
+								]) ?? tofu.halfWidth
+							);
+						}
+					})();
 
 					lineBitmaps.push(bitmap);
 				}
@@ -235,7 +251,14 @@ function useCharBitmaps({
 			console.error("Failed to get char bitmap info:", error);
 			return [];
 		}
-	}, [fontInfo.fullWidth, fontInfo.halfWidth, text, tofu]);
+	}, [
+		fontInfo.fontSize,
+		fontInfo.fullWidth,
+		fontInfo.halfWidth,
+		text,
+		tofu.fullWidth,
+		tofu.halfWidth,
+	]);
 }
 
 type LineImagesPromiseHookParams = {
