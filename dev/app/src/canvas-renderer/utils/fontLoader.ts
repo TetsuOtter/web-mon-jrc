@@ -10,7 +10,7 @@ export type AvailableFont =
 	(typeof AVAILABLE_FONTS)[keyof typeof AVAILABLE_FONTS];
 
 const AVAILABLE_FONT_PATHS = {
-	jiskan16: "/jiskan16.bdf",
+	jiskan16: "/jiskan16-unicode.bdf",
 	"8x16rk": "/8x16rk.bdf",
 } as const satisfies Record<AvailableFont, string>;
 

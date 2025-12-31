@@ -5,11 +5,7 @@ import {
 	type CanvasRenderFunction,
 	type ClickEventHandler,
 } from "../contexts/CanvasObjectContext";
-import {
-	isFullWidthChar,
-	unicodeToJisX0208,
-	DEFAULT_FONT_INFO,
-} from "../types/FontInfo";
+import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
 import { loadFont } from "../utils/fontLoader";
 
@@ -224,8 +220,7 @@ function useCharBitmaps({
 					const isFullWidth = isFullWidthChar(char);
 					const selectedFont = isFullWidth ? fullWidthFont : halfWidthFont;
 
-					const jisCodepoint = unicodeToJisX0208(char);
-					const glyph = selectedFont.glyphbycp(jisCodepoint);
+					const glyph = selectedFont.glyph(char);
 					const bitmap =
 						glyph?.draw(1) ?? (isFullWidth ? tofu.fullWidth : tofu.halfWidth);
 
