@@ -7,24 +7,57 @@ type MonitorCanvasProps = {
 	height: number;
 	width: number;
 	disableAutoScale?: boolean;
+	bgimg?: string;
 };
 export default memo<PropsWithChildren<MonitorCanvasProps>>(
-	function MonitorCanvas({ height, width, disableAutoScale, children }) {
+	function MonitorCanvas({ height, width, disableAutoScale, bgimg, children }) {
 		const canvasStyle = useMemo((): CSSProperties => {
+			const baseStyle: CSSProperties = {
+				objectFit: "contain",
+			};
+			if (bgimg) {
+				baseStyle.opacity = 0.6;
+			}
+
 			if (disableAutoScale) {
-				return {
-					objectFit: "contain",
-				};
+				return baseStyle;
 			} else {
 				return {
+					...baseStyle,
 					width: "100%",
 					height: "100%",
-					objectFit: "contain",
+				};
+			}
+		}, [disableAutoScale, bgimg]);
+
+		const imgStyle = useMemo((): CSSProperties => {
+			const baseImgStyle: CSSProperties = {
+				position: "absolute",
+				top: 0,
+				left: 0,
+				objectFit: "contain",
+			};
+
+			if (disableAutoScale) {
+				return baseImgStyle;
+			} else {
+				return {
+					...baseImgStyle,
+					width: "100%",
+					height: "100%",
 				};
 			}
 		}, [disableAutoScale]);
+
 		return (
 			<div style={CONTAINER_STYLE}>
+				{bgimg && (
+					<img
+						src={bgimg}
+						style={imgStyle}
+						alt="background"
+					/>
+				)}
 				<CanvasRenderer
 					width={width}
 					height={height}
@@ -38,6 +71,7 @@ export default memo<PropsWithChildren<MonitorCanvasProps>>(
 );
 
 const CONTAINER_STYLE = {
+	position: "relative",
 	display: "flex",
 	justifyContent: "center",
 	alignItems: "center",
