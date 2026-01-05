@@ -8,10 +8,10 @@ import { ICONS } from "../../icons";
 
 import MenuButton from "./components/MenuButton";
 
-const SLEEP_BUTTON_X = 633;
+const SLEEP_BUTTON_X = 648;
 const SLEEP_BUTTON_Y = 464;
 const SLEEP_BUTTON_WIDTH = 104;
-const SLEEP_BUTTON_HEIGHT = 38;
+const SLEEP_BUTTON_HEIGHT = 36;
 
 export default memo(function Menu() {
 	return (
