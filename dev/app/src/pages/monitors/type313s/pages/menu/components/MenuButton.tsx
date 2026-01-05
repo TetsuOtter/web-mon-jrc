@@ -8,8 +8,8 @@ import { COLORS, FONT_SIZE_2X } from "../../../constants";
 
 import type { IconData } from "../../../icons";
 
-const BUTTON_HEIGHT = 68;
-const BUTTON_WIDTH = 114;
+const BUTTON_HEIGHT = 56;
+const BUTTON_WIDTH = 96;
 
 const TEXT_TOP = BUTTON_HEIGHT + 4;
 
@@ -18,10 +18,10 @@ const AREA_HEIGHT = TEXT_TOP + FONT_SIZE_2X;
 const ICON_X = BUTTON_WIDTH / 2 - 20;
 const ICON_Y = BUTTON_HEIGHT / 2 - 20;
 
-const FIRST_COL_X = 90;
-const COL_GAP = 159;
-const FIRST_ROW_Y = 35;
-const ROW_GAP = 144;
+const FIRST_COL_X = 112;
+const COL_GAP = 160;
+const FIRST_ROW_Y = 48;
+const ROW_GAP = 140;
 
 type MenuButtonProps = {
 	row: number;
