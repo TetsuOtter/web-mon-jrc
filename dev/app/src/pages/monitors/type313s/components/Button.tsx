@@ -58,6 +58,7 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 			const ih = Math.round(metadata.height);
 
 			// ボタン画像を描画
+			ctx.imageSmoothingEnabled = false;
 			ctx.drawImage(buttonImageData, ix, iy, iw, ih);
 
 			ctx.restore();
