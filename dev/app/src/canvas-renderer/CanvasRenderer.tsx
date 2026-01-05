@@ -149,11 +149,11 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 
 		const style = useMemo(
 			() => ({
-				width: `${width}px`,
-				height: `${height}px`,
+				width: `${width * scale}px`,
+				height: `${height * scale}px`,
 				...styleProps,
 			}),
-			[styleProps, width, height]
+			[styleProps, width, height, scale]
 		);
 
 		return (
