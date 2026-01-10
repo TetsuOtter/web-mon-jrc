@@ -1,34 +1,27 @@
 import { memo } from "react";
+import { useParams } from "react-router-dom";
 
-import { CanvasText } from "../../../canvas-renderer";
 import MonitorCanvas from "../../../components/MonitorCanvas";
 
+import CurrentPageContext from "./components/CurrentPageContext";
 import { DISPLAY_HEIGHT, DISPLAY_WIDTH } from "./constants";
-import HeaderArea from "./header/HeaderArea";
-import { ICONS } from "./icons";
+import { PAGE_COMPONENTS } from "./pages/pageComponents";
+import { PAGE_TYPES } from "./pages/pageTypes";
+
+import type { PageType } from "./pages/pageTypes";
 
 export default memo(function Type313sPage() {
+	const params = useParams<{ page?: string }>();
+	const currentPage = (params.page as PageType) || PAGE_TYPES.MENU;
+	const PageComponent = PAGE_COMPONENTS[currentPage] ?? PAGE_COMPONENTS.MENU;
+
 	return (
-		<MonitorCanvas
-			width={DISPLAY_WIDTH}
-			height={DISPLAY_HEIGHT}>
-			<HeaderArea
-				icon={ICONS.MENU}
-				pageName="メニュー"
-				trainNumber="1234"
-				trainType="普通"
-				trainDestination="大垣"
-				timeMinutes={5}
-			/>
-			<CanvasText
-				relX={0}
-				relY={300 - 16}
-				align="center"
-				text="準備中"
-				fillColor="#fff"
-				scaleX={2}
-				scaleY={2}
-			/>
-		</MonitorCanvas>
+		<CurrentPageContext page={currentPage}>
+			<MonitorCanvas
+				width={DISPLAY_WIDTH}
+				height={DISPLAY_HEIGHT}>
+				<PageComponent />
+			</MonitorCanvas>
+		</CurrentPageContext>
 	);
 });

@@ -23,7 +23,7 @@ export const ROUTES = {
 	},
 
 	TYPE313S: {
-		path: "/monitors/type313s",
+		path: "/monitors/type313s/:page",
 		Element: lazy(() => import("./pages/monitors/type313s/Type313sPage")),
 	},
 	TYPE313V: {

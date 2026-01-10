@@ -58,3 +58,5 @@ export const PAGE_TYPES = createPages([
 	"DRIVER-ROOM_LIGHT",
 	"DRIVER-LOCATION_CORRECTION",
 ]);
+
+export type PageType = (typeof PAGE_TYPES)[keyof typeof PAGE_TYPES];
