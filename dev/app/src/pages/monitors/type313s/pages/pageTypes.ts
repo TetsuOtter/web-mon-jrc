@@ -60,3 +60,8 @@ export const PAGE_TYPES = createPages([
 ]);
 
 export type PageType = (typeof PAGE_TYPES)[keyof typeof PAGE_TYPES];
+
+const PAGE_TYPE_SET = new Set<string>(Object.values(PAGE_TYPES));
+export function isValidPageType(value: string): value is PageType {
+	return PAGE_TYPE_SET.has(value);
+}

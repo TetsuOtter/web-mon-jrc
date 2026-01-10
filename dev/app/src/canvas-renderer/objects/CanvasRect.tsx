@@ -5,7 +5,6 @@ import CanvasObjectBase from "./CanvasObjectBase";
 
 import type {
 	ClickEventHandler,
-	ClickDetector,
 	CanvasRenderFunction,
 } from "../contexts/CanvasObjectContext";
 
@@ -65,22 +64,10 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 		[fillColor, strokeColor, strokeWidth]
 	);
 
-	const isClickDetector: ClickDetector = useCallback(
-		(clickX: number, clickY: number) => {
-			// clickX, clickY は相対座標（この矩形の左上を原点とした座標）
-			// 矩形の領域判定を行う
-			const iw = Math.round(width);
-			const ih = Math.round(height);
-			return clickX >= 0 && clickX <= iw && clickY >= 0 && clickY <= ih;
-		},
-		[width, height]
-	);
-
 	return (
 		<CanvasObjectBase
 			onRender={onRender}
 			onClick={onClick}
-			isClickDetector={isClickDetector}
 			relX={relX}
 			relY={relY}
 			width={width}

@@ -8,7 +8,7 @@ export function usePageNavigation() {
 
 	const navigateToPage = useCallback(
 		(pageType: PageType) => {
-			navigate(`/monitors/type313s${pageType}`);
+			navigate(`/monitors/type313s/${pageType}`);
 		},
 		[navigate]
 	);
@@ -19,6 +19,6 @@ export function usePageNavigation() {
 export function usePageNavigationTo(pageType: PageType) {
 	const navigate = useNavigate();
 	return useCallback(() => {
-		navigate(`/monitors/type313s${pageType}`);
+		navigate(`/monitors/type313s/${pageType}`);
 	}, [navigate, pageType]);
 }

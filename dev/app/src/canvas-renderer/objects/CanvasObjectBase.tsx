@@ -78,10 +78,10 @@ export default memo<PropsWithChildren<CanvasObjectBaseProps>>(
 					const childRelY = relY - m.relY;
 					const isClicked =
 						(await obj.isClickDetector?.(childRelX, childRelY)) ??
-						(m.relX <= relX &&
-							relX <= m.relX + m.width &&
-							m.relY <= relY &&
-							relY <= m.relY + m.height);
+						(0 <= childRelX &&
+							childRelX <= m.width &&
+							0 <= childRelY &&
+							childRelY <= m.height);
 					if (isClicked) {
 						await obj.onClickHandler(childRelX, childRelY);
 						isChildClicked = true;

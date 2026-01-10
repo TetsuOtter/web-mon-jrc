@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import MonitorCanvas from "../../../components/MonitorCanvas";
@@ -6,15 +6,22 @@ import MonitorCanvas from "../../../components/MonitorCanvas";
 import CurrentPageContext from "./components/CurrentPageContext";
 import { DISPLAY_HEIGHT, DISPLAY_WIDTH } from "./constants";
 import { PAGE_COMPONENTS } from "./pages/pageComponents";
-import { PAGE_TYPES } from "./pages/pageTypes";
-
-import type { PageType } from "./pages/pageTypes";
+import { isValidPageType, PAGE_TYPES } from "./pages/pageTypes";
+import { usePageNavigationTo } from "./pages/usePageNavigation";
 
 export default memo(function Type313sPage() {
-	const params = useParams<{ page?: string }>();
-	const currentPage = (params.page as PageType) || PAGE_TYPES.MENU;
-	const PageComponent = PAGE_COMPONENTS[currentPage] ?? PAGE_COMPONENTS.MENU;
+	const page = (useParams<{ page?: string }>()?.page ?? "").toUpperCase();
+	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
+	useEffect(() => {
+		if (!isValidPageType(page)) {
+			navigateToMenu();
+		}
+	}, [navigateToMenu, page]);
 
+	const currentPage = useMemo(() => {
+		return isValidPageType(page) ? page : PAGE_TYPES.MENU;
+	}, [page]);
+	const PageComponent = PAGE_COMPONENTS[currentPage];
 	return (
 		<CurrentPageContext page={currentPage}>
 			<MonitorCanvas

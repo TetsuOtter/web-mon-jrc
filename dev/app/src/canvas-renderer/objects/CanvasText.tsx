@@ -3,7 +3,6 @@ import { memo, useCallback, useMemo, useEffect, useState } from "react";
 import {
 	useCanvasObjectContext,
 	type CanvasRenderFunction,
-	type ClickEventHandler,
 } from "../contexts/CanvasObjectContext";
 import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
@@ -29,7 +28,8 @@ type CanvasTextProps = {
 	readonly verticalAlign?: "top" | "center" | "bottom";
 	readonly scaleX?: number;
 	readonly scaleY?: number;
-	readonly onClick?: ClickEventHandler;
+	// テキストのクリックはサポートしない
+	// readonly onClick?: ClickEventHandler;
 	readonly onLineInfoChanged?: (
 		lineCount: number,
 		visibleLineCount: number
@@ -79,7 +79,6 @@ export default memo<CanvasTextProps>(function CanvasText({
 	verticalAlign = "top",
 	scaleX = 1,
 	scaleY = 1,
-	onClick,
 	onLineInfoChanged,
 }) {
 	const parentObjectContext = useCanvasObjectContext();
@@ -170,7 +169,6 @@ export default memo<CanvasTextProps>(function CanvasText({
 	return (
 		<CanvasObjectBase
 			onRender={onRender}
-			onClick={onClick}
 			relX={metadata.x}
 			relY={metadata.y}
 			width={metadata.width}

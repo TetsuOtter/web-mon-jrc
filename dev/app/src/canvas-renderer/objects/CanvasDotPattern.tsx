@@ -10,7 +10,7 @@ import type {
 } from "../contexts/CanvasObjectContext";
 
 type CanvasDotPatternProps = {
-	readonly image: readonly string[];
+	readonly image: readonly string[] | undefined;
 	readonly x: number;
 	readonly y: number;
 	readonly scaleX?: number;
@@ -42,13 +42,16 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 		children,
 	}) {
 		// 画像サイズを計算
-		const imageWidth = image.length > 0 ? image[0].length : 0;
-		const imageHeight = image.length;
+		const imageWidth = image != null && image.length > 0 ? image[0].length : 0;
+		const imageHeight = image?.length ?? 0;
 		const width = imageWidth * scaleX;
 		const height = imageHeight * scaleY;
 
 		const onRender: CanvasRenderFunction = useCallback(
 			async (ctx, metadata) => {
+				if (image == null) {
+					return;
+				}
 				ctx.save();
 
 				// 各ドット位置を計算して描画

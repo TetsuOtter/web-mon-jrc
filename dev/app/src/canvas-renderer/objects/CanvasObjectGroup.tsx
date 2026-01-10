@@ -38,17 +38,19 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 	}) {
 		const parentObjectContext = useCanvasObjectContext();
 		const childIndex = useCanvasChildIndex();
+		const parentAbsX = parentObjectContext.metadata.absX;
+		const parentAbsY = parentObjectContext.metadata.absY;
 		const metadata: CanvasObjectMetadata = useMemo(
 			() => ({
-				absX: relX + parentObjectContext.metadata.absX,
-				absY: relY + parentObjectContext.metadata.absY,
+				absX: parentAbsX + relX,
+				absY: parentAbsY + relY,
 				relX,
 				relY,
 				width,
 				height,
 				isFilled: false,
 			}),
-			[relX, relY, width, height, parentObjectContext]
+			[relX, parentAbsX, relY, parentAbsY, width, height]
 		);
 
 		const registeredObjectListRef = useRef<CanvasRenderFunctionObject[]>([]);
@@ -67,10 +69,10 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 					const childRelY = relY - m.relY;
 					const isClicked =
 						(await obj.isClickDetector?.(childRelX, childRelY)) ??
-						(m.relX <= relX &&
-							relX <= m.relX + m.width &&
-							m.relY <= relY &&
-							relY <= m.relY + m.height);
+						(0 <= childRelX &&
+							childRelX <= m.width &&
+							0 <= childRelY &&
+							childRelY <= m.height);
 					if (isClicked) {
 						await obj.onClickHandler(childRelX, childRelY);
 						isChildClicked = true;

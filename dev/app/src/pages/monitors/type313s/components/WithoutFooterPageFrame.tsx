@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { memo } from "react";
 
+import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
 import CanvasObjectGroup from "../../../../canvas-renderer/objects/CanvasObjectGroup";
 import { DISPLAY_HEIGHT, DISPLAY_WIDTH, HEADER_HEIGHT } from "../constants";
 import HeaderArea from "../header/HeaderArea";
@@ -16,11 +17,16 @@ export default memo<PropsWithChildren>(function WithoutFooterPageFrame({
 	children,
 }) {
 	const pageType = useCurrentPageType();
+	const parentObjectContext = useCanvasObjectContext();
 	return (
-		<>
+		<CanvasObjectGroup
+			relX={0}
+			relY={0}
+			width={parentObjectContext.metadata.width}
+			height={parentObjectContext.metadata.height}>
 			<HeaderArea
 				icon={ICON_MAP_BY_PAGE[pageType]}
-				pageName="メニュー"
+				pageName={PAGE_NAME_MAP[pageType]}
 				trainNumber="1234"
 				trainType="普通"
 				trainDestination="大垣"
@@ -33,7 +39,7 @@ export default memo<PropsWithChildren>(function WithoutFooterPageFrame({
 				height={DISPLAY_HEIGHT - HEADER_HEIGHT}>
 				{children}
 			</CanvasObjectGroup>
-		</>
+		</CanvasObjectGroup>
 	);
 });
 
@@ -101,3 +107,65 @@ const ICON_MAP_BY_PAGE = {
 	[PAGE_TYPES["DRIVER-ROOM_LIGHT"]]: ICONS.DRIVER,
 	[PAGE_TYPES["DRIVER-LOCATION_CORRECTION"]]: ICONS.DRIVER,
 } as const satisfies Record<PageType, IconData>;
+
+const PAGE_NAME_MAP = {
+	// Menu pages
+	[PAGE_TYPES.MENU]: "メニュー",
+	[PAGE_TYPES.OCCUPANCY_RATE]: "乗車率",
+	[PAGE_TYPES.CAR_DETECTION]: "車両検知",
+	[PAGE_TYPES.SET_LOCATION]: "位置設定",
+	[PAGE_TYPES.TABLE_OF_CONTENTS]: "目次",
+	// Other Series pages
+	[PAGE_TYPES.OTHER_SERIES_DRIVER_INFO]: "他シリーズ運転情報",
+	[PAGE_TYPES.OTHER_SERIES_SUB_SETTING]: "他シリーズサブ設定",
+	[PAGE_TYPES.OTHER_SERIES_ANNOUNCE_1]: "他シリーズ案内1",
+	[PAGE_TYPES.OTHER_SERIES_ANNOUNCE_2]: "他シリーズ案内2",
+	[PAGE_TYPES.OTHER_SERIES_BROKEN]: "他シリーズ故障",
+	[PAGE_TYPES.OTHER_SERIES_WORK_SETTING]: "他シリーズ作業設定",
+	[PAGE_TYPES.OTHER_SERIES_WORK_SETTING_MENU]: "他シリーズ作業設定メニュー",
+	[PAGE_TYPES.OTHER_SERIES_REDUCE_SPEED]: "他シリーズ速度低減",
+
+	// Maintenance pages
+	[PAGE_TYPES["MAINTENANCE-MENU"]]: "メンテナンスメニュー",
+	[PAGE_TYPES["MAINTENANCE-CTRL_TEST"]]: "メンテナンス制御試験",
+	[PAGE_TYPES["MAINTENANCE-COMM_STATE"]]: "メンテナンス通信状態",
+	[PAGE_TYPES["MAINTENANCE-SPEC_RECORD"]]: "メンテナンス仕様記録",
+	[PAGE_TYPES["MAINTENANCE-BROKEN_LIST"]]: "メンテナンス故障一覧",
+	[PAGE_TYPES["MAINTENANCE-TEST_RUN"]]: "メンテナンス試運転",
+	[PAGE_TYPES["MAINTENANCE-DI_DO"]]: "メンテナンスDI/DO",
+	[PAGE_TYPES["MAINTENANCE-AIR_COND_STATE"]]: "メンテナンス空調状態",
+	[PAGE_TYPES["MAINTENANCE-DISPLAY_TEST"]]: "メンテナンス表示試験",
+
+	// Setting pages
+	[PAGE_TYPES["SETTING-ENTRANCE"]]: "設定入口",
+	[PAGE_TYPES["SETTING-MENU"]]: "設定メニュー",
+	[PAGE_TYPES["SETTING-MONITOR"]]: "設定モニター",
+
+	// Correction pages
+	[PAGE_TYPES["CORRECTION-MENU"]]: "補正メニュー",
+	[PAGE_TYPES["CORRECTION-TIME"]]: "補正時間",
+	// Car State pages
+	[PAGE_TYPES["CAR_STATE-SWITCHES"]]: "車両状態スイッチ",
+	[PAGE_TYPES["CAR_STATE-POWER"]]: "車両状態電源",
+	[PAGE_TYPES["CAR_STATE-BRAKE"]]: "車両状態ブレーキ",
+	[PAGE_TYPES["CAR_STATE-THREE_PHASE_AC"]]: "車両状態三相交流",
+	[PAGE_TYPES["CAR_STATE-POWER_BRAKE"]]: "車両状態電源・ブレーキ",
+
+	// Conductor pages
+	[PAGE_TYPES["CONDUCTOR-INFO"]]: "車掌情報",
+	[PAGE_TYPES["CONDUCTOR-SERVICE"]]: "車掌サービス",
+	[PAGE_TYPES["CONDUCTOR-AIR_COND"]]: "車掌空調",
+	[PAGE_TYPES["CONDUCTOR-LOCATION_CORRECTION"]]: "車掌位置補正",
+	[PAGE_TYPES["CONDUCTOR-CAR_STATE"]]: "車掌車両状態",
+	[PAGE_TYPES["CONDUCTOR-315"]]: "車掌315",
+	// Work Setting pages
+	[PAGE_TYPES["WORK_SETTING-TOP"]]: "作業設定トップ",
+	[PAGE_TYPES["WORK_SETTING-TYPE"]]: "作業設定タイプ",
+	[PAGE_TYPES["WORK_SETTING-SEAT"]]: "作業設定席",
+
+	// Driver pages
+	[PAGE_TYPES["DRIVER-INFO"]]: "運転者情報",
+	[PAGE_TYPES["DRIVER-REDUCE_SPEED"]]: "運転者速度低減",
+	[PAGE_TYPES["DRIVER-ROOM_LIGHT"]]: "運転者室内灯",
+	[PAGE_TYPES["DRIVER-LOCATION_CORRECTION"]]: "運転者位置補正",
+} as const satisfies Record<PageType, string>;
