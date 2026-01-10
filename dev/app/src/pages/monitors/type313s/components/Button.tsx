@@ -27,7 +27,7 @@ type ButtonProps = {
 	readonly fillColor?: RgbColor;
 	readonly shadowWidth?: ShadowWidth;
 	readonly isShadowColored?: boolean;
-	readonly onClick?: ClickEventHandler;
+	readonly onClick?: () => void;
 };
 
 export default memo<PropsWithChildren<ButtonProps>>(function Button({
@@ -46,6 +46,15 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 			getButtonImage(width, height, shadowWidth, fillColor, isShadowColored),
 		[width, height, shadowWidth, fillColor, isShadowColored]
 	);
+
+	const handleClick: ClickEventHandler = useCallback(() => {
+		if (onClick) {
+			onClick();
+			return true;
+		} else {
+			return false;
+		}
+	}, [onClick]);
 
 	const onRender: CanvasRenderFunction = useCallback(
 		async (ctx, metadata) => {
@@ -69,7 +78,7 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 	return (
 		<CanvasObjectBase
 			onRender={onRender}
-			onClick={onClick}
+			onClick={onClick ? handleClick : undefined}
 			relX={relX}
 			relY={relY}
 			width={width}

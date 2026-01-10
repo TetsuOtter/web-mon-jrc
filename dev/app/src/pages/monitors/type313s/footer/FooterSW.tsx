@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
 import { CanvasLine, CanvasText } from "../../../../canvas-renderer";
 import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
@@ -19,7 +19,7 @@ type FooterSWProps = {
 	readonly align: "left" | "right";
 	readonly text: string;
 	readonly isSelected: boolean;
-	readonly onClick?: ClickEventHandler;
+	readonly onClick?: () => void;
 };
 
 /**
@@ -39,6 +39,14 @@ export default memo<FooterSWProps>(function FooterSW({
 		align === "left"
 			? col * WIDTH
 			: parentObjectContext.metadata.width - (col + 1) * WIDTH;
+	const handleClick: ClickEventHandler = useCallback(() => {
+		if (onClick) {
+			onClick();
+			return true;
+		} else {
+			return false;
+		}
+	}, [onClick]);
 	return (
 		<CanvasQuadrilateral
 			xL1={x}
@@ -52,7 +60,7 @@ export default memo<FooterSWProps>(function FooterSW({
 			fillColor={isSelected ? COLORS.BLACK : COLORS.BLUE}
 			strokeColor={COLORS.WHITE}
 			lineWidth={1}
-			onClick={onClick}>
+			onClick={onClick ? handleClick : undefined}>
 			<CanvasText
 				relX={0}
 				relY={TEXT_TOP}

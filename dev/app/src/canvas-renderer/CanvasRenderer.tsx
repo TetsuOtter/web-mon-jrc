@@ -176,8 +176,10 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 						(await obj.isClickDetector?.(relX, relY)) ??
 						(0 <= relX && relX <= m.width && 0 <= relY && relY <= m.height);
 					if (isClicked) {
-						await obj.onClickHandler(relX, relY);
-						break; // 最初にマッチしたオブジェクトのハンドラーだけ呼び出して終了
+						const handled = await obj.onClickHandler(relX, relY);
+						if (handled || handled == null) {
+							break; // イベントが処理されたら終了
+						}
 					}
 				}
 			},

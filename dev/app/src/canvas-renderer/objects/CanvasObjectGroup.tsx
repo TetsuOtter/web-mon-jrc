@@ -74,15 +74,21 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 							0 <= childRelY &&
 							childRelY <= m.height);
 					if (isClicked) {
-						await obj.onClickHandler(childRelX, childRelY);
-						isChildClicked = true;
-						break;
+						const handled = await obj.onClickHandler(childRelX, childRelY);
+						if (handled || handled == null) {
+							isChildClicked = true;
+							break;
+						}
 					}
 				}
 				// 親のクリックハンドラを呼び出す
 				if (onClick && !isChildClicked) {
-					await onClick(relX, relY);
+					const handled = await onClick(relX, relY);
+					if (handled) {
+						return true;
+					}
 				}
+				return isChildClicked;
 			},
 			[onClick]
 		);
