@@ -7,7 +7,7 @@ import {
 } from "../contexts/CanvasObjectContext";
 import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
-import { hexToRgb } from "../utils/colorUtil";
+import { hexToRgb, setTransparentToData } from "../utils/colorUtil";
 import { loadFont } from "../utils/fontLoader";
 
 import CanvasObjectBase from "./CanvasObjectBase";
@@ -303,12 +303,9 @@ function useLineImagesPromise({
 							for (let col = 0; col < bitmapWidth; col++) {
 								const pixelIndex = (row * bitmapWidth + col) * 4;
 								if (bitmap.bindata[row][col] === "1") {
-									data[pixelIndex] = fillColorRgb.r;
-									data[pixelIndex + 1] = fillColorRgb.g;
-									data[pixelIndex + 2] = fillColorRgb.b;
-									data[pixelIndex + 3] = 255;
+									fillColorRgb.setToData(data, pixelIndex);
 								} else {
-									data[pixelIndex + 3] = 0;
+									setTransparentToData(data, pixelIndex);
 								}
 							}
 						}
@@ -329,14 +326,7 @@ function useLineImagesPromise({
 			console.error("Failed to create line data:", error);
 			return [];
 		}
-	}, [
-		charBitmapsPromise,
-		maxWidthPx,
-		fontInfo.fontSize,
-		fillColorRgb.r,
-		fillColorRgb.g,
-		fillColorRgb.b,
-	]);
+	}, [charBitmapsPromise, maxWidthPx, fontInfo.fontSize, fillColorRgb]);
 }
 
 type DrawContentHookParams = {
