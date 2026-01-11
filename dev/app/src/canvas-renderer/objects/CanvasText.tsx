@@ -5,12 +5,9 @@ import {
 	type CanvasRenderFunction,
 	type ClickEventHandler,
 } from "../contexts/CanvasObjectContext";
-import {
-	isFullWidthChar,
-	unicodeToJisX0208,
-	DEFAULT_FONT_INFO,
-} from "../types/FontInfo";
+import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
+import { hexToRgb } from "../utils/colorUtil";
 import { loadFont } from "../utils/fontLoader";
 
 import CanvasObjectBase from "./CanvasObjectBase";
@@ -29,6 +26,7 @@ type CanvasTextProps = {
 	readonly skipLineCount?: number;
 	readonly lineHeight?: number;
 	readonly align?: "left" | "center" | "right";
+	readonly verticalAlign?: "top" | "center" | "bottom";
 	readonly scaleX?: number;
 	readonly scaleY?: number;
 	readonly onClick?: ClickEventHandler;
@@ -78,14 +76,17 @@ export default memo<CanvasTextProps>(function CanvasText({
 	skipLineCount = 0,
 	lineHeight = 1,
 	align = "left",
+	verticalAlign = "top",
 	scaleX = 1,
 	scaleY = 1,
 	onClick,
 	onLineInfoChanged,
 }) {
 	const parentObjectContext = useCanvasObjectContext();
-	const maxWidthPx = maxWidthPxProps ?? parentObjectContext.metadata.width;
-	const maxHeightPx = maxHeightPxProps ?? parentObjectContext.metadata.height;
+	const maxWidthPx =
+		maxWidthPxProps ?? parentObjectContext.metadata.width - relX;
+	const maxHeightPx =
+		maxHeightPxProps ?? parentObjectContext.metadata.height - relY;
 
 	const lineImagesPromise = useLineImagesPromise({
 		fontInfo,
@@ -101,9 +102,11 @@ export default memo<CanvasTextProps>(function CanvasText({
 		scaleX,
 		scaleY,
 		lineHeight,
+		maxWidthPx,
 		maxHeightPx,
 		skipLineCount,
 		align,
+		verticalAlign,
 		lineImagesPromise,
 	});
 
@@ -177,17 +180,6 @@ export default memo<CanvasTextProps>(function CanvasText({
 	);
 });
 
-function hexToRgb(hex: string): { r: number; g: number; b: number } {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result
-		? {
-				r: parseInt(result[1], 16),
-				g: parseInt(result[2], 16),
-				b: parseInt(result[3], 16),
-			}
-		: { r: 0, g: 0, b: 0 };
-}
-
 type UseCharBitmapsHookParams = {
 	fontInfo: FontInfo;
 	text: string;
@@ -212,10 +204,25 @@ function useCharBitmaps({
 					const isFullWidth = isFullWidthChar(char);
 					const selectedFont = isFullWidth ? fullWidthFont : halfWidthFont;
 
-					const jisCodepoint = unicodeToJisX0208(char);
-					const glyph = selectedFont.glyphbycp(jisCodepoint);
-					const bitmap =
-						glyph?.draw(1) ?? (isFullWidth ? tofu.fullWidth : tofu.halfWidth);
+					const glyph = selectedFont.glyph(char);
+					const bitmap = (() => {
+						if (isFullWidth) {
+							return glyph?.draw(1) ?? tofu.fullWidth;
+						} else {
+							if (glyph == null) {
+								return tofu.halfWidth;
+							}
+							const expectedWidth = fontInfo.fontSize / 2;
+							return (
+								glyph.draw(-1, [
+									expectedWidth,
+									fontInfo.fontSize,
+									-(expectedWidth - glyph.meta.bbw) / 2,
+									0,
+								]) ?? tofu.halfWidth
+							);
+						}
+					})();
 
 					lineBitmaps.push(bitmap);
 				}
@@ -228,7 +235,14 @@ function useCharBitmaps({
 			console.error("Failed to get char bitmap info:", error);
 			return [];
 		}
-	}, [fontInfo.fullWidth, fontInfo.halfWidth, text, tofu]);
+	}, [
+		fontInfo.fontSize,
+		fontInfo.fullWidth,
+		fontInfo.halfWidth,
+		text,
+		tofu.fullWidth,
+		tofu.halfWidth,
+	]);
 }
 
 type LineImagesPromiseHookParams = {
@@ -332,9 +346,11 @@ type DrawContentHookParams = {
 	scaleX: number;
 	scaleY: number;
 	lineHeight: number;
-	maxHeightPx?: number;
+	maxWidthPx: number;
+	maxHeightPx: number;
 	skipLineCount: number;
 	align: "left" | "center" | "right";
+	verticalAlign: "top" | "center" | "bottom";
 	lineImagesPromise: Promise<LineImage[]>;
 };
 function useDrawContentPromise({
@@ -344,9 +360,11 @@ function useDrawContentPromise({
 	scaleX,
 	scaleY,
 	lineHeight,
+	maxWidthPx,
 	maxHeightPx,
 	skipLineCount,
 	align,
+	verticalAlign,
 	lineImagesPromise,
 }: DrawContentHookParams): Promise<DrawContent> {
 	return useMemo(async () => {
@@ -378,7 +396,7 @@ function useDrawContentPromise({
 			}
 
 			const scaledWidth = drawLine.width * scaleX;
-			const lineX = calculateXPosition(0, scaledWidth, maxWidth, align);
+			const lineX = calculateXPosition(0, scaledWidth, maxWidthPx, align);
 
 			lines.push({
 				x: lineX,
@@ -392,24 +410,32 @@ function useDrawContentPromise({
 			totalHeight += lineHeightPx;
 		});
 
+		// 垂直アライメントに基づいて行のY位置を調整
+		const adjustedLines = lines.map((line) => ({
+			...line,
+			y: calculateYPosition(line.y, totalHeight, maxHeightPx, verticalAlign),
+		}));
+
 		return {
 			x,
 			y,
 			width: maxWidth,
 			height: totalHeight,
-			lines,
+			lines: adjustedLines,
 		};
 	}, [
 		lineImagesPromise,
-		x,
-		y,
 		fontInfo.fontSize,
 		scaleY,
-		scaleX,
 		lineHeight,
+		x,
+		y,
 		maxHeightPx,
 		skipLineCount,
+		scaleX,
+		maxWidthPx,
 		align,
+		verticalAlign,
 	]);
 }
 
@@ -488,5 +514,30 @@ function calculateXPosition(
 		case "left":
 		default:
 			return baseX;
+	}
+}
+
+function calculateYPosition(
+	currentY: number,
+	totalHeight: number,
+	maxHeight: number | undefined,
+	verticalAlign: "top" | "center" | "bottom"
+): number {
+	const availableHeight = maxHeight ?? totalHeight;
+
+	if (totalHeight >= availableHeight) {
+		return currentY;
+	}
+
+	const verticalOffset = availableHeight - totalHeight;
+
+	switch (verticalAlign) {
+		case "center":
+			return currentY + verticalOffset / 2;
+		case "bottom":
+			return currentY + verticalOffset;
+		case "top":
+		default:
+			return currentY;
 	}
 }

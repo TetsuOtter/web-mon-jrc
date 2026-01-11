@@ -74,8 +74,12 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 			async (relX, relY) => {
 				setCount((prev) => prev + 1);
 				if (onClick) {
-					await onClick(relX, relY);
+					const handled = await onClick(relX, relY);
+					if (handled) {
+						return true;
+					}
 				}
+				return true;
 			},
 			[onClick]
 		);

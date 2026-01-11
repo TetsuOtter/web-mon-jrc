@@ -1,0 +1,17 @@
+{
+	"name": "web-mon-jrc-tools",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"convert": "node jis-bdf-to-unicode-bdf.ts",
+		"png-to-ts": "node png-to-ts-icon.ts"
+	},
+	"dependencies": {
+		"iconv-lite": "^0.7.1",
+		"pngjs": "^7.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"typescript": "^5.2.2"
+	}
+}

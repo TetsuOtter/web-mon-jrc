@@ -1,4 +1,9 @@
-import type { PropsWithChildren, ReactNode, RefCallback } from "react";
+import type {
+	CSSProperties,
+	PropsWithChildren,
+	ReactNode,
+	RefCallback,
+} from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import CanvasObjectContext from "./contexts/CanvasObjectContext";
@@ -16,11 +21,20 @@ import type {
 type CanvasRendererProps = {
 	width: number;
 	height: number;
+	fill?: CanvasFillStrokeStyles["fillStyle"];
+	style?: CSSProperties;
 	children: ReactNode;
 	renderRequestCount?: number;
 };
 export default memo<PropsWithChildren<CanvasRendererProps>>(
-	function CanvasRenderer({ width, height, children, renderRequestCount }) {
+	function CanvasRenderer({
+		width,
+		height,
+		fill,
+		style: styleProps,
+		children,
+		renderRequestCount,
+	}) {
 		const registeredObjectListRef = useRef<CanvasRenderFunctionObject[]>([]);
 
 		const [renderRequestedAreaList, setRenderRequestedAreaList] = useState<
@@ -53,15 +67,21 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 			if (renderRequestedAreaList.length === 0 || !ctx) {
 				return;
 			}
-			renderRequestedAreaList.forEach((area) => {
-				ctx.clearRect(area.absX, area.absY, area.width, area.height);
-			});
+			// 暫定で全消去＋全描画
+			ctx.clearRect(0, 0, width, height);
+			if (fill) {
+				ctx.fillStyle = fill;
+				ctx.fillRect(0, 0, width, height);
+			}
+			// renderRequestedAreaList.forEach((area) => {
+			// 	ctx.clearRect(area.absX, area.absY, area.width, area.height);
+			// });
 			// リスト順に従って描画
 			registeredObjectListRef.current.forEach((obj) => {
 				obj.onRender(ctx, obj.metadata, renderRequestedAreaList);
 			});
 			setRenderRequestedAreaList([]);
-		}, [ctx, renderRequestedAreaList]);
+		}, [ctx, height, renderRequestedAreaList, width, fill]);
 
 		useEffect(() => {
 			const targetCtx = ctx;
@@ -99,8 +119,48 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 			async (event: React.MouseEvent<HTMLCanvasElement>) => {
 				const canvas = event.currentTarget;
 				const rect = canvas.getBoundingClientRect();
-				const absX = event.clientX - rect.left;
-				const absY = event.clientY - rect.top;
+
+				// objectFit: "contain"が適用されている場合、実際に表示されている領域を計算
+				const displayAspectRatio = rect.width / rect.height;
+				const canvasAspectRatio = canvas.width / canvas.height;
+
+				let displayWidth: number;
+				let displayHeight: number;
+				let offsetX: number;
+				let offsetY: number;
+
+				if (displayAspectRatio > canvasAspectRatio) {
+					// 高さで制限される（幅に空白がある）
+					displayHeight = rect.height;
+					displayWidth = displayHeight * canvasAspectRatio;
+					offsetX = (rect.width - displayWidth) / 2;
+					offsetY = 0;
+				} else {
+					// 幅で制限される（高さに空白がある）
+					displayWidth = rect.width;
+					displayHeight = displayWidth / canvasAspectRatio;
+					offsetX = 0;
+					offsetY = (rect.height - displayHeight) / 2;
+				}
+
+				// マウス座標が表示領域内かチェック
+				const mouseX = event.clientX - rect.left;
+				const mouseY = event.clientY - rect.top;
+
+				if (
+					mouseX < offsetX ||
+					mouseX > offsetX + displayWidth ||
+					mouseY < offsetY ||
+					mouseY > offsetY + displayHeight
+				) {
+					return;
+				}
+
+				// Canvas論理座標に変換
+				const relativeX = (mouseX - offsetX) / displayWidth;
+				const relativeY = (mouseY - offsetY) / displayHeight;
+				const absX = relativeX * width;
+				const absY = relativeY * height;
 
 				// オブジェクトを Z-order（逆順）で走査して、最初にマッチしたものだけハンドルする
 				const objectsArray = registeredObjectListRef.current;
@@ -114,17 +174,25 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 					const relY = absY - m.absY;
 					const isClicked =
 						(await obj.isClickDetector?.(relX, relY)) ??
-						(m.absX <= absX &&
-							absX <= m.absX + m.width &&
-							m.absY <= absY &&
-							absY <= m.absY + m.height);
+						(0 <= relX && relX <= m.width && 0 <= relY && relY <= m.height);
 					if (isClicked) {
-						await obj.onClickHandler(relX, relY);
-						break; // 最初にマッチしたオブジェクトのハンドラーだけ呼び出して終了
+						const handled = await obj.onClickHandler(relX, relY);
+						if (handled || handled == null) {
+							break; // イベントが処理されたら終了
+						}
 					}
 				}
 			},
-			[]
+			[height, width]
+		);
+
+		const style = useMemo(
+			() => ({
+				width: `${width * scale}px`,
+				height: `${height * scale}px`,
+				...styleProps,
+			}),
+			[styleProps, width, height, scale]
 		);
 
 		return (
@@ -134,12 +202,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 					onClick={handleCanvasClick}
 					height={height * scale}
 					width={width * scale}
-					style={{
-						border: "1px solid #ccc",
-						display: "block",
-						width: `${width}px`,
-						height: `${height}px`,
-					}}
+					style={style}
 				/>
 				<CanvasObjectContext
 					registeredObjectListRef={registeredObjectListRef}

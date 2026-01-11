@@ -5,7 +5,6 @@ import CanvasObjectBase from "./CanvasObjectBase";
 
 import type {
 	ClickEventHandler,
-	ClickDetector,
 	CanvasRenderFunction,
 } from "../contexts/CanvasObjectContext";
 
@@ -32,7 +31,7 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 	height,
 	fillColor,
 	strokeColor,
-	strokeWidth = 1,
+	strokeWidth,
 	onClick,
 	children,
 }) {
@@ -50,14 +49,14 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 			// 塗りつぶし描画 - ストロークを含めて指定サイズ内に収める
 			if (fillColor) {
 				ctx.fillStyle = fillColor;
-				ctx.fillRect(ix + sw / 2, iy + sw / 2, iw - sw, ih - sw);
+				ctx.fillRect(ix + sw, iy + sw, iw - sw * 2, ih - sw * 2);
 			}
 
 			// 縁取り描画 - バウンディングボックスに沿って描画
-			if (strokeColor && sw > 0) {
+			if (strokeColor && 0 < sw) {
 				ctx.strokeStyle = strokeColor;
 				ctx.lineWidth = sw;
-				ctx.strokeRect(ix, iy, iw, ih);
+				ctx.strokeRect(ix + sw / 2, iy + sw / 2, iw - sw, ih - sw);
 			}
 
 			ctx.restore();
@@ -65,22 +64,10 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 		[fillColor, strokeColor, strokeWidth]
 	);
 
-	const isClickDetector: ClickDetector = useCallback(
-		(clickX: number, clickY: number) => {
-			// clickX, clickY は相対座標（この矩形の左上を原点とした座標）
-			// 矩形の領域判定を行う
-			const iw = Math.round(width);
-			const ih = Math.round(height);
-			return clickX >= 0 && clickX <= iw && clickY >= 0 && clickY <= ih;
-		},
-		[width, height]
-	);
-
 	return (
 		<CanvasObjectBase
 			onRender={onRender}
 			onClick={onClick}
-			isClickDetector={isClickDetector}
 			relX={relX}
 			relY={relY}
 			width={width}

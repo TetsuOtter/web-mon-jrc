@@ -7,7 +7,7 @@ import {
 	CanvasCircle,
 	CanvasLine,
 	CanvasOrderDemoItem,
-} from "./canvas-renderer";
+} from "../../canvas-renderer";
 
 export const CanvasDemo: React.FC = () => {
 	const [clickedPoint, setClickedPoint] = useState<{
@@ -79,6 +79,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={() => {
 							setClickedPoint(null);
 							setClickedObject(null);
+							return true;
 						}}
 					/>
 					{/* クリック可能な赤い四角形 */}
@@ -93,6 +94,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={(x, y) => {
 							setClickedPoint({ x, y });
 							setClickedObject("赤い四角形");
+							return true;
 						}}>
 						{/* クリック可能なテキスト */}
 						<CanvasText
@@ -104,6 +106,7 @@ export const CanvasDemo: React.FC = () => {
 							onClick={(x, y) => {
 								setClickedPoint({ x, y });
 								setClickedObject("テキスト（Click Me）");
+								return true;
 							}}
 						/>
 					</CanvasRect>
@@ -119,6 +122,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={(x, y) => {
 							setClickedPoint({ x, y });
 							setClickedObject("青い円");
+							return true;
 						}}
 					/>
 
@@ -133,6 +137,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={(x, y) => {
 							setClickedPoint({ x, y });
 							setClickedObject("緑の四角形（枠線）");
+							return true;
 						}}
 					/>
 
@@ -147,6 +152,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={(x, y) => {
 							setClickedPoint({ x, y });
 							setClickedObject("オレンジの直線");
+							return true;
 						}}
 					/>
 
@@ -161,6 +167,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={(x, y) => {
 							setClickedPoint({ x, y });
 							setClickedObject("黄色の円");
+							return true;
 						}}
 					/>
 
@@ -175,6 +182,7 @@ export const CanvasDemo: React.FC = () => {
 						onClick={(x, y) => {
 							setClickedPoint({ x, y });
 							setClickedObject("テキストボタン（Text Button）");
+							return true;
 						}}
 					/>
 				</CanvasRenderer>
@@ -478,9 +486,10 @@ export const CanvasDemo: React.FC = () => {
 									height={100}
 									label="Rectangle"
 									color="#ff6b6b"
-									onClick={() =>
-										setOrderDemoClickedObject("赤い四角形 (Rectangle)")
-									}
+									onClick={() => {
+										setOrderDemoClickedObject("赤い四角形 (Rectangle)");
+										return true;
+									}}
 								/>
 							);
 						}
@@ -494,9 +503,10 @@ export const CanvasDemo: React.FC = () => {
 									height={140}
 									label="Circle1"
 									color="#4ecdc4"
-									onClick={() =>
-										setOrderDemoClickedObject("青緑の円 (Circle1)")
-									}
+									onClick={() => {
+										setOrderDemoClickedObject("青緑の円 (Circle1)");
+										return true;
+									}}
 								/>
 							);
 						}
@@ -510,9 +520,10 @@ export const CanvasDemo: React.FC = () => {
 									height={100}
 									label="Circle2"
 									color="#ffd93d"
-									onClick={() =>
-										setOrderDemoClickedObject("黄色の円 (Circle2)")
-									}
+									onClick={() => {
+										setOrderDemoClickedObject("黄色の円 (Circle2)");
+										return true;
+									}}
 								/>
 							);
 						}

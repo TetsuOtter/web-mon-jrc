@@ -23,7 +23,7 @@ export type CanvasRenderFunction = (
 export type ClickEventHandler = (
 	relX: number,
 	relY: number
-) => void | Promise<void>;
+) => boolean | Promise<boolean>;
 
 export type ClickDetector = (
 	relX: number,
