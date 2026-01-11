@@ -1,16 +1,16 @@
 import { memo, useCallback, useMemo } from "react";
 
-import CanvasObjectBase from "../../../../canvas-renderer/objects/CanvasObjectBase";
-import { FONT_SIZE_1X } from "../constants";
+import CanvasObjectBase from "../../../../../canvas-renderer/objects/CanvasObjectBase";
+import { FONT_SIZE_1X } from "../../constants";
 
-import { getBaseCarImage } from "./car-image/baseCarImageCache";
-import { getBogieImage } from "./car-image/bogieImageCache";
+import { getBaseCarImage } from "./baseCarImageCache";
+import { getBogieImage } from "./bogieImageCache";
 
 import type {
 	ClickEventHandler,
 	ClickDetector,
 	CanvasRenderFunction,
-} from "../../../../canvas-renderer/contexts/CanvasObjectContext";
+} from "../../../../../canvas-renderer/contexts/CanvasObjectContext";
 
 const HEIGHT = 60;
 const WIDTH = 48;
