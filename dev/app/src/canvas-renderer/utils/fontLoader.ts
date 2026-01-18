@@ -12,7 +12,7 @@ export type AvailableFont =
 
 const AVAILABLE_FONT_PATHS = {
 	jiskan16: "/jiskan16-unicode.bdf",
-	"8x16rk": "/8x16rk.bdf",
+	"8x16rk": "/8x16rk-unicode.bdf",
 	MonNumFont: "/MonNumFont-16.bdf",
 } as const satisfies Record<AvailableFont, string>;
 
