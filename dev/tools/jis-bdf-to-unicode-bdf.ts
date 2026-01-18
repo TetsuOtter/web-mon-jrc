@@ -2,11 +2,13 @@ import * as fs from "fs";
 import iconv from "iconv-lite";
 
 /**
- * JIS X 0208 BDFファイルをUnicode対応のBDFファイルに変換
+ * BDFファイルをUnicode対応のBDFファイルに変換
  * JSのCodePointの値をそのまま使えるようにする
  *
- * BDFファイルのENCODING値はJIS X 0208-1983のコード位置を10進数で表現したもの
- * これをUnicodeコードポイントに変換します
+ * BDFファイルのENCODING値は以下に対応：
+ * - JIS X 0208-1983のコード位置を10進数で表現したもの
+ * - JIS X 0201 半角カタカナ（ENCODING 160-223）
+ * これらをUnicodeコードポイントに変換します
  */
 
 // 10進数のJIS X 0208コード値をバイト列に変換
@@ -41,7 +43,25 @@ function jisToUnicode(jisBytes: Buffer): number | null {
 	return null;
 }
 
+// JIS X 0201 半角カタカナ（ENCODING 160-223）をUnicodeコードポイントに変換
+function jisx0201KatakanaToUnicode(jisx0201Code: number): number | null {
+	// JIS X 0201の半角カタカナ範囲: 0xA1（161）～0xDF（223）
+	// Unicodeの半角カタカナ範囲: U+FF61（65377）～U+FF9F（65439）
+	// マッピング: (jisx0201Code - 0xA1) + 0xFF61
+	if (jisx0201Code >= 0xa1 && jisx0201Code <= 0xdf) {
+		return jisx0201Code - 0xa1 + 0xff61;
+	}
+	return null;
+}
+
 function convertJisEncodingToUnicode(jisEncoding: number): number | null {
+	// JIS X 0201 半角カタカナの処理（ENCODING 160-223）
+	// ENCODINGの値が JIS X 0201のバイト値と同じとみなす
+	if (jisEncoding >= 160 && jisEncoding <= 223) {
+		return jisx0201KatakanaToUnicode(jisEncoding);
+	}
+
+	// JIS X 0208の処理
 	// BDFファイルのENCODING値はJIS X 0208のコード位置を10進数で表現
 	// これをバイト列に変換してからUnicodeに変換
 	const jisBytes = jisDecimalToBytes(jisEncoding);
@@ -112,10 +132,10 @@ function convertBdfFile(inputPath: string, outputPath: string): void {
 const args = process.argv.slice(2);
 if (args.length < 2) {
 	console.error(
-		"使用方法: node jis-bdf-to-unicode-bdf.ts <入力ファイル> <出力ファイル>"
+		"使用方法: node jis-bdf-to-unicode-bdf.ts <入力ファイル> <出力ファイル>",
 	);
 	console.error(
-		"例: node jis-bdf-to-unicode-bdf.ts jiskan16.bdf jiskan16-unicode.bdf"
+		"例: node jis-bdf-to-unicode-bdf.ts jiskan16.bdf jiskan16-unicode.bdf",
 	);
 	process.exit(1);
 }
