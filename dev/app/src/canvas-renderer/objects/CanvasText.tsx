@@ -236,18 +236,7 @@ function useCharBitmaps({
 						if (isFullWidth) {
 							return glyph?.draw(1) ?? tofu.fullWidth;
 						} else {
-							if (glyph == null) {
-								return tofu.halfWidth;
-							}
-							const expectedWidth = fontInfo.fontSize / 2;
-							return (
-								glyph.draw(-1, [
-									expectedWidth,
-									fontInfo.fontSize,
-									-(expectedWidth - glyph.meta.bbw) / 2,
-									0,
-								]) ?? tofu.halfWidth
-							);
+							return glyph?.draw() ?? tofu.halfWidth;
 						}
 					})();
 
@@ -263,7 +252,6 @@ function useCharBitmaps({
 			return [];
 		}
 	}, [
-		fontInfo.fontSize,
 		fontInfo.fullWidth,
 		fontInfo.halfWidth,
 		text,
