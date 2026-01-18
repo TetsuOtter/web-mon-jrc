@@ -8,7 +8,7 @@ import {
 import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
 import { hexToRgb, setTransparentToData } from "../utils/colorUtil";
-import { loadFont } from "../utils/fontLoader";
+import { loadFont, type AvailableFont } from "../utils/fontLoader";
 
 import CanvasObjectBase from "./CanvasObjectBase";
 
@@ -184,6 +184,33 @@ type UseCharBitmapsHookParams = {
 	fontInfo: FontInfo;
 	text: string;
 };
+
+/**
+ * 指定されたフォント（配列または単一）から文字のグリフを取得
+ * 配列の場合は先頭から順に探索し、見つかるまで試す
+ */
+async function getGlyphFromFonts(
+	char: string,
+	fontSpec: AvailableFont | readonly AvailableFont[]
+): Promise<ReturnType<Awaited<ReturnType<typeof loadFont>>["glyph"]> | null> {
+	const fonts = Array.isArray(fontSpec) ? fontSpec : [fontSpec];
+
+	for (const font of fonts) {
+		try {
+			const loadedFont = await loadFont(font);
+			const glyph = loadedFont.glyph(char);
+			if (glyph != null) {
+				return glyph;
+			}
+		} catch (error) {
+			console.warn(`Failed to load font ${font}:`, error);
+			continue;
+		}
+	}
+
+	return null;
+}
+
 function useCharBitmaps({
 	fontInfo,
 	text,
@@ -191,9 +218,6 @@ function useCharBitmaps({
 	const tofu = useTofu(fontInfo);
 	return useMemo(async () => {
 		try {
-			const fullWidthFont = await loadFont(fontInfo.fullWidth);
-			const halfWidthFont = await loadFont(fontInfo.halfWidth);
-
 			const lines = text.split("\n");
 			const result: Bitmap[][] = [];
 
@@ -202,9 +226,12 @@ function useCharBitmaps({
 
 				for (const char of line) {
 					const isFullWidth = isFullWidthChar(char);
-					const selectedFont = isFullWidth ? fullWidthFont : halfWidthFont;
+					const fontSpec = isFullWidth
+						? fontInfo.fullWidth
+						: fontInfo.halfWidth;
 
-					const glyph = selectedFont.glyph(char);
+					const glyph = await getGlyphFromFonts(char, fontSpec);
+
 					const bitmap = (() => {
 						if (isFullWidth) {
 							return glyph?.draw(1) ?? tofu.fullWidth;
