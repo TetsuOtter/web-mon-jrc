@@ -1,32 +1,15 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-export type PageMode =
-	| "CAR_STATE"
-	| "DRIVER"
-	| "CONDUCTOR"
-	| "WORK_SETTING"
-	| "MAINTENANCE"
-	| "CORRECTION"
-	| "SETTING"
-	| null;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type Type313sState = {};
 
-type Type313sState = {
-	currentMode: PageMode;
-};
-
-const initialState: Type313sState = {
-	currentMode: null,
-};
+const initialState: Type313sState = {};
 
 const type313sSlice = createSlice({
 	name: "type313s",
 	initialState,
-	reducers: {
-		setPageMode: (state, action: PayloadAction<PageMode>) => {
-			state.currentMode = action.payload;
-		},
-	},
+	reducers: {},
 });
 
-export const { setPageMode } = type313sSlice.actions;
+// export const {} = type313sSlice.actions;
 export default type313sSlice.reducer;

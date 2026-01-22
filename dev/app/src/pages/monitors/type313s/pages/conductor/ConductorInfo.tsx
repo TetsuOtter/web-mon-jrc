@@ -7,6 +7,7 @@ import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
 import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
+import { useConductorPageMode } from "../../hooks/usePageMode";
 import { PAGE_TYPES } from "../pageTypes";
 import { usePageNavigationTo } from "../usePageNavigation";
 
@@ -77,12 +78,20 @@ const SAMPLE_TRAIN_FORMATION: {
 type DoorState = "開" | "閉";
 
 export default memo(function ConductorInfo() {
+	const mode = useConductorPageMode();
 	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
-	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO);
-	const navigateToService = usePageNavigationTo(PAGE_TYPES.CONDUCTOR_SERVICE);
-	const navigateToAirCond = usePageNavigationTo(PAGE_TYPES.CONDUCTOR_AIR_COND);
+	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO, {
+		mode: "DRIVER",
+	});
+	const navigateToService = usePageNavigationTo(PAGE_TYPES.CONDUCTOR_SERVICE, {
+		mode: "CONDUCTOR",
+	});
+	const navigateToAirCond = usePageNavigationTo(PAGE_TYPES.CONDUCTOR_AIR_COND, {
+		mode: "CONDUCTOR",
+	});
 	const navigateToLocationCorrection = usePageNavigationTo(
-		PAGE_TYPES.CONDUCTOR_LOCATION_CORRECTION
+		PAGE_TYPES.CONDUCTOR_LOCATION_CORRECTION,
+		{ mode: "CONDUCTOR" }
 	);
 
 	const footerItems: FooterButtonInfo[] = useMemo(
@@ -130,8 +139,17 @@ export default memo(function ConductorInfo() {
 	// Sample door states
 	const doorStates: DoorState[] = ["閉", "閉", "閉", "閉"];
 
+	const doorList: Array<{ id: number; state: DoorState }> = doorStates.map(
+		(state, index) => ({
+			id: index,
+			state,
+		})
+	);
+
 	return (
-		<FooterPageFrame footerItems={footerItems}>
+		<FooterPageFrame
+			mode={mode}
+			footerItems={footerItems}>
 			{/* Location Label */}
 			<LocationLabel locationKm={123.4} />
 
@@ -159,10 +177,10 @@ export default memo(function ConductorInfo() {
 					text="ドア状態"
 					fillColor={COLORS.WHITE}
 				/>
-				{doorStates.map((state, index) => (
+				{doorList.map((door) => (
 					<CanvasObjectGroup
-						key={`door-${index}`}
-						relX={4 + index * 44}
+						key={door.id}
+						relX={4 + door.id * 44}
 						relY={FONT_SIZE_1X + 8}
 						width={40}
 						height={FONT_SIZE_1X + 4}>
@@ -170,7 +188,7 @@ export default memo(function ConductorInfo() {
 							relX={0}
 							relY={0}
 							maxWidthPx={40}
-							text={`${index + 1}号`}
+							text={`${door.id + 1}号`}
 							fillColor={COLORS.WHITE}
 							align="center"
 						/>
@@ -179,13 +197,13 @@ export default memo(function ConductorInfo() {
 							relY={FONT_SIZE_1X + 4}
 							width={40}
 							height={FONT_SIZE_1X + 4}
-							fillColor={state === "開" ? COLORS.RED : COLORS.LIME}
+							fillColor={door.state === "開" ? COLORS.RED : COLORS.LIME}
 						/>
 						<CanvasText
 							relX={0}
 							relY={FONT_SIZE_1X + 6}
 							maxWidthPx={40}
-							text={state}
+							text={door.state}
 							fillColor={COLORS.BLACK}
 							align="center"
 						/>

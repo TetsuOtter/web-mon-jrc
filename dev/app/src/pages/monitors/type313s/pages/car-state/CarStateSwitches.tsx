@@ -1,18 +1,16 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 
 import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
 import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
-import FooterPageFrame from "../../components/FooterPageFrame";
+import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
-import { PAGE_TYPES } from "../pageTypes";
-import { usePageNavigationTo } from "../usePageNavigation";
+import { useCarStatePageMode } from "../../hooks/usePageMode";
 
-import type { FooterButtonInfo } from "../../footer/FooterArea";
 import type { BaseCarImageInfo } from "../../components/car-image/baseCarImageCache";
 import type { CarImageBogieInfo } from "../../components/car-image/bogieImageCache";
-import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
 
 // Layout constants
 const TABLE_TOP = 120;
@@ -128,63 +126,14 @@ function getStateTextColor(state: SwitchState): string {
 }
 
 export default memo(function CarStateSwitches() {
-	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
-	const navigateToPower = usePageNavigationTo(PAGE_TYPES["CAR_STATE-POWER"]);
-	const navigateToBrake = usePageNavigationTo(PAGE_TYPES["CAR_STATE-BRAKE"]);
-	const navigateToThreePhase = usePageNavigationTo(
-		PAGE_TYPES["CAR_STATE-THREE_PHASE_AC"]
-	);
-	const navigateToPowerBrake = usePageNavigationTo(
-		PAGE_TYPES["CAR_STATE-POWER_BRAKE"]
-	);
-
-	const footerItems: FooterButtonInfo[] = useMemo(
-		() => [
-			{
-				label: "SW情報",
-				isSelected: true,
-				handleClick: () => {},
-			},
-			{
-				label: "力行",
-				isSelected: false,
-				handleClick: navigateToPower,
-			},
-			{
-				label: "ブレーキ",
-				isSelected: false,
-				handleClick: navigateToBrake,
-			},
-			{
-				label: "三相交流",
-				isSelected: false,
-				handleClick: navigateToThreePhase,
-			},
-			{
-				label: "力行/制動",
-				isSelected: false,
-				handleClick: navigateToPowerBrake,
-			},
-			{
-				label: "メニュー",
-				isSelected: false,
-				handleClick: navigateToMenu,
-			},
-		],
-		[
-			navigateToMenu,
-			navigateToPower,
-			navigateToBrake,
-			navigateToThreePhase,
-			navigateToPowerBrake,
-		]
-	);
-
+	const mode = useCarStatePageMode();
 	const carCount = SAMPLE_TRAIN_FORMATION.length;
 	const tableWidth = LABEL_COL_WIDTH + CAR_COL_WIDTH * carCount;
 
 	return (
-		<FooterPageFrame footerItems={footerItems}>
+		<FooterPageFrame
+			mode={mode}
+			footerItems={[]}>
 			{/* Location Label */}
 			<LocationLabel locationKm={123.4} />
 
@@ -214,6 +163,7 @@ export default memo(function CarStateSwitches() {
 				/>
 				{SAMPLE_TRAIN_FORMATION.map((_, index) => (
 					<CanvasRect
+						// eslint-disable-next-line react/no-array-index-key
 						key={`header-${index}`}
 						relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * index}
 						relY={0}
@@ -226,6 +176,7 @@ export default memo(function CarStateSwitches() {
 				))}
 				{SAMPLE_TRAIN_FORMATION.map((_, index) => (
 					<CanvasText
+						// eslint-disable-next-line react/no-array-index-key
 						key={`header-text-${index}`}
 						relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * index}
 						relY={1}
@@ -266,6 +217,7 @@ export default memo(function CarStateSwitches() {
 						const state = SAMPLE_SWITCH_STATES[switchType]?.[carIndex] ?? "NA";
 						return (
 							<CanvasRect
+								// eslint-disable-next-line react/no-array-index-key
 								key={`cell-${carIndex}`}
 								relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * carIndex}
 								relY={0}
@@ -283,6 +235,7 @@ export default memo(function CarStateSwitches() {
 							state === "NA" ? "-" : state === "ERROR" ? "異常" : state;
 						return (
 							<CanvasText
+								// eslint-disable-next-line react/no-array-index-key
 								key={`text-${carIndex}`}
 								relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * carIndex}
 								relY={1}

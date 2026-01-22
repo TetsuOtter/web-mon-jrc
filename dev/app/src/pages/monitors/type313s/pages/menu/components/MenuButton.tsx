@@ -1,12 +1,14 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
 import { CanvasText } from "../../../../../../canvas-renderer";
 import CanvasDotPattern from "../../../../../../canvas-renderer/objects/CanvasDotPattern";
 import CanvasObjectGroup from "../../../../../../canvas-renderer/objects/CanvasObjectGroup";
 import Button from "../../../components/Button";
 import { COLORS, FONT_SIZE_2X } from "../../../constants";
+import { usePageNavigation } from "../../usePageNavigation";
 
 import type { IconData } from "../../../icons";
+import type { PageMode, PageType } from "../../pageTypes";
 
 const BUTTON_HEIGHT = 56;
 const BUTTON_WIDTH = 96;
@@ -28,15 +30,21 @@ type MenuButtonProps = {
 	col: number;
 	icon: IconData;
 	text: string;
-	onClick?: () => void;
+	page: PageType;
+	mode: PageMode;
 };
 export default memo<MenuButtonProps>(function MenuButton({
 	row,
 	col,
 	icon,
 	text,
-	onClick,
+	page,
+	mode,
 }) {
+	const navigate = usePageNavigation();
+	const handleClick = useCallback(() => {
+		navigate(page, { mode });
+	}, [navigate, page, mode]);
 	return (
 		<CanvasObjectGroup
 			relX={FIRST_COL_X + COL_GAP * col}
@@ -48,7 +56,7 @@ export default memo<MenuButtonProps>(function MenuButton({
 				relY={0}
 				width={BUTTON_WIDTH}
 				height={BUTTON_HEIGHT}
-				onClick={onClick}>
+				onClick={handleClick}>
 				<CanvasDotPattern
 					image={icon}
 					x={ICON_X}

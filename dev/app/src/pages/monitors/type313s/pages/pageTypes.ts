@@ -1,9 +1,9 @@
-const createPages = <const T extends readonly string[]>(arr: T) =>
+const createMap = <const T extends readonly string[]>(arr: T) =>
 	Object.fromEntries(arr.map((item) => [item, item])) as {
 		[K in T[number]]: K;
 	};
 
-export const PAGE_TYPES = createPages([
+export const PAGE_TYPES = createMap([
 	"MENU",
 	"OCCUPANCY_RATE",
 	"CAR_DETECTION",
@@ -60,7 +60,28 @@ export const PAGE_TYPES = createPages([
 
 export type PageType = (typeof PAGE_TYPES)[keyof typeof PAGE_TYPES];
 
+export const PAGE_MODES = createMap([
+	"BROKEN",
+	"CAR_STATE",
+	"CONDUCTOR",
+	"CORRECTION",
+	"DRIVER",
+	"EMBEDDED_MANUAL",
+	"MAINTENANCE",
+	"MENU",
+	"OCCUPANCY_RATE",
+	"OTHER_SERIES",
+	"TABLE_OF_CONTENTS",
+	"WORK_SETTING",
+]);
+export type PageMode = (typeof PAGE_MODES)[keyof typeof PAGE_MODES];
+
 const PAGE_TYPE_SET = new Set<string>(Object.values(PAGE_TYPES));
 export function isValidPageType(value: string): value is PageType {
 	return PAGE_TYPE_SET.has(value);
+}
+
+const PAGE_MODE_SET = new Set<string>(Object.values(PAGE_MODES));
+export function isValidPageMode(value: string): value is PageMode {
+	return PAGE_MODE_SET.has(value);
 }

@@ -1,37 +1,48 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
+import type { PageMode, PageType } from "./pageTypes";
 
-import { setPageMode } from "../../../../store/monitors/type313s/type313sSlice";
+export type NavigationQueryParams = {
+	mode?: PageMode;
+};
 
-import type { PageType } from "./pageTypes";
-import type { PageMode } from "../../../../store/monitors/type313s/type313sSlice";
+function buildMergedQueryString(
+	currentSearchParams: URLSearchParams,
+	newParams: NavigationQueryParams
+): string {
+	const mergedParams = new URLSearchParams(currentSearchParams);
+
+	if (newParams.mode != null) {
+		mergedParams.set("mode", newParams.mode);
+	}
+
+	const queryString = mergedParams.toString();
+	return queryString ? `?${queryString}` : "";
+}
 
 export function usePageNavigation() {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const [searchParams] = useSearchParams();
 
 	const navigateToPage = useCallback(
-		(pageType: PageType, pageMode?: PageMode) => {
-			if (pageMode) {
-				dispatch(setPageMode(pageMode));
-			}
-			navigate(`/monitors/type313s/${pageType}`);
+		(pageType: PageType, params?: NavigationQueryParams) => {
+			const queryString = buildMergedQueryString(searchParams, params ?? {});
+			navigate(`/monitors/type313s/${pageType}${queryString}`);
 		},
-		[navigate, dispatch]
+		[navigate, searchParams]
 	);
 
 	return navigateToPage;
 }
 
-export function usePageNavigationTo(pageType: PageType, pageMode?: PageMode) {
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
+export function usePageNavigationTo(
+	pageType: PageType,
+	params?: NavigationQueryParams
+) {
+	const navigate = usePageNavigation();
+
 	return useCallback(() => {
-		if (pageMode) {
-			dispatch(setPageMode(pageMode));
-		}
-		navigate(`/monitors/type313s/${pageType}`);
-	}, [navigate, dispatch, pageType, pageMode]);
+		navigate(pageType, params);
+	}, [navigate, pageType, params]);
 }

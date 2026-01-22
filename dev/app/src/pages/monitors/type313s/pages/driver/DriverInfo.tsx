@@ -14,6 +14,7 @@ import {
 	FOOTER_HEIGHT,
 	HEADER_HEIGHT,
 } from "../../constants";
+import { useDriverPageMode } from "../../hooks/usePageMode";
 import { PAGE_TYPES } from "../pageTypes";
 
 import type { BaseCarImageInfo } from "../../components/car-image/baseCarImageCache";
@@ -76,8 +77,11 @@ const SAMPLE_TRAIN_FORMATION: {
 ];
 
 export default memo(function DriverInfo() {
+	const mode = useDriverPageMode();
 	return (
-		<FooterPageFrame footerItems={FOOTER_MENU}>
+		<FooterPageFrame
+			mode={mode}
+			footerItems={FOOTER_MENU}>
 			<LocationLabel locationKm={0.0} />
 
 			<TrainFormationImage infoList={SAMPLE_TRAIN_FORMATION} />
@@ -126,21 +130,25 @@ const FOOTER_MENU = [
 		label: "徐行情報",
 		isSelected: false,
 		navigateTo: PAGE_TYPES.REDUCE_SPEED,
+		queryParams: { mode: "DRIVER" },
 	},
 	{
 		label: "地点補正",
 		isSelected: false,
 		navigateTo: PAGE_TYPES.LOCATION_CORRECTION,
+		queryParams: { mode: "DRIVER" },
 	},
 	{
 		label: "運行設定",
 		isSelected: false,
 		navigateTo: PAGE_TYPES.WORK_SETTING_TOP,
+		queryParams: { mode: "DRIVER" },
 	},
 	{
 		label: "車両状態",
 		isSelected: false,
 		navigateTo: PAGE_TYPES.THREE_PHASE_AC,
+		queryParams: { mode: "DRIVER" },
 	},
 	{
 		label: "運転情報",
@@ -151,5 +159,6 @@ const FOOTER_MENU = [
 		label: "メニュー",
 		isSelected: false,
 		navigateTo: PAGE_TYPES.MENU,
+		queryParams: { mode: "MENU" },
 	},
 ] as const satisfies FooterButtonInfo[];

@@ -5,8 +5,7 @@ import Button, { SHADOW_WIDTH } from "../../components/Button";
 import WithoutFooterPageFrame from "../../components/WithoutFooterPageFrame";
 import { RGB_COLORS } from "../../constants";
 import { ICONS } from "../../icons";
-import { PAGE_TYPES } from "../pageTypes";
-import { usePageNavigationTo } from "../usePageNavigation";
+import { PAGE_MODES, PAGE_TYPES } from "../pageTypes";
 
 import MenuButton from "./components/MenuButton";
 
@@ -23,7 +22,8 @@ export default memo(function Menu() {
 				row={0}
 				icon={ICONS.TABLE_OF_CONTENTS_1}
 				text="目次画面"
-				onClick={usePageNavigationTo(PAGE_TYPES.TABLE_OF_CONTENTS)}
+				page={PAGE_TYPES.TABLE_OF_CONTENTS}
+				mode={PAGE_MODES.TABLE_OF_CONTENTS}
 			/>
 
 			<MenuButton
@@ -31,24 +31,24 @@ export default memo(function Menu() {
 				row={1}
 				icon={ICONS.DRIVER}
 				text="運転士"
-				onClick={usePageNavigationTo(PAGE_TYPES.DRIVER_INFO, "DRIVER")}
+				page={PAGE_TYPES.DRIVER_INFO}
+				mode={PAGE_MODES.DRIVER}
 			/>
 			<MenuButton
 				col={1}
 				row={1}
 				icon={ICONS.CONDUCTOR}
 				text="車　掌"
-				onClick={usePageNavigationTo(PAGE_TYPES.CONDUCTOR_INFO, "CONDUCTOR")}
+				page={PAGE_TYPES.CONDUCTOR_INFO}
+				mode={PAGE_MODES.CONDUCTOR}
 			/>
 			<MenuButton
 				col={2}
 				row={1}
 				icon={ICONS.MAINTENANCE}
 				text="検　修"
-				onClick={usePageNavigationTo(
-					PAGE_TYPES.MAINTENANCE_MENU,
-					"MAINTENANCE"
-				)}
+				page={PAGE_TYPES.MAINTENANCE_MENU}
+				mode={PAGE_MODES.MAINTENANCE}
 			/>
 			<MenuButton
 				col={3}
@@ -56,10 +56,8 @@ export default memo(function Menu() {
 				icon={ICONS.EMBEDDED_MANUAL}
 				text="応急ﾏﾆｭｱﾙ"
 				// TODO: Implement Embedded Manual page
-				onClick={usePageNavigationTo(
-					PAGE_TYPES.MAINTENANCE_MENU,
-					"MAINTENANCE"
-				)}
+				page={PAGE_TYPES.MAINTENANCE_MENU}
+				mode={PAGE_MODES.EMBEDDED_MANUAL}
 			/>
 
 			<MenuButton
@@ -67,31 +65,32 @@ export default memo(function Menu() {
 				row={2}
 				icon={ICONS.WORK_SETTING_1}
 				text="運行設定"
-				onClick={usePageNavigationTo(
-					PAGE_TYPES.WORK_SETTING_TOP,
-					"WORK_SETTING"
-				)}
+				page={PAGE_TYPES.WORK_SETTING_TOP}
+				mode={PAGE_MODES.WORK_SETTING}
 			/>
 			<MenuButton
 				col={1}
 				row={2}
 				icon={ICONS.CAR_INFO_1}
 				text="車両状態"
-				onClick={usePageNavigationTo(PAGE_TYPES.SWITCHES, "CAR_STATE")}
+				page={PAGE_TYPES.SWITCHES}
+				mode={PAGE_MODES.CAR_STATE}
 			/>
 			<MenuButton
 				col={2}
 				row={2}
 				icon={ICONS.OCCUPANCY_RATE}
 				text="乗車率"
-				onClick={usePageNavigationTo(PAGE_TYPES.OCCUPANCY_RATE)}
+				page={PAGE_TYPES.OCCUPANCY_RATE}
+				mode={PAGE_MODES.OCCUPANCY_RATE}
 			/>
 			<MenuButton
 				col={3}
 				row={2}
 				icon={ICONS.CORRECTION}
 				text="補　正"
-				onClick={usePageNavigationTo(PAGE_TYPES.CORRECTION_MENU, "CORRECTION")}
+				page={PAGE_TYPES.CORRECTION_MENU}
+				mode={PAGE_MODES.CORRECTION}
 			/>
 
 			<Button

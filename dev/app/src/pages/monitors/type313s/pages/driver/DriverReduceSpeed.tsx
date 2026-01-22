@@ -9,6 +9,7 @@ import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObje
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import { COLORS, DISPLAY_WIDTH } from "../../constants";
+import { useDriverPageMode } from "../../hooks/usePageMode";
 import { PAGE_TYPES } from "../pageTypes";
 import { usePageNavigationTo } from "../usePageNavigation";
 
@@ -58,14 +59,21 @@ const SAMPLE_DATA: {
 ];
 
 export default memo(function DriverReduceSpeed() {
-	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO);
+	const mode = useDriverPageMode();
+	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO, {
+		mode: "DRIVER",
+	});
 	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
-	const navigateToRoomLight = usePageNavigationTo(PAGE_TYPES.ROOM_LIGHT);
+	const navigateToRoomLight = usePageNavigationTo(PAGE_TYPES.ROOM_LIGHT, {
+		mode: "DRIVER",
+	});
 	const navigateToLocationCorrection = usePageNavigationTo(
-		PAGE_TYPES.LOCATION_CORRECTION
+		PAGE_TYPES.LOCATION_CORRECTION,
+		{ mode: "DRIVER" }
 	);
 	const navigateToConductorInfo = usePageNavigationTo(
-		PAGE_TYPES.CONDUCTOR_INFO
+		PAGE_TYPES.CONDUCTOR_INFO,
+		{ mode: "CONDUCTOR" }
 	);
 
 	const footerItems: FooterButtonInfo[] = useMemo(
@@ -111,7 +119,9 @@ export default memo(function DriverReduceSpeed() {
 	);
 
 	return (
-		<FooterPageFrame footerItems={footerItems}>
+		<FooterPageFrame
+			mode={mode}
+			footerItems={footerItems}>
 			{/* Location Label */}
 			<LocationLabel locationKm={0.0} />
 
