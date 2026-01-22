@@ -4,13 +4,15 @@ import { CanvasLine, CanvasText } from "../../../../canvas-renderer";
 import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
 import CanvasQuadrilateral from "../../../../canvas-renderer/objects/CanvasQuadrilateral";
 import { COLORS } from "../constants";
+import { usePageNavigation } from "../pages/usePageNavigation";
 
 import type { ClickEventHandler } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
+import type { PageType } from "../pages/pageTypes";
 
 const WIDTH = 84;
 const HEIGHT = 32;
 
-const BOTTOM_SHRINK = 7;
+const BOTTOM_SHRINK = 6;
 
 const TEXT_TOP = 8;
 
@@ -20,20 +22,18 @@ type FooterSWProps = {
 	readonly text: string;
 	readonly isSelected: boolean;
 	readonly onClick?: () => void;
+	readonly navigateTo?: PageType;
 };
 
-/**
- * 四角形描画オブジェクト
- * 縁取りあり・なし対応
- * アンチエイリアスなしで鮮明に描画
- */
 export default memo<FooterSWProps>(function FooterSW({
 	col,
 	align,
 	text,
 	isSelected,
 	onClick,
+	navigateTo,
 }) {
+	const navigate = usePageNavigation();
 	const parentObjectContext = useCanvasObjectContext();
 	const x =
 		align === "left"
@@ -43,10 +43,13 @@ export default memo<FooterSWProps>(function FooterSW({
 		if (onClick) {
 			onClick();
 			return true;
+		} else if (navigateTo) {
+			navigate(navigateTo);
+			return true;
 		} else {
 			return false;
 		}
-	}, [onClick]);
+	}, [onClick, navigate, navigateTo]);
 	return (
 		<CanvasQuadrilateral
 			xL1={x}

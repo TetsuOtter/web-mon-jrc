@@ -12,10 +12,10 @@ import {
 	ROOF_Y,
 	SEPARATOR_Y,
 	SEPARATOR_HEIGHT,
+	FLOOR_Y,
 } from "./constants";
 
-// キャッシュ（基本イメージのみ保持）
-const BaseCarImageCache = new Map<string, ImageData>();
+const BaseCarImageCache = new Map<string, OffscreenCanvas>();
 
 export type BaseCarImageInfo = {
 	isLeftCab: boolean;
@@ -37,10 +37,7 @@ function getBaseCarImageInfoKey(info: BaseCarImageInfo): string {
 	].join("");
 }
 
-/**
- * 基本イメージを取得（色情報なし、枠のみ）
- */
-export function getBaseCarImage(info: BaseCarImageInfo): ImageData {
+export function getBaseCarImage(info: BaseCarImageInfo): OffscreenCanvas {
 	const key = getBaseCarImageInfoKey(info);
 	const cached = BaseCarImageCache.get(key);
 	if (cached) {
@@ -56,9 +53,6 @@ export function getBaseCarImage(info: BaseCarImageInfo): ImageData {
 	const imageData = ctx.createImageData(WIDTH, HEIGHT);
 	const data = imageData.data;
 
-	// 背景は透明（RGBA: 0,0,0,0）
-	// 白色フィル（RGBA: 255,255,255,255）
-
 	if (info.isLeftCab || info.isRightCab) {
 		drawCabBorder(
 			data,
@@ -67,10 +61,8 @@ export function getBaseCarImage(info: BaseCarImageInfo): ImageData {
 		);
 	}
 
-	// 屋根、分離線などの枠線
 	drawBorders(data, info);
 
-	// パンタグラフ
 	if (info.hasLeftPantograph) {
 		const col = info.isRightCab
 			? 0
@@ -91,13 +83,12 @@ export function getBaseCarImage(info: BaseCarImageInfo): ImageData {
 		}
 	}
 
-	BaseCarImageCache.set(key, imageData);
-	return imageData;
+	ctx.imageSmoothingEnabled = false;
+	ctx.putImageData(imageData, 0, 0);
+	BaseCarImageCache.set(key, canvas);
+	return canvas;
 }
 
-/**
- * キャブの枠線を描画
- */
 function drawCabBorder(
 	data: Uint8ClampedArray,
 	cabPattern: number[][],
@@ -119,48 +110,27 @@ function drawCabBorder(
 	}
 }
 
-/**
- * 屋根、分離線などの枠線を描画
- */
 function drawBorders(data: Uint8ClampedArray, info: BaseCarImageInfo) {
-	// 屋根線
-	const roofRow = ROOF_Y;
-	const roofRowIdx = roofRow * WIDTH * 4;
-
 	const roofStartCol = info.isLeftCab ? CAB_WIDTH - 1 : 0;
 	const roofEndCol = info.isRightCab ? WIDTH - CAB_WIDTH + 1 : WIDTH;
 
-	for (let col = roofStartCol; col < roofEndCol; col++) {
-		const pixelIdx = roofRowIdx + col * 4;
-		BORDER_COLOR.setToData(data, pixelIdx);
-	}
-
-	// 左キャブ時の左端線
-	if (info.isLeftCab) {
-		const pixelIdx = roofRowIdx + 0 * 4;
-		BORDER_COLOR.setToData(data, pixelIdx);
-	}
-
-	// 右キャブ時の右端線
-	if (info.isRightCab) {
-		const pixelIdx = roofRowIdx + (WIDTH - 1) * 4;
-		BORDER_COLOR.setToData(data, pixelIdx);
-	}
-
-	// キャブ下部線と分離線
-	for (let row = ROOF_Y; row < HEIGHT; row++) {
+	for (let row = ROOF_Y; row < FLOOR_Y; row++) {
 		const rowIdx = row * WIDTH * 4;
-		if (
-			row === ROOF_Y ||
-			(row >= SEPARATOR_Y && row < SEPARATOR_Y + SEPARATOR_HEIGHT)
-		) {
-			// 全幅の線
+		const isRoofRow = row === ROOF_Y;
+		const isSeparatorRow =
+			SEPARATOR_Y <= row && row < SEPARATOR_Y + SEPARATOR_HEIGHT;
+		const isFloorRow = row === FLOOR_Y - 1;
+		if (isRoofRow) {
+			for (let col = roofStartCol; col < roofEndCol; col++) {
+				const pixelIdx = rowIdx + col * 4;
+				BORDER_COLOR.setToData(data, pixelIdx);
+			}
+		} else if (isSeparatorRow || isFloorRow) {
 			for (let col = 0; col < WIDTH; col++) {
 				const pixelIdx = rowIdx + col * 4;
 				BORDER_COLOR.setToData(data, pixelIdx);
 			}
 		} else {
-			// 両端の線のみ
 			const pixelIdxLeft = rowIdx + 0 * 4;
 			BORDER_COLOR.setToData(data, pixelIdxLeft);
 
@@ -170,9 +140,6 @@ function drawBorders(data: Uint8ClampedArray, info: BaseCarImageInfo) {
 	}
 }
 
-/**
- * パンタグラフを描画
- */
 function drawPantograph(data: Uint8ClampedArray, col: number) {
 	for (let pantographRow = 0; pantographRow < PANTOGRAPH_H_W; pantographRow++) {
 		const isUpper = pantographRow <= Math.floor(PANTOGRAPH_H_W / 2);

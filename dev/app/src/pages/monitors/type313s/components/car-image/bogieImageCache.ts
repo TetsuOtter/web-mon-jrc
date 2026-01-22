@@ -8,7 +8,7 @@ import {
 	BOGIE_PATTERN,
 } from "./constants";
 
-const BogieImageCache = new Map<string, ImageData>();
+const BogieImageCache = new Map<string, OffscreenCanvas>();
 
 export const BOGIE_STATE = {
 	NONE: 0,
@@ -35,7 +35,7 @@ function getBogieImageInfoKey(info: CarImageBogieInfo): string {
 /**
  * ボギーイメージを取得（構造と状態を反映）
  */
-export function getBogieImage(info: CarImageBogieInfo): ImageData {
+export function getBogieImage(info: CarImageBogieInfo): OffscreenCanvas {
 	const key = getBogieImageInfoKey(info);
 	const cached = BogieImageCache.get(key);
 	if (cached) {
@@ -73,8 +73,10 @@ export function getBogieImage(info: CarImageBogieInfo): ImageData {
 		);
 	}
 
-	BogieImageCache.set(key, imageData);
-	return imageData;
+	ctx.imageSmoothingEnabled = false;
+	ctx.putImageData(imageData, 0, 0);
+	BogieImageCache.set(key, canvas);
+	return canvas;
 }
 
 /**

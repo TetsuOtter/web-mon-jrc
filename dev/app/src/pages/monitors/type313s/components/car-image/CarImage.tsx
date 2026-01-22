@@ -47,18 +47,12 @@ export default memo<CarImageProps>(function CarImage({
 	const bogieImage = useMemo(() => getBogieImage(bogieInfo), [bogieInfo]);
 	const onRender: CanvasRenderFunction = useCallback<CanvasRenderFunction>(
 		async (ctx, metadata) => {
-			ctx.putImageData(
-				baseImage,
-				Math.round(metadata.absX),
-				Math.round(metadata.absY)
-			);
+			const absX = Math.round(metadata.absX);
+			const absY = Math.round(metadata.absY);
 
-			// ボギーイメージを描画
-			ctx.putImageData(
-				bogieImage,
-				Math.round(metadata.absX),
-				Math.round(metadata.absY)
-			);
+			ctx.imageSmoothingEnabled = false;
+			ctx.drawImage(baseImage, absX, absY);
+			ctx.drawImage(bogieImage, absX, absY);
 
 			// 色を反映させる描画
 			if (roofBackgroundColor || bodyBackgroundColor) {

@@ -17,6 +17,8 @@ export const BOGIE_PADDING_LR = 1;
 export const BOGIE_AREA_WIDTH = BOGIE_H_W + BOGIE_PADDING_LR * 2;
 export const PANTOGRAPH_H_W = 11;
 
+export const FLOOR_Y = HEIGHT - BOGIE_H_W;
+
 export const CAB_BORDER = 1;
 export const CAB_INNER = 2;
 

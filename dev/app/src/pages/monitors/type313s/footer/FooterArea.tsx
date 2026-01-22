@@ -8,11 +8,21 @@ import { COLORS, FOOTER_HEIGHT } from "../constants";
 
 import FooterSW from "./FooterSW";
 
+import type { PageType } from "../pages/pageTypes";
+
 export type FooterButtonInfo = {
 	readonly label: string;
 	readonly isSelected: boolean;
-	readonly handleClick: () => void;
-};
+} & (
+	| {
+			readonly handleClick: () => void;
+			readonly navigateTo?: undefined;
+	  }
+	| {
+			readonly handleClick?: undefined;
+			readonly navigateTo: PageType;
+	  }
+);
 
 type FooterAreaProps = {
 	readonly buttons: readonly FooterButtonInfo[];
@@ -44,6 +54,7 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 					text={button.label}
 					isSelected={button.isSelected}
 					onClick={button.handleClick}
+					navigateTo={button.navigateTo}
 				/>
 			))}
 			{children}
