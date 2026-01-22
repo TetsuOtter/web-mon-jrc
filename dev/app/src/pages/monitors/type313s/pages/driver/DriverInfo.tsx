@@ -8,22 +8,19 @@ import TrainFormationImage from "../../components/car-image/TrainFormationImage"
 import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
 import {
 	COLORS,
-	DISPLAY_HEIGHT,
 	DISPLAY_WIDTH,
 	FONT_SIZE_1X,
-	FOOTER_HEIGHT,
-	HEADER_HEIGHT,
+	WITH_FOOTER_CONTENT_HEIGHT,
 } from "../../constants";
 import { useDriverPageMode } from "../../hooks/usePageMode";
-import { PAGE_TYPES } from "../pageTypes";
+
+import { FOOTER_MENU } from "./constants";
 
 import type { BaseCarImageInfo } from "../../components/car-image/baseCarImageCache";
 import type { CarImageBogieInfo } from "../../components/car-image/bogieImageCache";
-import type { FooterButtonInfo } from "../../footer/FooterArea";
 
-const CONTENT_HEIGHT = DISPLAY_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT;
 const LOWER_BOX_HEIGHT = FONT_SIZE_1X * 3;
-const LOWER_BOX_Y = CONTENT_HEIGHT - LOWER_BOX_HEIGHT;
+const LOWER_BOX_Y = WITH_FOOTER_CONTENT_HEIGHT - LOWER_BOX_HEIGHT;
 const LOWER_BOX_SEPARATOR_LEFT = 160;
 
 const INSTRUCTION_LABEL_X = 4;
@@ -124,41 +121,3 @@ export default memo(function DriverInfo() {
 		</FooterPageFrame>
 	);
 });
-
-const FOOTER_MENU = [
-	{
-		label: "徐行情報",
-		isSelected: false,
-		navigateTo: PAGE_TYPES.REDUCE_SPEED,
-		queryParams: { mode: "DRIVER" },
-	},
-	{
-		label: "地点補正",
-		isSelected: false,
-		navigateTo: PAGE_TYPES.LOCATION_CORRECTION,
-		queryParams: { mode: "DRIVER" },
-	},
-	{
-		label: "運行設定",
-		isSelected: false,
-		navigateTo: PAGE_TYPES.WORK_SETTING_TOP,
-		queryParams: { mode: "DRIVER" },
-	},
-	{
-		label: "車両状態",
-		isSelected: false,
-		navigateTo: PAGE_TYPES.THREE_PHASE_AC,
-		queryParams: { mode: "DRIVER" },
-	},
-	{
-		label: "運転情報",
-		isSelected: true,
-		handleClick: () => {},
-	},
-	{
-		label: "メニュー",
-		isSelected: false,
-		navigateTo: PAGE_TYPES.MENU,
-		queryParams: { mode: "MENU" },
-	},
-] as const satisfies FooterButtonInfo[];

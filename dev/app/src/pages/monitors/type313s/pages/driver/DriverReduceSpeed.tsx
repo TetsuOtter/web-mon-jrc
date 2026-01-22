@@ -1,282 +1,113 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 
-import {
-	CanvasLine,
-	CanvasRect,
-	CanvasText,
-} from "../../../../../canvas-renderer";
-import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { CanvasText } from "../../../../../canvas-renderer";
+import CanvasRoundedRect from "../../../../../canvas-renderer/objects/CanvasRoundedRect";
 import FooterPageFrame from "../../components/FooterPageFrame";
-import LocationLabel from "../../components/LocationLabel";
-import { COLORS, DISPLAY_WIDTH } from "../../constants";
+import {
+	COLORS,
+	DISPLAY_WIDTH,
+	FONT_SIZE_1X,
+	WITH_FOOTER_CONTENT_HEIGHT,
+} from "../../constants";
 import { useDriverPageMode } from "../../hooks/usePageMode";
-import { PAGE_TYPES } from "../pageTypes";
-import { usePageNavigationTo } from "../usePageNavigation";
 
-import type { FooterButtonInfo } from "../../footer/FooterArea";
+import ReduceSpeedRow, {
+	KM_COL_WIDTH,
+	KM_COL_X,
+	SPEED_COL_WIDTH,
+	SPEED_COL_X,
+	STA_NAME_COL_WIDTH,
+	STA_NAME_COL_X,
+} from "./components/ReduceSpeedRow";
+import { REDUCE_SPEED_FOOTER_MENU } from "./constants";
+
+import type { ReduceSpeedInfo } from "./components/ReduceSpeedRow";
 
 // Table layout constants
-const TABLE_TOP = 60;
-const TABLE_LEFT = 20;
-const TABLE_WIDTH = DISPLAY_WIDTH - 40;
-const HEADER_ROW_HEIGHT = 28;
-const DATA_ROW_HEIGHT = 28;
+const TABLE_TOP = 16;
+const TABLE_LEFT = 16;
+const TABLE_WIDTH = DISPLAY_WIDTH - TABLE_LEFT * 2;
+const TABLE_HEIGHT = WITH_FOOTER_CONTENT_HEIGHT - TABLE_TOP - FONT_SIZE_1X * 2;
+const TABLE_RADIUS = 10;
 
-// Column widths
-const COL_SECTION_WIDTH = 140;
-const COL_LOCATION_START_WIDTH = 150;
-const COL_LOCATION_END_WIDTH = 150;
+const HEADER_Y = 4;
 
-// Column positions
-const COL_LOCATION_START_X = COL_SECTION_WIDTH;
-const COL_LOCATION_END_X = COL_LOCATION_START_X + COL_LOCATION_START_WIDTH;
-const COL_SPEED_X = COL_LOCATION_END_X + COL_LOCATION_END_WIDTH;
+const INSTRUCTION_X = 10;
+const INSTRUCTION_Y = WITH_FOOTER_CONTENT_HEIGHT - FONT_SIZE_1X * 1.5;
 
-// Cyan/AQUA color for table
-const TABLE_BG_COLOR = COLORS.AQUA;
+const LIMIT_ROW_COUNT = 22;
 
-// Sample reduce speed data
-const SAMPLE_DATA: {
-	section: string;
-	locationStart: string;
-	locationEnd: string;
-	speed: string;
-}[] = [
-	{
-		section: "東岐子の浦",
-		locationStart: "1234K567m",
-		locationEnd: "1234K589m",
-		speed: "50km/h",
-	},
-	...Array(17)
-		.fill(null)
-		.map(() => ({
-			section: "—",
-			locationStart: "K m—",
-			locationEnd: "K m",
-			speed: "km/h",
-		})),
-];
+const TABLE_BG_COLOR = COLORS.BLUE;
 
 export default memo(function DriverReduceSpeed() {
 	const mode = useDriverPageMode();
-	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO, {
-		mode: "DRIVER",
-	});
-	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
-	const navigateToRoomLight = usePageNavigationTo(PAGE_TYPES.ROOM_LIGHT, {
-		mode: "DRIVER",
-	});
-	const navigateToLocationCorrection = usePageNavigationTo(
-		PAGE_TYPES.LOCATION_CORRECTION,
-		{ mode: "DRIVER" }
-	);
-	const navigateToConductorInfo = usePageNavigationTo(
-		PAGE_TYPES.CONDUCTOR_INFO,
-		{ mode: "CONDUCTOR" }
-	);
-
-	const footerItems: FooterButtonInfo[] = useMemo(
-		() => [
-			{
-				label: "運転士",
-				isSelected: false,
-				handleClick: navigateToDriverInfo,
-			},
-			{
-				label: "徐行情報",
-				isSelected: true,
-				handleClick: () => {},
-			},
-			{
-				label: "室内灯",
-				isSelected: false,
-				handleClick: navigateToRoomLight,
-			},
-			{
-				label: "位置補正",
-				isSelected: false,
-				handleClick: navigateToLocationCorrection,
-			},
-			{
-				label: "車掌",
-				isSelected: false,
-				handleClick: navigateToConductorInfo,
-			},
-			{
-				label: "メニュー",
-				isSelected: false,
-				handleClick: navigateToMenu,
-			},
-		],
-		[
-			navigateToDriverInfo,
-			navigateToMenu,
-			navigateToRoomLight,
-			navigateToLocationCorrection,
-			navigateToConductorInfo,
-		]
-	);
-
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={footerItems}>
-			{/* Location Label */}
-			<LocationLabel locationKm={0.0} />
-
-			{/* Table Header */}
-			<CanvasObjectGroup
+			footerItems={REDUCE_SPEED_FOOTER_MENU}>
+			<CanvasRoundedRect
 				relX={TABLE_LEFT}
 				relY={TABLE_TOP}
 				width={TABLE_WIDTH}
-				height={HEADER_ROW_HEIGHT}>
-				{/* Header background */}
-				<CanvasRect
-					relX={0}
-					relY={0}
-					width={TABLE_WIDTH}
-					height={HEADER_ROW_HEIGHT}
-					fillColor={TABLE_BG_COLOR}
-					strokeColor={COLORS.WHITE}
-					strokeWidth={1}
-				/>
-				{/* Header text */}
+				height={TABLE_HEIGHT}
+				radius={TABLE_RADIUS}
+				fillColor={TABLE_BG_COLOR}>
 				<CanvasText
-					relX={4}
-					relY={4}
+					key="header-sta"
+					relX={STA_NAME_COL_X}
+					relY={HEADER_Y}
+					maxWidthPx={STA_NAME_COL_WIDTH}
 					text="区間"
-					fillColor={COLORS.BLACK}
+					align="center"
+					fillColor={COLORS.WHITE}
 				/>
 				<CanvasText
-					relX={COL_LOCATION_START_X + 4}
-					relY={4}
+					key="header-km"
+					relX={KM_COL_X}
+					relY={HEADER_Y}
+					maxWidthPx={KM_COL_WIDTH}
 					text="キロ程"
-					fillColor={COLORS.BLACK}
+					align="center"
+					fillColor={COLORS.WHITE}
 				/>
 				<CanvasText
-					relX={COL_LOCATION_END_X + 4}
-					relY={4}
-					text="キロ程"
-					fillColor={COLORS.BLACK}
-				/>
-				<CanvasText
-					relX={COL_SPEED_X + 4}
-					relY={4}
+					key="header-speed"
+					relX={SPEED_COL_X}
+					relY={HEADER_Y}
+					maxWidthPx={SPEED_COL_WIDTH}
 					text="徐行速度"
-					fillColor={COLORS.BLACK}
+					align="center"
+					fillColor={COLORS.WHITE}
 				/>
-				{/* Column separators */}
-				<CanvasLine
-					relX1={COL_LOCATION_START_X}
-					relY1={0}
-					relX2={COL_LOCATION_START_X}
-					relY2={HEADER_ROW_HEIGHT}
-					color={COLORS.WHITE}
-					width={1}
-				/>
-				<CanvasLine
-					relX1={COL_LOCATION_END_X}
-					relY1={0}
-					relX2={COL_LOCATION_END_X}
-					relY2={HEADER_ROW_HEIGHT}
-					color={COLORS.WHITE}
-					width={1}
-				/>
-				<CanvasLine
-					relX1={COL_SPEED_X}
-					relY1={0}
-					relX2={COL_SPEED_X}
-					relY2={HEADER_ROW_HEIGHT}
-					color={COLORS.WHITE}
-					width={1}
-				/>
-			</CanvasObjectGroup>
-
-			{/* Data Rows */}
-			{SAMPLE_DATA.map((item, index) => (
-				<CanvasObjectGroup
-					// eslint-disable-next-line react/no-array-index-key
-					key={`row-${index}`}
-					relX={TABLE_LEFT}
-					relY={TABLE_TOP + HEADER_ROW_HEIGHT + index * DATA_ROW_HEIGHT}
-					width={TABLE_WIDTH}
-					height={DATA_ROW_HEIGHT}>
-					{/* Row background */}
-					<CanvasRect
-						relX={0}
-						relY={0}
-						width={TABLE_WIDTH}
-						height={DATA_ROW_HEIGHT}
-						fillColor={TABLE_BG_COLOR}
-						strokeColor={COLORS.WHITE}
-						strokeWidth={1}
+				{Array.from({ length: LIMIT_ROW_COUNT }).map((_, i) => (
+					<ReduceSpeedRow
+						// eslint-disable-next-line react/no-array-index-key
+						key={i}
+						rowIndex={i}
+						fromSta={REDUCE_SPEED_DEMO_DATA[i]?.fromSta}
+						toSta={REDUCE_SPEED_DEMO_DATA[i]?.toSta}
+						fromKm={REDUCE_SPEED_DEMO_DATA[i]?.fromKm}
+						toKm={REDUCE_SPEED_DEMO_DATA[i]?.toKm}
+						speedLimit={REDUCE_SPEED_DEMO_DATA[i]?.speedLimit}
 					/>
-					{/* Row data */}
-					<CanvasText
-						relX={4}
-						relY={6}
-						text={item.section}
-						fillColor={COLORS.BLACK}
-					/>
-					<CanvasText
-						relX={COL_LOCATION_START_X + 4}
-						relY={6}
-						text={item.locationStart}
-						fillColor={COLORS.BLACK}
-					/>
-					<CanvasText
-						relX={COL_LOCATION_END_X + 4}
-						relY={6}
-						text={item.locationEnd}
-						fillColor={COLORS.BLACK}
-					/>
-					<CanvasText
-						relX={COL_SPEED_X + 4}
-						relY={6}
-						text={item.speed}
-						fillColor={COLORS.BLACK}
-					/>
-					{/* Column separators */}
-					<CanvasLine
-						relX1={COL_LOCATION_START_X}
-						relY1={0}
-						relX2={COL_LOCATION_START_X}
-						relY2={DATA_ROW_HEIGHT}
-						color={COLORS.WHITE}
-						width={1}
-					/>
-					<CanvasLine
-						relX1={COL_LOCATION_END_X}
-						relY1={0}
-						relX2={COL_LOCATION_END_X}
-						relY2={DATA_ROW_HEIGHT}
-						color={COLORS.WHITE}
-						width={1}
-					/>
-					<CanvasLine
-						relX1={COL_SPEED_X}
-						relY1={0}
-						relX2={COL_SPEED_X}
-						relY2={DATA_ROW_HEIGHT}
-						color={COLORS.WHITE}
-						width={1}
-					/>
-				</CanvasObjectGroup>
-			))}
-
-			{/* Bottom instruction */}
+				))}
+			</CanvasRoundedRect>
 			<CanvasText
-				relX={TABLE_LEFT}
-				relY={
-					TABLE_TOP +
-					HEADER_ROW_HEIGHT +
-					SAMPLE_DATA.length * DATA_ROW_HEIGHT +
-					8
-				}
+				relX={INSTRUCTION_X}
+				relY={INSTRUCTION_Y}
 				text="ＩＣカード内の徐行情報を表示します。"
 				fillColor={COLORS.WHITE}
 			/>
 		</FooterPageFrame>
 	);
 });
+
+const REDUCE_SPEED_DEMO_DATA = [
+	{
+		fromSta: "大垣",
+		toSta: "米原",
+		fromKm: 1234.567,
+		toKm: 10,
+		speedLimit: 40,
+	},
+] as const satisfies ReduceSpeedInfo[];

@@ -133,7 +133,7 @@ const PAGE_NAME_MAP: Record<PageType, string> = {
 
 	// Driver pages
 	[PAGE_TYPES.DRIVER_INFO]: "運転士",
-	[PAGE_TYPES.REDUCE_SPEED]: "徐行情報",
+	[PAGE_TYPES.REDUCE_SPEED]: "運転士",
 	[PAGE_TYPES.ROOM_LIGHT]: "室内灯",
 	[PAGE_TYPES.LOCATION_CORRECTION]: "位置補正",
 };

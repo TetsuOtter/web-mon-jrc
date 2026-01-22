@@ -13,14 +13,15 @@ import type { NavigationQueryParams } from "../pages/usePageNavigation";
 
 export type FooterButtonInfo = {
 	readonly label: string;
-	readonly isSelected: boolean;
 } & (
 	| {
+			readonly isSelected: boolean;
 			readonly handleClick: () => void;
 			readonly navigateTo?: undefined;
 			readonly queryParams?: undefined;
 	  }
 	| {
+			readonly isSelected?: undefined;
 			readonly handleClick?: undefined;
 			readonly navigateTo: PageType;
 			readonly queryParams?: NavigationQueryParams;

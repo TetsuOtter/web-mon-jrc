@@ -8,6 +8,9 @@ export const DISPLAY_HEIGHT = 600;
 export const HEADER_HEIGHT = 40;
 export const FOOTER_HEIGHT = 32;
 
+export const WITH_FOOTER_CONTENT_HEIGHT =
+	DISPLAY_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT;
+
 export const FONT_SIZE_1X = 16;
 export const FONT_SIZE_2X = 32;
 
