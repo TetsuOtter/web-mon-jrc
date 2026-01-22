@@ -125,22 +125,22 @@ const FOOTER_MENU = [
 	{
 		label: "徐行情報",
 		isSelected: false,
-		navigateTo: PAGE_TYPES["DRIVER-REDUCE_SPEED"],
+		navigateTo: PAGE_TYPES.REDUCE_SPEED,
 	},
 	{
 		label: "地点補正",
 		isSelected: false,
-		navigateTo: PAGE_TYPES["DRIVER-LOCATION_CORRECTION"],
+		navigateTo: PAGE_TYPES.LOCATION_CORRECTION,
 	},
 	{
 		label: "運行設定",
 		isSelected: false,
-		navigateTo: PAGE_TYPES["WORK_SETTING-TOP"],
+		navigateTo: PAGE_TYPES.WORK_SETTING_TOP,
 	},
 	{
 		label: "車両状態",
 		isSelected: false,
-		navigateTo: PAGE_TYPES["CAR_STATE-THREE_PHASE_AC"],
+		navigateTo: PAGE_TYPES.THREE_PHASE_AC,
 	},
 	{
 		label: "運転情報",

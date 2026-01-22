@@ -7,6 +7,7 @@ import { COLORS } from "../constants";
 import { usePageNavigation } from "../pages/usePageNavigation";
 
 import type { ClickEventHandler } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
+import type { PageMode } from "../../../../store/monitors/type313s/type313sSlice";
 import type { PageType } from "../pages/pageTypes";
 
 const WIDTH = 84;
@@ -23,6 +24,7 @@ type FooterSWProps = {
 	readonly isSelected: boolean;
 	readonly onClick?: () => void;
 	readonly navigateTo?: PageType;
+	readonly pageMode?: PageMode;
 };
 
 export default memo<FooterSWProps>(function FooterSW({
@@ -32,6 +34,7 @@ export default memo<FooterSWProps>(function FooterSW({
 	isSelected,
 	onClick,
 	navigateTo,
+	pageMode,
 }) {
 	const navigate = usePageNavigation();
 	const parentObjectContext = useCanvasObjectContext();
@@ -44,12 +47,12 @@ export default memo<FooterSWProps>(function FooterSW({
 			onClick();
 			return true;
 		} else if (navigateTo) {
-			navigate(navigateTo);
+			navigate(navigateTo, pageMode);
 			return true;
 		} else {
 			return false;
 		}
-	}, [onClick, navigate, navigateTo]);
+	}, [onClick, navigate, navigateTo, pageMode]);
 	return (
 		<CanvasQuadrilateral
 			xL1={x}

@@ -2,17 +2,17 @@ import { memo, useMemo } from "react";
 
 import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
 import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
-import FooterPageFrame from "../../components/FooterPageFrame";
+import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
 import { PAGE_TYPES } from "../pageTypes";
 import { usePageNavigationTo } from "../usePageNavigation";
 
-import type { FooterButtonInfo } from "../../footer/FooterArea";
 import type { BaseCarImageInfo } from "../../components/car-image/baseCarImageCache";
 import type { CarImageBogieInfo } from "../../components/car-image/bogieImageCache";
-import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
+import type { FooterButtonInfo } from "../../footer/FooterArea";
 
 // Layout constants
 const STATE_AREA_TOP = 120;
@@ -78,15 +78,11 @@ type DoorState = "開" | "閉";
 
 export default memo(function ConductorInfo() {
 	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
-	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES["DRIVER-INFO"]);
-	const navigateToService = usePageNavigationTo(
-		PAGE_TYPES["CONDUCTOR-SERVICE"]
-	);
-	const navigateToAirCond = usePageNavigationTo(
-		PAGE_TYPES["CONDUCTOR-AIR_COND"]
-	);
+	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO);
+	const navigateToService = usePageNavigationTo(PAGE_TYPES.CONDUCTOR_SERVICE);
+	const navigateToAirCond = usePageNavigationTo(PAGE_TYPES.CONDUCTOR_AIR_COND);
 	const navigateToLocationCorrection = usePageNavigationTo(
-		PAGE_TYPES["CONDUCTOR-LOCATION_CORRECTION"]
+		PAGE_TYPES.CONDUCTOR_LOCATION_CORRECTION
 	);
 
 	const footerItems: FooterButtonInfo[] = useMemo(

@@ -58,16 +58,14 @@ const SAMPLE_DATA: {
 ];
 
 export default memo(function DriverReduceSpeed() {
-	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES["DRIVER-INFO"]);
+	const navigateToDriverInfo = usePageNavigationTo(PAGE_TYPES.DRIVER_INFO);
 	const navigateToMenu = usePageNavigationTo(PAGE_TYPES.MENU);
-	const navigateToRoomLight = usePageNavigationTo(
-		PAGE_TYPES["DRIVER-ROOM_LIGHT"]
-	);
+	const navigateToRoomLight = usePageNavigationTo(PAGE_TYPES.ROOM_LIGHT);
 	const navigateToLocationCorrection = usePageNavigationTo(
-		PAGE_TYPES["DRIVER-LOCATION_CORRECTION"]
+		PAGE_TYPES.LOCATION_CORRECTION
 	);
 	const navigateToConductorInfo = usePageNavigationTo(
-		PAGE_TYPES["CONDUCTOR-INFO"]
+		PAGE_TYPES.CONDUCTOR_INFO
 	);
 
 	const footerItems: FooterButtonInfo[] = useMemo(

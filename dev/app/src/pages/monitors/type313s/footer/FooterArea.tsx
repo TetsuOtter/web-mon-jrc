@@ -8,6 +8,7 @@ import { COLORS, FOOTER_HEIGHT } from "../constants";
 
 import FooterSW from "./FooterSW";
 
+import type { PageMode } from "../../../../store/monitors/type313s/type313sSlice";
 import type { PageType } from "../pages/pageTypes";
 
 export type FooterButtonInfo = {
@@ -17,10 +18,12 @@ export type FooterButtonInfo = {
 	| {
 			readonly handleClick: () => void;
 			readonly navigateTo?: undefined;
+			readonly pageMode?: undefined;
 	  }
 	| {
 			readonly handleClick?: undefined;
 			readonly navigateTo: PageType;
+			readonly pageMode?: PageMode;
 	  }
 );
 
@@ -55,6 +58,7 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 					isSelected={button.isSelected}
 					onClick={button.handleClick}
 					navigateTo={button.navigateTo}
+					pageMode={button.pageMode}
 				/>
 			))}
 			{children}

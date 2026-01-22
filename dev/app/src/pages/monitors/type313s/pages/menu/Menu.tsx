@@ -31,21 +31,24 @@ export default memo(function Menu() {
 				row={1}
 				icon={ICONS.DRIVER}
 				text="運転士"
-				onClick={usePageNavigationTo(PAGE_TYPES["DRIVER-INFO"])}
+				onClick={usePageNavigationTo(PAGE_TYPES.DRIVER_INFO, "DRIVER")}
 			/>
 			<MenuButton
 				col={1}
 				row={1}
 				icon={ICONS.CONDUCTOR}
 				text="車　掌"
-				onClick={usePageNavigationTo(PAGE_TYPES["CONDUCTOR-INFO"])}
+				onClick={usePageNavigationTo(PAGE_TYPES.CONDUCTOR_INFO, "CONDUCTOR")}
 			/>
 			<MenuButton
 				col={2}
 				row={1}
 				icon={ICONS.MAINTENANCE}
 				text="検　修"
-				onClick={usePageNavigationTo(PAGE_TYPES["MAINTENANCE-MENU"])}
+				onClick={usePageNavigationTo(
+					PAGE_TYPES.MAINTENANCE_MENU,
+					"MAINTENANCE"
+				)}
 			/>
 			<MenuButton
 				col={3}
@@ -53,7 +56,10 @@ export default memo(function Menu() {
 				icon={ICONS.EMBEDDED_MANUAL}
 				text="応急ﾏﾆｭｱﾙ"
 				// TODO: Implement Embedded Manual page
-				onClick={usePageNavigationTo(PAGE_TYPES["MAINTENANCE-MENU"])}
+				onClick={usePageNavigationTo(
+					PAGE_TYPES.MAINTENANCE_MENU,
+					"MAINTENANCE"
+				)}
 			/>
 
 			<MenuButton
@@ -61,28 +67,31 @@ export default memo(function Menu() {
 				row={2}
 				icon={ICONS.WORK_SETTING_1}
 				text="運行設定"
-				onClick={usePageNavigationTo(PAGE_TYPES["WORK_SETTING-TOP"])}
+				onClick={usePageNavigationTo(
+					PAGE_TYPES.WORK_SETTING_TOP,
+					"WORK_SETTING"
+				)}
 			/>
 			<MenuButton
 				col={1}
 				row={2}
 				icon={ICONS.CAR_INFO_1}
 				text="車両状態"
-				onClick={usePageNavigationTo(PAGE_TYPES["CAR_STATE-SWITCHES"])}
+				onClick={usePageNavigationTo(PAGE_TYPES.SWITCHES, "CAR_STATE")}
 			/>
 			<MenuButton
 				col={2}
 				row={2}
 				icon={ICONS.OCCUPANCY_RATE}
 				text="乗車率"
-				onClick={usePageNavigationTo(PAGE_TYPES["OCCUPANCY_RATE"])}
+				onClick={usePageNavigationTo(PAGE_TYPES.OCCUPANCY_RATE)}
 			/>
 			<MenuButton
 				col={3}
 				row={2}
 				icon={ICONS.CORRECTION}
 				text="補　正"
-				onClick={usePageNavigationTo(PAGE_TYPES["CORRECTION-MENU"])}
+				onClick={usePageNavigationTo(PAGE_TYPES.CORRECTION_MENU, "CORRECTION")}
 			/>
 
 			<Button
