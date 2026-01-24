@@ -20,7 +20,7 @@ export const FOOTER_MENU = [
 	},
 	{
 		label: "車両状態",
-		navigateTo: PAGE_TYPES.THREE_PHASE_AC,
+		navigateTo: PAGE_TYPES.SWITCHES,
 		queryParams: { mode: "DRIVER" },
 	},
 	{

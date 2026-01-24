@@ -1,253 +1,135 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 
-import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
-import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { toWide } from "../../../../../utils/toWide";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
-import TrainFormationImage from "../../components/car-image/TrainFormationImage";
-import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
+import Table from "../../components/Table";
+import TrainFormationImage, {
+	SAMPLE_TRAIN_FORMATION,
+} from "../../components/car-image/TrainFormationImage";
+import { WIDTH as CAR_IMAGE_WIDTH } from "../../components/car-image/constants";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
+import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useCarStatePageMode } from "../../hooks/usePageMode";
 
-import type { BaseCarImageInfo } from "../../components/car-image/baseCarImageCache";
-import type { CarImageBogieInfo } from "../../components/car-image/bogieImageCache";
+import { FOOTER_MENU } from "./constants";
 
-// Layout constants
-const TABLE_TOP = 120;
-const TABLE_LEFT = 8;
-const LABEL_COL_WIDTH = 80;
-const CAR_COL_WIDTH = 48;
-const ROW_HEIGHT = FONT_SIZE_1X + 2;
+import type { CellListForRow, RowList } from "../../components/Table";
 
-// Switch types for page 1
-const SWITCH_TYPES = [
-	"SIV",
-	"CP",
+const TABLE_TOP = 186;
+const TABLE_LEFT = 36;
+
+const LABEL_COL_WIDTH = 156;
+const CAR_COL_WIDTH = CAR_IMAGE_WIDTH - 1;
+const ROW_HEIGHT = FONT_SIZE_1X + 1;
+
+const LABEL_CELL_PADDING_X = { left: 7, right: 0 };
+const CELL_PADDING_X_LIST = [LABEL_CELL_PADDING_X];
+
+const TABLE_ROW_COUNT = 18;
+
+const SWITCH_TYPES_1 = [
+	"MS",
+	"HB",
+	"LB1",
+	"LB2",
+	"LB3",
+	"MCOS1",
+	"MCOS2",
+	"MCOS3",
+	"MCOS4",
+	"CCOS",
+].map(toWide);
+const SWITCH_TYPES_2 = [
+	toWide("SIV"),
+	toWide("CP"),
 	"元溜圧力",
-	"VVVFa",
-	"VVVFb",
-	"EB",
-	"主幹",
-	"逆転",
-	"BC圧",
-	"MR圧",
-	"ATC",
-	"TASC",
+	toWide("CabSes"),
+	toWide("VVVF2"),
+	`${toWide("CgK(")}SIV${toWide(")")}`,
+	`${toWide("CgK(")}VVVF2${toWide(")")}`,
+	toWide("車上試験SW"),
+	toWide("BH非常"),
+	"車掌非常",
+	toWide("耐雪B"),
+	toWide("直予備B"),
 ];
-
-// Sample train formation (4 cars)
-const SAMPLE_TRAIN_FORMATION: {
-	key: string;
-	baseInfo: BaseCarImageInfo;
-	bogieInfo: CarImageBogieInfo;
-}[] = [
-	{
-		key: "car1",
-		baseInfo: {
-			isLeftCab: true,
-			isRightCab: false,
-			hasLeftPantograph: false,
-			hasRightPantograph: true,
-		},
-		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
-	},
-	{
-		key: "car2",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: false,
-			hasLeftPantograph: false,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
-	},
-	{
-		key: "car3",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: false,
-			hasLeftPantograph: true,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
-	},
-	{
-		key: "car4",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: true,
-			hasLeftPantograph: false,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
-	},
-];
-
-// Sample switch states for each car
-type SwitchState = "ON" | "OFF" | "ERROR" | "NA";
-const SAMPLE_SWITCH_STATES: Record<string, SwitchState[]> = {
-	SIV: ["ON", "OFF", "ON", "OFF"],
-	CP: ["ON", "ON", "ON", "ON"],
-	元溜圧力: ["ON", "ON", "ON", "ON"],
-	VVVFa: ["ON", "NA", "ON", "NA"],
-	VVVFb: ["ON", "NA", "ON", "NA"],
-	EB: ["OFF", "OFF", "OFF", "OFF"],
-	主幹: ["ON", "NA", "NA", "OFF"],
-	逆転: ["ON", "NA", "NA", "OFF"],
-	BC圧: ["ON", "ON", "ON", "ON"],
-	MR圧: ["ON", "ON", "ON", "ON"],
-	ATC: ["ON", "ON", "ON", "ON"],
-	TASC: ["ON", "ON", "ON", "ON"],
-};
-
-function getStateColor(state: SwitchState): string {
-	switch (state) {
-		case "ON":
-			return COLORS.LIME;
-		case "OFF":
-			return COLORS.WHITE;
-		case "ERROR":
-			return COLORS.RED;
-		case "NA":
-			return COLORS.GRAY;
-	}
-}
-
-function getStateTextColor(state: SwitchState): string {
-	switch (state) {
-		case "ON":
-		case "NA":
-			return COLORS.BLACK;
-		case "OFF":
-			return COLORS.BLACK;
-		case "ERROR":
-			return COLORS.WHITE;
-	}
-}
+const SWITCH_LABEL_MAP: string[][] = [SWITCH_TYPES_1, SWITCH_TYPES_2];
 
 export default memo(function CarStateSwitches() {
 	const mode = useCarStatePageMode();
-	const carCount = SAMPLE_TRAIN_FORMATION.length;
-	const tableWidth = LABEL_COL_WIDTH + CAR_COL_WIDTH * carCount;
+	const pagerProps = useFooterAreaWithPagerProps(SWITCH_LABEL_MAP.length - 1);
+	const tableDefinition = useTableDefinition(SAMPLE_TRAIN_FORMATION.length);
+	const tableRowList = useTableCells(
+		SAMPLE_TRAIN_FORMATION.length,
+		pagerProps.currentPageIndex
+	);
 
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={[]}>
-			{/* Location Label */}
+			footerItems={FOOTER_MENU}
+			pagerProps={pagerProps}>
 			<LocationLabel locationKm={123.4} />
 
-			{/* Train Formation Image */}
-			<TrainFormationImage infoList={SAMPLE_TRAIN_FORMATION} />
+			<TrainFormationImage />
 
-			{/* Table Header Row */}
-			<CanvasObjectGroup
+			<Table
 				relX={TABLE_LEFT}
 				relY={TABLE_TOP}
-				width={tableWidth}
-				height={ROW_HEIGHT}>
-				<CanvasRect
-					relX={0}
-					relY={0}
-					width={LABEL_COL_WIDTH}
-					height={ROW_HEIGHT}
-					fillColor={COLORS.BLUE}
-					strokeColor={COLORS.LIME}
-					strokeWidth={1}
-				/>
-				<CanvasText
-					relX={4}
-					relY={1}
-					text="項目"
-					fillColor={COLORS.WHITE}
-				/>
-				{SAMPLE_TRAIN_FORMATION.map((_, index) => (
-					<CanvasRect
-						// eslint-disable-next-line react/no-array-index-key
-						key={`header-${index}`}
-						relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * index}
-						relY={0}
-						width={CAR_COL_WIDTH}
-						height={ROW_HEIGHT}
-						fillColor={COLORS.BLUE}
-						strokeColor={COLORS.LIME}
-						strokeWidth={1}
-					/>
-				))}
-				{SAMPLE_TRAIN_FORMATION.map((_, index) => (
-					<CanvasText
-						// eslint-disable-next-line react/no-array-index-key
-						key={`header-text-${index}`}
-						relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * index}
-						relY={1}
-						maxWidthPx={CAR_COL_WIDTH}
-						text={`${index + 1}号車`}
-						fillColor={COLORS.WHITE}
-						align="center"
-					/>
-				))}
-			</CanvasObjectGroup>
-
-			{/* Table Data Rows */}
-			{SWITCH_TYPES.map((switchType, rowIndex) => (
-				<CanvasObjectGroup
-					key={switchType}
-					relX={TABLE_LEFT}
-					relY={TABLE_TOP + ROW_HEIGHT * (rowIndex + 1)}
-					width={tableWidth}
-					height={ROW_HEIGHT}>
-					{/* Row label */}
-					<CanvasRect
-						relX={0}
-						relY={0}
-						width={LABEL_COL_WIDTH}
-						height={ROW_HEIGHT}
-						strokeColor={COLORS.LIME}
-						strokeWidth={1}
-					/>
-					<CanvasText
-						relX={4}
-						relY={1}
-						text={switchType}
-						fillColor={COLORS.WHITE}
-					/>
-
-					{/* State cells for each car */}
-					{SAMPLE_TRAIN_FORMATION.map((_, carIndex) => {
-						const state = SAMPLE_SWITCH_STATES[switchType]?.[carIndex] ?? "NA";
-						return (
-							<CanvasRect
-								// eslint-disable-next-line react/no-array-index-key
-								key={`cell-${carIndex}`}
-								relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * carIndex}
-								relY={0}
-								width={CAR_COL_WIDTH}
-								height={ROW_HEIGHT}
-								fillColor={getStateColor(state)}
-								strokeColor={COLORS.LIME}
-								strokeWidth={1}
-							/>
-						);
-					})}
-					{SAMPLE_TRAIN_FORMATION.map((_, carIndex) => {
-						const state = SAMPLE_SWITCH_STATES[switchType]?.[carIndex] ?? "NA";
-						const displayText =
-							state === "NA" ? "-" : state === "ERROR" ? "異常" : state;
-						return (
-							<CanvasText
-								// eslint-disable-next-line react/no-array-index-key
-								key={`text-${carIndex}`}
-								relX={LABEL_COL_WIDTH + CAR_COL_WIDTH * carIndex}
-								relY={1}
-								maxWidthPx={CAR_COL_WIDTH}
-								text={displayText}
-								fillColor={getStateTextColor(state)}
-								align="center"
-							/>
-						);
-					})}
-				</CanvasObjectGroup>
-			))}
+				rowList={tableRowList}
+				cellPaddingXList={CELL_PADDING_X_LIST}
+				cellWidthList={tableDefinition.cellWidthList}
+				cellHeightList={tableDefinition.cellHeightList}
+				borderColor={COLORS.LIME}
+				borderWidth={1}
+				borderHeight={1}
+			/>
 		</FooterPageFrame>
 	);
 });
+
+function useTableDefinition(carCount: number) {
+	return useMemo(
+		() => ({
+			cellHeightList: Array.from({ length: TABLE_ROW_COUNT }, () => ROW_HEIGHT),
+			cellWidthList: [LABEL_COL_WIDTH].concat(
+				Array.from({ length: carCount }, () => CAR_COL_WIDTH)
+			),
+		}),
+		[carCount]
+	);
+}
+
+function useTableCells(carCount: number, page: number) {
+	const labelList = SWITCH_LABEL_MAP[page];
+	return useMemo(() => {
+		if (!labelList) {
+			return [];
+		}
+		const rowList: RowList = [];
+		for (let rowIndex = 0; rowIndex < TABLE_ROW_COUNT; rowIndex++) {
+			const label = labelList[rowIndex];
+			if (!label) {
+				rowList.push([]);
+				continue;
+			}
+			const cellList: CellListForRow = [
+				{
+					text: label,
+					textColor: COLORS.WHITE,
+				},
+			];
+			for (let carIndex = 0; carIndex < carCount; carIndex++) {
+				// TODO: スイッチの状態に応じて表示切り替え
+				// cellList.push({
+				// 	text: "ON",
+				// 	textColor: COLORS.WHITE,
+				// 	horizontalAlign: "center",
+				// });
+			}
+			rowList.push(cellList);
+		}
+		return rowList;
+	}, [carCount, labelList]);
+}
