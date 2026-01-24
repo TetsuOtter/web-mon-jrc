@@ -28,7 +28,7 @@ export type FooterButtonInfo = {
 	  }
 );
 
-type FooterAreaProps = {
+export type FooterAreaProps = {
 	readonly buttons: readonly FooterButtonInfo[];
 };
 export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({

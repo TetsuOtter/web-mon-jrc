@@ -10,6 +10,7 @@ import {
 	HEADER_HEIGHT,
 } from "../constants";
 import FooterArea from "../footer/FooterArea";
+import FooterAreaWithPager from "../footer/FooterAreaWithPager";
 import HeaderArea from "../header/HeaderArea";
 import { ICONS } from "../icons";
 import { PAGE_MODES, PAGE_TYPES } from "../pages/pageTypes";
@@ -17,16 +18,18 @@ import { PAGE_MODES, PAGE_TYPES } from "../pages/pageTypes";
 import { useCurrentPageType } from "./CurrentPageContext";
 
 import type { FooterButtonInfo } from "../footer/FooterArea";
+import type { FooterAreaWithPagerProps } from "../footer/FooterAreaWithPager";
 import type { IconData } from "../icons";
 import type { PageMode, PageType } from "../pages/pageTypes";
 
 type FooterPageFrameProps = {
 	readonly mode: PageMode;
 	readonly footerItems: FooterButtonInfo[];
+	readonly pagerProps?: FooterAreaWithPagerProps;
 };
 
 export default memo<PropsWithChildren<FooterPageFrameProps>>(
-	function FooterPageFrame({ mode, footerItems, children }) {
+	function FooterPageFrame({ mode, footerItems, pagerProps, children }) {
 		const pageType = useCurrentPageType();
 		const parentObjectContext = useCanvasObjectContext();
 		return (
@@ -55,7 +58,14 @@ export default memo<PropsWithChildren<FooterPageFrameProps>>(
 						height={DISPLAY_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT}>
 						{children}
 					</CanvasObjectGroup>
-					<FooterArea buttons={footerItems} />
+					{pagerProps ? (
+						<FooterAreaWithPager
+							{...pagerProps}
+							buttons={footerItems}
+						/>
+					) : (
+						<FooterArea buttons={footerItems} />
+					)}
 				</CanvasObjectGroup>
 			</CanvasObjectGroup>
 		);
