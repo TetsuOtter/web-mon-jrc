@@ -15,7 +15,7 @@ import CanvasObjectBase from "./CanvasObjectBase";
 import type { FontInfo } from "../types/FontInfo";
 import type { Bitmap } from "bdfparser";
 
-type CanvasTextProps = {
+export type CanvasTextProps = {
 	readonly relX: number;
 	readonly relY: number;
 	readonly text: string;
