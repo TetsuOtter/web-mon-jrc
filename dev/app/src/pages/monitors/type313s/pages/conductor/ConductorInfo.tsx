@@ -5,14 +5,11 @@ import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObje
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
-import { BOGIE_STATE } from "../../components/car-image/bogieImageCache";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
 import { useConductorPageMode } from "../../hooks/usePageMode";
 import { PAGE_TYPES } from "../pageTypes";
 import { usePageNavigationTo } from "../usePageNavigation";
 
-import type { BaseCarImageInfo } from "../../components/car-image/baseCarImageCache";
-import type { CarImageBogieInfo } from "../../components/car-image/bogieImageCache";
 import type { FooterButtonInfo } from "../../footer/FooterArea";
 
 // Layout constants
@@ -25,54 +22,6 @@ const STATE_AREA_GAP = 8;
 const ROOM_LIGHT_TOP = 332;
 const GUIDE_TOP = 380;
 const INSTRUCTION_TOP = 450;
-
-// Sample train formation (4 cars)
-const SAMPLE_TRAIN_FORMATION: {
-	key: string;
-	baseInfo: BaseCarImageInfo;
-	bogieInfo: CarImageBogieInfo;
-}[] = [
-	{
-		key: "car1",
-		baseInfo: {
-			isLeftCab: true,
-			isRightCab: false,
-			hasLeftPantograph: false,
-			hasRightPantograph: true,
-		},
-		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
-	},
-	{
-		key: "car2",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: false,
-			hasLeftPantograph: false,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
-	},
-	{
-		key: "car3",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: false,
-			hasLeftPantograph: true,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
-	},
-	{
-		key: "car4",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: true,
-			hasLeftPantograph: false,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
-	},
-];
 
 // Door state for each car
 type DoorState = "開" | "閉";
@@ -154,7 +103,7 @@ export default memo(function ConductorInfo() {
 			<LocationLabel locationKm={123.4} />
 
 			{/* Train Formation Image */}
-			<TrainFormationImage infoList={SAMPLE_TRAIN_FORMATION} />
+			<TrainFormationImage />
 
 			{/* Door State Area */}
 			<CanvasObjectGroup
