@@ -2,8 +2,8 @@ import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";
 import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
-import Button, { SHADOW_WIDTH } from "../Button";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
+import Button, { SHADOW_WIDTH } from "../Button";
 
 const WIDTH = 104;
 const HEIGHT = 28;
@@ -36,7 +36,11 @@ export default memo<BrightnessControlButtonProps>(
 				height={HEIGHT}
 				shadowWidth={SHADOW_WIDTH.SMALL}
 				onClick={onClick}>
-				<CanvasObjectGroup relX={0} relY={0} width={WIDTH} height={HEIGHT}>
+				<CanvasObjectGroup
+					relX={0}
+					relY={0}
+					width={WIDTH}
+					height={HEIGHT}>
 					<CanvasText
 						relX={4}
 						relY={TEXT_TOP}
