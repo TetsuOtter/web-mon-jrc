@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import MonitorCanvas from "../../../components/MonitorCanvas";
 
 import CurrentPageContext from "./components/CurrentPageContext";
+import NavigationHistoryProvider from "./components/NavigationHistoryContext";
 import { DISPLAY_HEIGHT, DISPLAY_WIDTH } from "./constants";
 import { PAGE_COMPONENTS } from "./pages/pageComponents";
 import { isValidPageType, PAGE_TYPES } from "./pages/pageTypes";
@@ -23,12 +24,14 @@ export default memo(function Type313sPage() {
 	}, [page]);
 	const PageComponent = PAGE_COMPONENTS[currentPage];
 	return (
-		<CurrentPageContext page={currentPage}>
-			<MonitorCanvas
-				width={DISPLAY_WIDTH}
-				height={DISPLAY_HEIGHT}>
-				<PageComponent />
-			</MonitorCanvas>
-		</CurrentPageContext>
+		<NavigationHistoryProvider>
+			<CurrentPageContext page={currentPage}>
+				<MonitorCanvas
+					width={DISPLAY_WIDTH}
+					height={DISPLAY_HEIGHT}>
+					<PageComponent />
+				</MonitorCanvas>
+			</CurrentPageContext>
+		</NavigationHistoryProvider>
 	);
 });
