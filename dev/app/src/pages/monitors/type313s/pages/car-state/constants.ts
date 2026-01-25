@@ -25,6 +25,6 @@ export const FOOTER_MENU = [
 	},
 	{
 		label: "戻る",
-		navigateTo: PAGE_TYPES.MENU,
+		useBackNavigation: true,
 	},
 ] as const satisfies FooterButtonInfo[];

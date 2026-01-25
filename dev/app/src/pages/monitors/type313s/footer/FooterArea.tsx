@@ -19,12 +19,21 @@ export type FooterButtonInfo = {
 			readonly handleClick: () => void;
 			readonly navigateTo?: undefined;
 			readonly queryParams?: undefined;
+			readonly useBackNavigation?: undefined;
 	  }
 	| {
 			readonly isSelected?: undefined;
 			readonly handleClick?: undefined;
 			readonly navigateTo: PageType;
 			readonly queryParams?: NavigationQueryParams;
+			readonly useBackNavigation?: undefined;
+	  }
+	| {
+			readonly isSelected?: undefined;
+			readonly handleClick?: undefined;
+			readonly navigateTo?: undefined;
+			readonly queryParams?: undefined;
+			readonly useBackNavigation: true;
 	  }
 );
 
@@ -60,6 +69,7 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 					onClick={button.handleClick}
 					navigateTo={button.navigateTo}
 					queryParams={button.queryParams}
+					useBackNavigation={button.useBackNavigation}
 				/>
 			))}
 			{children}

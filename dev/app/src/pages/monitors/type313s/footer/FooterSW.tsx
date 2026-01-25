@@ -5,7 +5,10 @@ import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/Can
 import CanvasQuadrilateral from "../../../../canvas-renderer/objects/CanvasQuadrilateral";
 import { useCurrentPageType } from "../components/CurrentPageContext";
 import { COLORS } from "../constants";
-import { usePageNavigation } from "../pages/usePageNavigation";
+import {
+	usePageNavigation,
+	usePageBackNavigation,
+} from "../pages/usePageNavigation";
 
 import type { ClickEventHandler } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
 import type { PageType } from "../pages/pageTypes";
@@ -26,6 +29,7 @@ type FooterSWProps = {
 	readonly onClick?: () => void;
 	readonly navigateTo?: PageType;
 	readonly queryParams?: NavigationQueryParams;
+	readonly useBackNavigation?: boolean;
 };
 
 export default memo<FooterSWProps>(function FooterSW({
@@ -36,8 +40,10 @@ export default memo<FooterSWProps>(function FooterSW({
 	onClick,
 	navigateTo,
 	queryParams,
+	useBackNavigation,
 }) {
 	const navigate = usePageNavigation();
+	const backNavigate = usePageBackNavigation();
 	const page = useCurrentPageType();
 	const parentObjectContext = useCanvasObjectContext();
 	const isSelected = isSelectedProp || navigateTo === page;
@@ -49,13 +55,23 @@ export default memo<FooterSWProps>(function FooterSW({
 		if (onClick) {
 			onClick();
 			return true;
+		} else if (useBackNavigation) {
+			backNavigate();
+			return true;
 		} else if (navigateTo) {
 			navigate(navigateTo, queryParams);
 			return true;
 		} else {
 			return false;
 		}
-	}, [onClick, navigateTo, navigate, queryParams]);
+	}, [
+		onClick,
+		useBackNavigation,
+		backNavigate,
+		navigate,
+		navigateTo,
+		queryParams,
+	]);
 	return (
 		<CanvasQuadrilateral
 			xL1={x}
@@ -69,7 +85,9 @@ export default memo<FooterSWProps>(function FooterSW({
 			fillColor={isSelected ? COLORS.BLACK : COLORS.BLUE}
 			strokeColor={COLORS.WHITE}
 			lineWidth={1}
-			onClick={onClick || navigateTo ? handleClick : undefined}>
+			onClick={
+				onClick || navigateTo || useBackNavigation ? handleClick : undefined
+			}>
 			<CanvasText
 				relX={0}
 				relY={TEXT_TOP}
