@@ -7,15 +7,15 @@ import {
 } from "../contexts/CanvasObjectContext";
 import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
 import { useTofu } from "../utils/TofuFontHook";
-import { hexToRgb } from "../utils/colorUtil";
-import { loadFont } from "../utils/fontLoader";
+import { hexToRgb, setTransparentToData } from "../utils/colorUtil";
+import { loadFont, type AvailableFont } from "../utils/fontLoader";
 
 import CanvasObjectBase from "./CanvasObjectBase";
 
 import type { FontInfo } from "../types/FontInfo";
 import type { Bitmap } from "bdfparser";
 
-type CanvasTextProps = {
+export type CanvasTextProps = {
 	readonly relX: number;
 	readonly relY: number;
 	readonly text: string;
@@ -184,6 +184,33 @@ type UseCharBitmapsHookParams = {
 	fontInfo: FontInfo;
 	text: string;
 };
+
+/**
+ * 指定されたフォント（配列または単一）から文字のグリフを取得
+ * 配列の場合は先頭から順に探索し、見つかるまで試す
+ */
+async function getGlyphFromFonts(
+	char: string,
+	fontSpec: AvailableFont | readonly AvailableFont[]
+): Promise<ReturnType<Awaited<ReturnType<typeof loadFont>>["glyph"]> | null> {
+	const fonts = Array.isArray(fontSpec) ? fontSpec : [fontSpec];
+
+	for (const font of fonts) {
+		try {
+			const loadedFont = await loadFont(font);
+			const glyph = loadedFont.glyph(char);
+			if (glyph != null) {
+				return glyph;
+			}
+		} catch (error) {
+			console.warn(`Failed to load font ${font}:`, error);
+			continue;
+		}
+	}
+
+	return null;
+}
+
 function useCharBitmaps({
 	fontInfo,
 	text,
@@ -191,9 +218,6 @@ function useCharBitmaps({
 	const tofu = useTofu(fontInfo);
 	return useMemo(async () => {
 		try {
-			const fullWidthFont = await loadFont(fontInfo.fullWidth);
-			const halfWidthFont = await loadFont(fontInfo.halfWidth);
-
 			const lines = text.split("\n");
 			const result: Bitmap[][] = [];
 
@@ -202,25 +226,17 @@ function useCharBitmaps({
 
 				for (const char of line) {
 					const isFullWidth = isFullWidthChar(char);
-					const selectedFont = isFullWidth ? fullWidthFont : halfWidthFont;
+					const fontSpec = isFullWidth
+						? fontInfo.fullWidth
+						: fontInfo.halfWidth;
 
-					const glyph = selectedFont.glyph(char);
+					const glyph = await getGlyphFromFonts(char, fontSpec);
+
 					const bitmap = (() => {
 						if (isFullWidth) {
 							return glyph?.draw(1) ?? tofu.fullWidth;
 						} else {
-							if (glyph == null) {
-								return tofu.halfWidth;
-							}
-							const expectedWidth = fontInfo.fontSize / 2;
-							return (
-								glyph.draw(-1, [
-									expectedWidth,
-									fontInfo.fontSize,
-									-(expectedWidth - glyph.meta.bbw) / 2,
-									0,
-								]) ?? tofu.halfWidth
-							);
+							return glyph?.draw() ?? tofu.halfWidth;
 						}
 					})();
 
@@ -236,7 +252,6 @@ function useCharBitmaps({
 			return [];
 		}
 	}, [
-		fontInfo.fontSize,
 		fontInfo.fullWidth,
 		fontInfo.halfWidth,
 		text,
@@ -303,12 +318,9 @@ function useLineImagesPromise({
 							for (let col = 0; col < bitmapWidth; col++) {
 								const pixelIndex = (row * bitmapWidth + col) * 4;
 								if (bitmap.bindata[row][col] === "1") {
-									data[pixelIndex] = fillColorRgb.r;
-									data[pixelIndex + 1] = fillColorRgb.g;
-									data[pixelIndex + 2] = fillColorRgb.b;
-									data[pixelIndex + 3] = 255;
+									fillColorRgb.setToData(data, pixelIndex);
 								} else {
-									data[pixelIndex + 3] = 0;
+									setTransparentToData(data, pixelIndex);
 								}
 							}
 						}
@@ -329,14 +341,7 @@ function useLineImagesPromise({
 			console.error("Failed to create line data:", error);
 			return [];
 		}
-	}, [
-		charBitmapsPromise,
-		maxWidthPx,
-		fontInfo.fontSize,
-		fillColorRgb.r,
-		fillColorRgb.g,
-		fillColorRgb.b,
-	]);
+	}, [charBitmapsPromise, maxWidthPx, fontInfo.fontSize, fillColorRgb]);
 }
 
 type DrawContentHookParams = {

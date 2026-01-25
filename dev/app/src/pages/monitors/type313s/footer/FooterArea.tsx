@@ -8,13 +8,27 @@ import { COLORS, FOOTER_HEIGHT } from "../constants";
 
 import FooterSW from "./FooterSW";
 
+import type { PageType } from "../pages/pageTypes";
+import type { NavigationQueryParams } from "../pages/usePageNavigation";
+
 export type FooterButtonInfo = {
 	readonly label: string;
-	readonly isSelected: boolean;
-	readonly handleClick: () => void;
-};
+} & (
+	| {
+			readonly isSelected: boolean;
+			readonly handleClick: () => void;
+			readonly navigateTo?: undefined;
+			readonly queryParams?: undefined;
+	  }
+	| {
+			readonly isSelected?: undefined;
+			readonly handleClick?: undefined;
+			readonly navigateTo: PageType;
+			readonly queryParams?: NavigationQueryParams;
+	  }
+);
 
-type FooterAreaProps = {
+export type FooterAreaProps = {
 	readonly buttons: readonly FooterButtonInfo[];
 };
 export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
@@ -44,6 +58,8 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 					text={button.label}
 					isSelected={button.isSelected}
 					onClick={button.handleClick}
+					navigateTo={button.navigateTo}
+					queryParams={button.queryParams}
 				/>
 			))}
 			{children}

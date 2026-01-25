@@ -3,14 +3,18 @@ import { memo, useCallback } from "react";
 import { CanvasLine, CanvasText } from "../../../../canvas-renderer";
 import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
 import CanvasQuadrilateral from "../../../../canvas-renderer/objects/CanvasQuadrilateral";
+import { useCurrentPageType } from "../components/CurrentPageContext";
 import { COLORS } from "../constants";
+import { usePageNavigation } from "../pages/usePageNavigation";
 
 import type { ClickEventHandler } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
+import type { PageType } from "../pages/pageTypes";
+import type { NavigationQueryParams } from "../pages/usePageNavigation";
 
 const WIDTH = 84;
 const HEIGHT = 32;
 
-const BOTTOM_SHRINK = 7;
+const BOTTOM_SHRINK = 6;
 
 const TEXT_TOP = 8;
 
@@ -18,23 +22,25 @@ type FooterSWProps = {
 	readonly col: number;
 	readonly align: "left" | "right";
 	readonly text: string;
-	readonly isSelected: boolean;
+	readonly isSelected?: boolean;
 	readonly onClick?: () => void;
+	readonly navigateTo?: PageType;
+	readonly queryParams?: NavigationQueryParams;
 };
 
-/**
- * 四角形描画オブジェクト
- * 縁取りあり・なし対応
- * アンチエイリアスなしで鮮明に描画
- */
 export default memo<FooterSWProps>(function FooterSW({
 	col,
 	align,
 	text,
-	isSelected,
+	isSelected: isSelectedProp,
 	onClick,
+	navigateTo,
+	queryParams,
 }) {
+	const navigate = usePageNavigation();
+	const page = useCurrentPageType();
 	const parentObjectContext = useCanvasObjectContext();
+	const isSelected = isSelectedProp || navigateTo === page;
 	const x =
 		align === "left"
 			? col * WIDTH
@@ -43,10 +49,13 @@ export default memo<FooterSWProps>(function FooterSW({
 		if (onClick) {
 			onClick();
 			return true;
+		} else if (navigateTo) {
+			navigate(navigateTo, queryParams);
+			return true;
 		} else {
 			return false;
 		}
-	}, [onClick]);
+	}, [onClick, navigateTo, navigate, queryParams]);
 	return (
 		<CanvasQuadrilateral
 			xL1={x}
@@ -60,7 +69,7 @@ export default memo<FooterSWProps>(function FooterSW({
 			fillColor={isSelected ? COLORS.BLACK : COLORS.BLUE}
 			strokeColor={COLORS.WHITE}
 			lineWidth={1}
-			onClick={onClick ? handleClick : undefined}>
+			onClick={onClick || navigateTo ? handleClick : undefined}>
 			<CanvasText
 				relX={0}
 				relY={TEXT_TOP}

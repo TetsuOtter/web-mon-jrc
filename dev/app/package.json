@@ -9,6 +9,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@fontsource/dotgothic16": "^5.2.8",
 		"@reduxjs/toolkit": "^2.11.2",
 		"bdfparser": "^2.2.5",
 		"react": "^19.1.0",

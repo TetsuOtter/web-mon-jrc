@@ -2,7 +2,10 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
+import { Provider } from "react-redux";
+
 import { router } from "./router";
+import { store } from "./store/store";
 
 const rootElement = document.getElementById("root");
 if (rootElement == null) {
@@ -10,9 +13,11 @@ if (rootElement == null) {
 } else {
 	ReactDOM.createRoot(rootElement).render(
 		<React.StrictMode>
-			<Suspense fallback={null}>
-				<RouterProvider router={router} />
-			</Suspense>
+			<Provider store={store}>
+				<Suspense fallback={null}>
+					<RouterProvider router={router} />
+				</Suspense>
+			</Provider>
 		</React.StrictMode>
 	);
 }

@@ -45,10 +45,7 @@ export function getButtonImage(
 
 	function setPixel(col: number, row: number, rgbColor: RgbColor) {
 		const offset = row * width * BYTES_PER_PIXEL + col * BYTES_PER_PIXEL;
-		data[offset] = rgbColor.r;
-		data[offset + 1] = rgbColor.g;
-		data[offset + 2] = rgbColor.b;
-		data[offset + 3] = 0xff;
+		rgbColor.setToData(data, offset);
 	}
 	function setPixelRow(row: number, rgbColor: RgbColor) {
 		for (let col = 0; col < width; col++) {

@@ -7,7 +7,6 @@ import CarStateSwitches from "./car-state/CarStateSwitches";
 import CarStateThreePhaseAc from "./car-state/CarStateThreePhaseAc";
 import Conductor315 from "./conductor/Conductor315";
 import ConductorAirCond from "./conductor/ConductorAirCond";
-import ConductorCarState from "./conductor/ConductorCarState";
 import ConductorInfo from "./conductor/ConductorInfo";
 import ConductorLocationCorrection from "./conductor/ConductorLocationCorrection";
 import ConductorService from "./conductor/ConductorService";
@@ -67,48 +66,47 @@ export const PAGE_COMPONENTS = {
 	[PAGE_TYPES.OTHER_SERIES_REDUCE_SPEED]: OtherSeriesReduceSpeed,
 
 	// Maintenance pages
-	[PAGE_TYPES["MAINTENANCE-MENU"]]: MaintenanceMenu,
-	[PAGE_TYPES["MAINTENANCE-CTRL_TEST"]]: MaintenanceCtrlTest,
-	[PAGE_TYPES["MAINTENANCE-COMM_STATE"]]: MaintenanceCommState,
-	[PAGE_TYPES["MAINTENANCE-SPEC_RECORD"]]: MaintenanceSpecRecord,
-	[PAGE_TYPES["MAINTENANCE-BROKEN_LIST"]]: MaintenanceBrokenList,
-	[PAGE_TYPES["MAINTENANCE-TEST_RUN"]]: MaintenanceTestRun,
-	[PAGE_TYPES["MAINTENANCE-DI_DO"]]: MaintenanceDiDo,
-	[PAGE_TYPES["MAINTENANCE-AIR_COND_STATE"]]: MaintenanceAirCondState,
-	[PAGE_TYPES["MAINTENANCE-DISPLAY_TEST"]]: MaintenanceDisplayTest,
+	[PAGE_TYPES.MAINTENANCE_MENU]: MaintenanceMenu,
+	[PAGE_TYPES.MAINTENANCE_CTRL_TEST]: MaintenanceCtrlTest,
+	[PAGE_TYPES.MAINTENANCE_COMM_STATE]: MaintenanceCommState,
+	[PAGE_TYPES.MAINTENANCE_SPEC_RECORD]: MaintenanceSpecRecord,
+	[PAGE_TYPES.MAINTENANCE_BROKEN_LIST]: MaintenanceBrokenList,
+	[PAGE_TYPES.MAINTENANCE_TEST_RUN]: MaintenanceTestRun,
+	[PAGE_TYPES.MAINTENANCE_DI_DO]: MaintenanceDiDo,
+	[PAGE_TYPES.MAINTENANCE_AIR_COND_STATE]: MaintenanceAirCondState,
+	[PAGE_TYPES.MAINTENANCE_DISPLAY_TEST]: MaintenanceDisplayTest,
 
 	// Setting pages
-	[PAGE_TYPES["SETTING-ENTRANCE"]]: SettingEntrance,
-	[PAGE_TYPES["SETTING-MENU"]]: SettingMenu,
-	[PAGE_TYPES["SETTING-MONITOR"]]: SettingMonitor,
+	[PAGE_TYPES.SETTING_ENTRANCE]: SettingEntrance,
+	[PAGE_TYPES.SETTING_MENU]: SettingMenu,
+	[PAGE_TYPES.SETTING_MONITOR]: SettingMonitor,
 
 	// Correction pages
-	[PAGE_TYPES["CORRECTION-MENU"]]: CorrectionMenu,
-	[PAGE_TYPES["CORRECTION-TIME"]]: CorrectionTime,
+	[PAGE_TYPES.CORRECTION_MENU]: CorrectionMenu,
+	[PAGE_TYPES.CORRECTION_TIME]: CorrectionTime,
 
 	// Car State pages
-	[PAGE_TYPES["CAR_STATE-SWITCHES"]]: CarStateSwitches,
-	[PAGE_TYPES["CAR_STATE-POWER"]]: CarStatePower,
-	[PAGE_TYPES["CAR_STATE-BRAKE"]]: CarStateBrake,
-	[PAGE_TYPES["CAR_STATE-THREE_PHASE_AC"]]: CarStateThreePhaseAc,
-	[PAGE_TYPES["CAR_STATE-POWER_BRAKE"]]: CarStatePowerBrake,
+	[PAGE_TYPES.SWITCHES]: CarStateSwitches,
+	[PAGE_TYPES.POWER]: CarStatePower,
+	[PAGE_TYPES.BRAKE]: CarStateBrake,
+	[PAGE_TYPES.THREE_PHASE_AC]: CarStateThreePhaseAc,
+	[PAGE_TYPES.POWER_BRAKE]: CarStatePowerBrake,
 
 	// Conductor pages
-	[PAGE_TYPES["CONDUCTOR-INFO"]]: ConductorInfo,
-	[PAGE_TYPES["CONDUCTOR-SERVICE"]]: ConductorService,
-	[PAGE_TYPES["CONDUCTOR-AIR_COND"]]: ConductorAirCond,
-	[PAGE_TYPES["CONDUCTOR-LOCATION_CORRECTION"]]: ConductorLocationCorrection,
-	[PAGE_TYPES["CONDUCTOR-CAR_STATE"]]: ConductorCarState,
-	[PAGE_TYPES["CONDUCTOR-315"]]: Conductor315,
+	[PAGE_TYPES.CONDUCTOR_INFO]: ConductorInfo,
+	[PAGE_TYPES.CONDUCTOR_SERVICE]: ConductorService,
+	[PAGE_TYPES.CONDUCTOR_AIR_COND]: ConductorAirCond,
+	[PAGE_TYPES.CONDUCTOR_LOCATION_CORRECTION]: ConductorLocationCorrection,
+	[PAGE_TYPES.CONDUCTOR_315]: Conductor315,
 
 	// Work Setting pages
-	[PAGE_TYPES["WORK_SETTING-TOP"]]: WorkSettingTop,
-	[PAGE_TYPES["WORK_SETTING-TYPE"]]: WorkSettingType,
-	[PAGE_TYPES["WORK_SETTING-SEAT"]]: WorkSettingSeat,
+	[PAGE_TYPES.WORK_SETTING_TOP]: WorkSettingTop,
+	[PAGE_TYPES.WORK_SETTING_TYPE]: WorkSettingType,
+	[PAGE_TYPES.WORK_SETTING_SEAT]: WorkSettingSeat,
 
 	// Driver pages
-	[PAGE_TYPES["DRIVER-INFO"]]: DriverInfo,
-	[PAGE_TYPES["DRIVER-REDUCE_SPEED"]]: DriverReduceSpeed,
-	[PAGE_TYPES["DRIVER-ROOM_LIGHT"]]: DriverRoomLight,
-	[PAGE_TYPES["DRIVER-LOCATION_CORRECTION"]]: DriverLocationCorrection,
+	[PAGE_TYPES.DRIVER_INFO]: DriverInfo,
+	[PAGE_TYPES.REDUCE_SPEED]: DriverReduceSpeed,
+	[PAGE_TYPES.ROOM_LIGHT]: DriverRoomLight,
+	[PAGE_TYPES.LOCATION_CORRECTION]: DriverLocationCorrection,
 } as const satisfies Record<PageType, ComponentType>;

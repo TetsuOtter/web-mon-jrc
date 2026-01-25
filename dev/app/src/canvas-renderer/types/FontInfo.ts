@@ -7,9 +7,9 @@ export type FontInfo = {
 	/** フォントの高さ（ピクセル単位） */
 	readonly fontSize: number;
 	/** 全角文字用フォント */
-	readonly fullWidth: AvailableFont;
+	readonly fullWidth: AvailableFont | readonly AvailableFont[];
 	/** 半角文字用フォント */
-	readonly halfWidth: AvailableFont;
+	readonly halfWidth: AvailableFont | readonly AvailableFont[];
 };
 
 /**
@@ -18,7 +18,7 @@ export type FontInfo = {
 export const DEFAULT_FONT_INFO: FontInfo = {
 	fontSize: 16,
 	fullWidth: AVAILABLE_FONTS.jiskan16,
-	halfWidth: AVAILABLE_FONTS["MonNumFont"],
+	halfWidth: [AVAILABLE_FONTS["MonNumFont"], AVAILABLE_FONTS["8x16rk"]],
 };
 
 /**
