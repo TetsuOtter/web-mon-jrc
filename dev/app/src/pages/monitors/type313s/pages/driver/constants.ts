@@ -43,7 +43,6 @@ export const REDUCE_SPEED_FOOTER_MENU = [
 	},
 	{
 		label: "戻る",
-		navigateTo: PAGE_TYPES.DRIVER_INFO,
-		queryParams: { mode: "DRIVER" },
+		useBackNavigation: true,
 	},
 ] as const satisfies FooterButtonInfo[];
