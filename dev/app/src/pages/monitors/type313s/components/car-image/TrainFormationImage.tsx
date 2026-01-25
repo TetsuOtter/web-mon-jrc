@@ -12,7 +12,7 @@ import type { BaseCarImageInfo } from "./baseCarImageCache";
 import type { CarImageBogieInfo } from "./bogieImageCache";
 
 const TOP = 50;
-const LEFT = 194;
+export const LEFT = 194;
 
 export const SAMPLE_TRAIN_FORMATION: {
 	key: string;
