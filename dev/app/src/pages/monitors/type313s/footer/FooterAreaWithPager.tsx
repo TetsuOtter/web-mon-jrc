@@ -1,10 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 
 import FooterArea from "./FooterArea";
-import FooterSW from "./FooterSW";
 
-import type { FooterAreaProps } from "./FooterArea";
+import type { FooterAreaProps, FooterButtonInfo } from "./FooterArea";
 
 export type FooterAreaWithPagerProps = {
 	readonly currentPageIndex: number;
@@ -26,27 +25,34 @@ export default memo<FooterAreaProps & FooterAreaWithPagerProps>(
 		const onClickNextPage = useCallback(() => {
 			setPageIndex((prevIndex) => Math.min(maxPageIndex, prevIndex + 1));
 		}, [setPageIndex, maxPageIndex]);
+		const leftButtons = useMemo((): FooterButtonInfo[] => {
+			const items: FooterButtonInfo[] = [];
+			if (hasNextPageButton) {
+				items.push({
+					label: "次画面",
+					isSelected: false,
+					handleClick: onClickNextPage,
+				});
+			}
+			if (hasPrevPageButton) {
+				items.push({
+					label: "前画面",
+					isSelected: false,
+					handleClick: onClickPrevPage,
+				});
+			}
+			return items;
+		}, [
+			hasNextPageButton,
+			hasPrevPageButton,
+			onClickNextPage,
+			onClickPrevPage,
+		]);
 		return (
-			<FooterArea buttons={buttons}>
-				{hasNextPageButton && (
-					<FooterSW
-						key="nextPage"
-						align="left"
-						col={0}
-						text="次画面"
-						onClick={onClickNextPage}
-					/>
-				)}
-				{hasPrevPageButton && (
-					<FooterSW
-						key="prevPage"
-						align="left"
-						col={hasNextPageButton ? 1 : 0}
-						text="前画面"
-						onClick={onClickPrevPage}
-					/>
-				)}
-			</FooterArea>
+			<FooterArea
+				buttons={buttons}
+				leftButtons={leftButtons}
+			/>
 		);
 	}
 );
