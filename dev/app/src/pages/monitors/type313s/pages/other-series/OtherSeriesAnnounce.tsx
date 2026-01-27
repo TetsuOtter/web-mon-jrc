@@ -3,12 +3,12 @@ import { memo } from "react";
 import { CanvasText } from "../../../../../canvas-renderer";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS } from "../../constants";
-import { useCarStatePageMode } from "../../hooks/usePageMode";
+import { useOtherSeriesPageMode } from "../../hooks/usePageMode";
 
 import { FOOTER_MENU } from "./constants";
 
-export default memo(function CarStatePower() {
-	const mode = useCarStatePageMode();
+export default memo(function OtherSeriesAnnounce() {
+	const mode = useOtherSeriesPageMode();
 	return (
 		<FooterPageFrame
 			mode={mode}

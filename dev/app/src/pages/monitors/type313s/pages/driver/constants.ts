@@ -35,6 +35,15 @@ export const FOOTER_MENU = [
 	},
 ] as const satisfies FooterButtonInfo[];
 
+export const FOOTER_MENU_WHEN_BROKEN = [
+	{
+		label: "故障情報",
+		navigateTo: PAGE_TYPES.BROKEN,
+		queryParams: { mode: "DRIVER" },
+	},
+	...FOOTER_MENU,
+] as const satisfies FooterButtonInfo[];
+
 export const REDUCE_SPEED_FOOTER_MENU = [
 	{
 		label: "徐行情報",

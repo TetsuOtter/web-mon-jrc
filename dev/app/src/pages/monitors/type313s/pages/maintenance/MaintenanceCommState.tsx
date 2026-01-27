@@ -1,15 +1,32 @@
 import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";
+import FooterPageFrame from "../../components/FooterPageFrame";
+import { COLORS } from "../../constants";
+import { useMaintenancePageMode } from "../../hooks/usePageMode";
+import { PAGE_TYPES } from "../pageTypes";
+
+import { getMenuListForMaintenanceMode } from "./constants";
 
 export default memo(function MaintenanceCommState() {
+	const mode = useMaintenancePageMode();
 	return (
-		<CanvasText
-			relX={0}
-			relY={0}
-			verticalAlign="center"
-			align="center"
-			text="準備中"
-		/>
+		<FooterPageFrame
+			mode={mode}
+			footerItems={FOOTER_MENU}>
+			<CanvasText
+				relX={0}
+				relY={0}
+				verticalAlign="center"
+				align="center"
+				text="準備中"
+				fillColor={COLORS.WHITE}
+			/>
+		</FooterPageFrame>
 	);
 });
+
+const FOOTER_MENU = getMenuListForMaintenanceMode(
+	"伝送状態",
+	PAGE_TYPES.MAINTENANCE_COMM_STATE
+);
