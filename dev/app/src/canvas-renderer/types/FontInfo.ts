@@ -1,5 +1,7 @@
 import { AVAILABLE_FONTS, type AvailableFont } from "../utils/fontLoader";
 
+import type { Bitmap } from "bdfparser";
+
 /**
  * 全角・半角を含むフォント情報型
  */
@@ -10,6 +12,8 @@ export type FontInfo = {
 	readonly fullWidth: AvailableFont | readonly AvailableFont[];
 	/** 半角文字用フォント */
 	readonly halfWidth: AvailableFont | readonly AvailableFont[];
+
+	readonly cache: Map<string, Bitmap>;
 };
 
 /**
@@ -19,6 +23,7 @@ export const DEFAULT_FONT_INFO: FontInfo = {
 	fontSize: 16,
 	fullWidth: AVAILABLE_FONTS.jiskan16,
 	halfWidth: [AVAILABLE_FONTS["MonNumFont"], AVAILABLE_FONTS["8x16rk"]],
+	cache: new Map(),
 };
 
 /**
