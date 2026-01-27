@@ -225,6 +225,11 @@ function useCharBitmaps({
 				const lineBitmaps: Bitmap[] = [];
 
 				for (const char of line) {
+					const cachedBitmap = fontInfo.cache.get(char);
+					if (cachedBitmap) {
+						lineBitmaps.push(cachedBitmap);
+						continue;
+					}
 					const isFullWidth = isFullWidthChar(char);
 					const fontSpec = isFullWidth
 						? fontInfo.fullWidth
@@ -240,6 +245,7 @@ function useCharBitmaps({
 						}
 					})();
 
+					fontInfo.cache.set(char, bitmap);
 					lineBitmaps.push(bitmap);
 				}
 
@@ -252,6 +258,7 @@ function useCharBitmaps({
 			return [];
 		}
 	}, [
+		fontInfo.cache,
 		fontInfo.fullWidth,
 		fontInfo.halfWidth,
 		text,
