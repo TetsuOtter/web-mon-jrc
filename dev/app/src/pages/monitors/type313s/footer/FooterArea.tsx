@@ -22,14 +22,14 @@ export type FooterButtonInfo = {
 			readonly useBackNavigation?: undefined;
 	  }
 	| {
-			readonly isSelected?: undefined;
+			readonly isSelected?: boolean;
 			readonly handleClick?: undefined;
 			readonly navigateTo: PageType;
 			readonly queryParams?: NavigationQueryParams;
 			readonly useBackNavigation?: undefined;
 	  }
 	| {
-			readonly isSelected?: undefined;
+			readonly isSelected?: boolean;
 			readonly handleClick?: undefined;
 			readonly navigateTo?: undefined;
 			readonly queryParams?: undefined;
