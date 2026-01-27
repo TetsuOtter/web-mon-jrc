@@ -1,6 +1,7 @@
 import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";
+import { COLORS } from "../../constants";
 
 export default memo(function CarDetection() {
 	return (
@@ -10,6 +11,7 @@ export default memo(function CarDetection() {
 			verticalAlign="center"
 			align="center"
 			text="準備中"
+			fillColor={COLORS.WHITE}
 		/>
 	);
 });

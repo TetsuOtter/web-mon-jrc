@@ -8,7 +8,7 @@ import { PAGE_TYPES } from "../pageTypes";
 
 import type { FooterButtonInfo } from "../../footer/FooterArea";
 
-export default memo(function CorrectionMenu() {
+export default memo(function DriverLocationCorrection() {
 	const mode = useCorrectionPageMode();
 	return (
 		<FooterPageFrame
@@ -28,13 +28,11 @@ export default memo(function CorrectionMenu() {
 
 const FOOTER_MENU = [
 	{
-		label: "補正ﾒﾆｭｰ",
-		navigateTo: PAGE_TYPES.CORRECTION_MENU,
-		queryParams: { mode: "CORRECTION" },
+		label: "地点補正",
+		navigateTo: PAGE_TYPES.LOCATION_CORRECTION,
 	},
 	{
-		label: "メニュー",
-		navigateTo: PAGE_TYPES.MENU,
-		queryParams: { mode: "MENU" },
+		label: "戻る",
+		useBackNavigation: true,
 	},
 ] as const satisfies FooterButtonInfo[];

@@ -16,7 +16,7 @@ const SLEEP_BUTTON_HEIGHT = 36;
 
 export default memo(function Menu() {
 	return (
-		<WithoutFooterPageFrame>
+		<WithoutFooterPageFrame mode={PAGE_MODES.MENU}>
 			<MenuButton
 				col={3}
 				row={0}

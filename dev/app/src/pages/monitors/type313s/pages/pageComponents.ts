@@ -6,14 +6,17 @@ import CarStatePowerBrake from "./car-state/CarStatePowerBrake";
 import CarStateSwitches from "./car-state/CarStateSwitches";
 import CarStateThreePhaseAc from "./car-state/CarStateThreePhaseAc";
 import Conductor315 from "./conductor/Conductor315";
-import ConductorAirCond from "./conductor/ConductorAirCond";
+import ConductorAirCondFan from "./conductor/ConductorAirCondFan";
+import ConductorAirCondMode from "./conductor/ConductorAirCondMode";
+import ConductorAirCondSub from "./conductor/ConductorAirCondSub";
+import ConductorAirCondVent from "./conductor/ConductorAirCondVent";
 import ConductorInfo from "./conductor/ConductorInfo";
-import ConductorLocationCorrection from "./conductor/ConductorLocationCorrection";
 import ConductorService from "./conductor/ConductorService";
 import CorrectionMenu from "./correction/CorrectionMenu";
 import CorrectionTime from "./correction/CorrectionTime";
+import LocationCorrection from "./correction/LocationCorrection";
+import Broken from "./driver/Broken";
 import DriverInfo from "./driver/DriverInfo";
-import DriverLocationCorrection from "./driver/DriverLocationCorrection";
 import DriverReduceSpeed from "./driver/DriverReduceSpeed";
 import DriverRoomLight from "./driver/DriverRoomLight";
 import MaintenanceAirCondState from "./maintenance/MaintenanceAirCondState";
@@ -29,14 +32,10 @@ import CarDetection from "./menu/CarDetection";
 import Menu from "./menu/Menu";
 import OccupancyRate from "./menu/OccupancyRate";
 import SetLocation from "./menu/SetLocation";
-import OtherSeriesAnnounce1 from "./other-series/OtherSeriesAnnounce1";
-import OtherSeriesAnnounce2 from "./other-series/OtherSeriesAnnounce2";
-import OtherSeriesBroken from "./other-series/OtherSeriesBroken";
+import OtherSeriesAnnounce from "./other-series/OtherSeriesAnnounce";
 import OtherSeriesDriverInfo from "./other-series/OtherSeriesDriverInfo";
 import OtherSeriesReduceSpeed from "./other-series/OtherSeriesReduceSpeed";
 import OtherSeriesSubSetting from "./other-series/OtherSeriesSubSetting";
-import OtherSeriesWorkSetting from "./other-series/OtherSeriesWorkSetting";
-import OtherSeriesWorkSettingMenu from "./other-series/OtherSeriesWorkSettingMenu";
 import { PAGE_TYPES } from "./pageTypes";
 import SettingEntrance from "./setting/SettingEntrance";
 import SettingMenu from "./setting/SettingMenu";
@@ -58,11 +57,7 @@ export const PAGE_COMPONENTS = {
 	// Other Series pages
 	[PAGE_TYPES.OTHER_SERIES_DRIVER_INFO]: OtherSeriesDriverInfo,
 	[PAGE_TYPES.OTHER_SERIES_SUB_SETTING]: OtherSeriesSubSetting,
-	[PAGE_TYPES.OTHER_SERIES_ANNOUNCE_1]: OtherSeriesAnnounce1,
-	[PAGE_TYPES.OTHER_SERIES_ANNOUNCE_2]: OtherSeriesAnnounce2,
-	[PAGE_TYPES.OTHER_SERIES_BROKEN]: OtherSeriesBroken,
-	[PAGE_TYPES.OTHER_SERIES_WORK_SETTING]: OtherSeriesWorkSetting,
-	[PAGE_TYPES.OTHER_SERIES_WORK_SETTING_MENU]: OtherSeriesWorkSettingMenu,
+	[PAGE_TYPES.OTHER_SERIES_ANNOUNCE]: OtherSeriesAnnounce,
 	[PAGE_TYPES.OTHER_SERIES_REDUCE_SPEED]: OtherSeriesReduceSpeed,
 
 	// Maintenance pages
@@ -84,6 +79,7 @@ export const PAGE_COMPONENTS = {
 	// Correction pages
 	[PAGE_TYPES.CORRECTION_MENU]: CorrectionMenu,
 	[PAGE_TYPES.CORRECTION_TIME]: CorrectionTime,
+	[PAGE_TYPES.LOCATION_CORRECTION]: LocationCorrection,
 
 	// Car State pages
 	[PAGE_TYPES.SWITCHES]: CarStateSwitches,
@@ -95,8 +91,10 @@ export const PAGE_COMPONENTS = {
 	// Conductor pages
 	[PAGE_TYPES.CONDUCTOR_INFO]: ConductorInfo,
 	[PAGE_TYPES.CONDUCTOR_SERVICE]: ConductorService,
-	[PAGE_TYPES.CONDUCTOR_AIR_COND]: ConductorAirCond,
-	[PAGE_TYPES.CONDUCTOR_LOCATION_CORRECTION]: ConductorLocationCorrection,
+	[PAGE_TYPES.CONDUCTOR_AIR_COND_MODE]: ConductorAirCondMode,
+	[PAGE_TYPES.CONDUCTOR_AIR_COND_VENT]: ConductorAirCondVent,
+	[PAGE_TYPES.CONDUCTOR_AIR_COND_SUB]: ConductorAirCondSub,
+	[PAGE_TYPES.CONDUCTOR_AIR_COND_FAN]: ConductorAirCondFan,
 	[PAGE_TYPES.CONDUCTOR_315]: Conductor315,
 
 	// Work Setting pages
@@ -108,5 +106,5 @@ export const PAGE_COMPONENTS = {
 	[PAGE_TYPES.DRIVER_INFO]: DriverInfo,
 	[PAGE_TYPES.REDUCE_SPEED]: DriverReduceSpeed,
 	[PAGE_TYPES.ROOM_LIGHT]: DriverRoomLight,
-	[PAGE_TYPES.LOCATION_CORRECTION]: DriverLocationCorrection,
+	[PAGE_TYPES.BROKEN]: Broken,
 } as const satisfies Record<PageType, ComponentType>;

@@ -20,8 +20,53 @@ export const FOOTER_MENU = [
 	},
 	{
 		label: "空調制御",
-		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND,
+		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND_MODE,
 		queryParams: { mode: "CONDUCTOR" },
+	},
+	{
+		label: "サービス",
+		navigateTo: PAGE_TYPES.CONDUCTOR_SERVICE,
+		queryParams: { mode: "CONDUCTOR" },
+	},
+	{
+		label: "車掌情報",
+		navigateTo: PAGE_TYPES.CONDUCTOR_INFO,
+		queryParams: { mode: "CONDUCTOR" },
+	},
+	{
+		label: "メニュー",
+		navigateTo: PAGE_TYPES.MENU,
+		queryParams: { mode: "MENU" },
+	},
+] as const satisfies FooterButtonInfo[];
+
+export const FOOTER_MENU_AC_LEFT = [
+	{
+		label: "空調制御",
+		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND_MODE,
+		queryParams: { mode: "CONDUCTOR" },
+	},
+] as const satisfies FooterButtonInfo[];
+export const FOOTER_MENU_AC_RIGHT = [
+	{
+		label: "換気",
+		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND_VENT,
+		queryParams: { mode: "CONDUCTOR" },
+	},
+	{
+		label: "副設定",
+		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND_SUB,
+		queryParams: { mode: "CONDUCTOR" },
+	},
+	{
+		label: "横流ﾌｧﾝ",
+		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND_FAN,
+		queryParams: { mode: "CONDUCTOR" },
+	},
+	{
+		label: "空調制御",
+		isSelected: true,
+		handleClick: () => {},
 	},
 	{
 		label: "サービス",

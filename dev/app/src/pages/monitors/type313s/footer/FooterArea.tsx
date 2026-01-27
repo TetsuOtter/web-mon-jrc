@@ -22,14 +22,14 @@ export type FooterButtonInfo = {
 			readonly useBackNavigation?: undefined;
 	  }
 	| {
-			readonly isSelected?: undefined;
+			readonly isSelected?: boolean;
 			readonly handleClick?: undefined;
 			readonly navigateTo: PageType;
 			readonly queryParams?: NavigationQueryParams;
 			readonly useBackNavigation?: undefined;
 	  }
 	| {
-			readonly isSelected?: undefined;
+			readonly isSelected?: boolean;
 			readonly handleClick?: undefined;
 			readonly navigateTo?: undefined;
 			readonly queryParams?: undefined;
@@ -39,9 +39,11 @@ export type FooterButtonInfo = {
 
 export type FooterAreaProps = {
 	readonly buttons: readonly FooterButtonInfo[];
+	readonly leftButtons?: readonly FooterButtonInfo[];
 };
 export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 	buttons,
+	leftButtons,
 	children,
 }) {
 	const parentObjectContext = useCanvasObjectContext();
@@ -59,6 +61,19 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 				color={COLORS.WHITE}
 				width={1}
 			/>
+			{leftButtons?.map((button, index) => (
+				<FooterSW
+					key={button.label}
+					align="left"
+					col={index}
+					text={button.label}
+					isSelected={button.isSelected}
+					onClick={button.handleClick}
+					navigateTo={button.navigateTo}
+					queryParams={button.queryParams}
+					useBackNavigation={button.useBackNavigation}
+				/>
+			))}
 			{buttons.map((button, index) => (
 				<FooterSW
 					key={button.label}
