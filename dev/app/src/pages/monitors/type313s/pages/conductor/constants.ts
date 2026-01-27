@@ -42,7 +42,7 @@ export const FOOTER_MENU = [
 
 export const FOOTER_MENU_AC_LEFT = [
 	{
-		label: "空調制御",
+		label: "空調ﾓｰﾄﾞ",
 		navigateTo: PAGE_TYPES.CONDUCTOR_AIR_COND_MODE,
 		queryParams: { mode: "CONDUCTOR" },
 	},
