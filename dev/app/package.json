@@ -6,11 +6,17 @@
 		"dev": "vite",
 		"build": "tsc && vite build",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"tauri": "tauri",
+		"tauri:dev": "tauri dev",
+		"tauri:build": "tauri build"
 	},
 	"dependencies": {
 		"@fontsource/dotgothic16": "^5.2.8",
 		"@reduxjs/toolkit": "^2.11.2",
+		"@tauri-apps/api": "^2.2.0",
+		"@tauri-apps/plugin-dialog": "^2.0.2",
+		"@tauri-apps/plugin-fs": "^2.0.2",
 		"bdfparser": "^2.2.5",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
@@ -20,6 +26,7 @@
 		"redux-thunk": "^3.1.0"
 	},
 	"devDependencies": {
+		"@tauri-apps/cli": "^2.2.0",
 		"@tsconfig/strictest": "^2.0.5",
 		"@types/encoding-japanese": "^2.2.1",
 		"@types/node": "^25.0.3",
