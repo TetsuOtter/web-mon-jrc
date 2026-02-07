@@ -14,21 +14,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: "macos-latest"
-            args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest"
-            args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04"
-            args: ""
-          - platform: "windows-latest"
-            args: ""
-
-    runs-on: ${{ matrix.platform }}
+  build-frontend:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,10 +25,106 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install frontend dependencies
+        working-directory: ./dev/app
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: ./dev/app
+        run: yarn build
+
+      - name: Upload frontend artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dev/app/dist
+          retention-days: 1
+
+  build-macos:
+    needs: build-frontend
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - aarch64-apple-darwin
+          - x86_64-apple-darwin
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dev/app/dist
+
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install frontend dependencies
+        working-directory: ./dev/app
+        run: yarn install --frozen-lockfile
+
+      - name: Build Icon
+        working-directory: ./dev/app
+        run: yarn tauri:icon
+
+      - name: Build Tauri app
+        working-directory: ./dev/app
+        run: bash build.sh "--target ${{ matrix.target }}"
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Upload artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-app-macos-${{ contains(matrix.target, 'aarch64') && 'aarch64' || 'x86_64' }}
+          path: |
+            dev/app/src-tauri/target/*/release/bundle/dmg/*.dmg
+            dev/app/src-tauri/target/*/release/bundle/macos/*.app
+
+  build:
+    needs: build-frontend
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - ubuntu-22.04
+          - windows-latest
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dev/app/dist
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
@@ -58,11 +141,9 @@ jobs:
             librsvg2-dev
 
       - name: Setup Yarn
-        if: success()
         run: corepack enable
 
       - name: Install frontend dependencies
-        if: success()
         working-directory: ./dev/app
         run: yarn install --frozen-lockfile
 
@@ -70,30 +151,12 @@ jobs:
         working-directory: ./dev/app
         run: yarn tauri:icon
 
-      - name: Build Tauri app (macOS)
-        if: matrix.platform == 'macos-latest'
+      - name: Build Tauri app
         working-directory: ./dev/app
-        run: bash build.sh "${{ matrix.args }}"
+        run: yarn tauri build
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-
-      - name: Build Tauri app (Ubuntu/Windows)
-        if: matrix.platform != 'macos-latest'
-        working-directory: ./dev/app
-        run: yarn tauri build ${{ matrix.args }}
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-
-      - name: Upload artifacts (macOS)
-        if: matrix.platform == 'macos-latest' && success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: tauri-app-macos-${{ contains(matrix.args, 'aarch64') && 'aarch64' || 'x86_64' }}
-          path: |
-            dev/app/src-tauri/target/*/release/bundle/dmg/*.dmg
-            dev/app/src-tauri/target/*/release/bundle/macos/*.app
 
       - name: Upload artifacts (Ubuntu)
         if: matrix.platform == 'ubuntu-22.04' && success()
@@ -114,7 +177,7 @@ jobs:
             dev/app/src-tauri/target/release/bundle/nsis/*.exe
 
   release:
-    needs: build
+    needs: [build-macos, build]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
