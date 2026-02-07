@@ -8,11 +8,11 @@ export PATH="$HOME/.cargo/bin:$PATH"
 ARGS="${1:-}"  # Accept optional build arguments (e.g., --target aarch64-apple-darwin)
 
 echo "================================"
-echo "Building Tauri app (app bundle only)..."
+echo "Building Tauri app (includes DMG to generate scripts)..."
 echo "================================"
 
-# Build app bundle only (skip DMG)
-yarn run tauri build $ARGS --bundles app
+# Build app and dmg bundles to generate bundle_dmg.sh script
+yarn run tauri build $ARGS --bundles app,dmg
 
 echo ""
 echo "================================"
