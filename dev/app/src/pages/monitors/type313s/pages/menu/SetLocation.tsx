@@ -1,3 +1,4 @@
+// TODO: 地点補正ページの実装が必要
 import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";

@@ -1,3 +1,4 @@
+// TODO: モニタ情報ページの実装が必要
 import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";
