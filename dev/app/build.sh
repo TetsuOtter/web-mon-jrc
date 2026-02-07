@@ -19,8 +19,8 @@ echo "================================"
 echo "Creating DMG with --sandbox-safe..."
 echo "================================"
 
-# Run the sandbox-safe DMG creation script
-bash create-dmg-sandbox.sh
+# Run the sandbox-safe DMG creation script, passing the build arguments
+bash create-dmg-sandbox.sh "$ARGS"
 
 echo ""
 echo "✅ Build complete! DMG created with --sandbox-safe option"
