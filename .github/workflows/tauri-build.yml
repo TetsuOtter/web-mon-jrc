@@ -68,7 +68,7 @@ jobs:
         working-directory: ./dev/app
         run: |
           if [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
-            bash build.sh
+            bash build.sh "${{ matrix.args }}"
           else
             yarn tauri build ${{ matrix.args }}
           fi
