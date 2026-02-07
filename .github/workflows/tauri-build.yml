@@ -6,7 +6,7 @@ on:
       - main
       - develop
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     branches:
       - main
@@ -19,14 +19,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-latest'
-            args: '--target aarch64-apple-darwin'
-          - platform: 'macos-latest'
-            args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-22.04'
-            args: ''
-          - platform: 'windows-latest'
-            args: ''
+          - platform: "macos-latest"
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-latest"
+            args: "--target x86_64-apple-darwin"
+          - platform: "ubuntu-22.04"
+            args: ""
+          - platform: "windows-latest"
+            args: ""
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -58,26 +58,36 @@ jobs:
             librsvg2-dev
 
       - name: Setup Yarn
+        if: success()
         run: corepack enable
 
       - name: Install frontend dependencies
+        if: success()
         working-directory: ./dev/app
         run: yarn install --frozen-lockfile
 
-      - name: Build Tauri app
+      - name: Build Icon
         working-directory: ./dev/app
-        run: |
-          if [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
-            bash build.sh "${{ matrix.args }}"
-          else
-            yarn tauri build ${{ matrix.args }}
-          fi
+        run: yarn tauri:icon
+
+      - name: Build Tauri app (macOS)
+        if: matrix.platform == 'macos-latest'
+        working-directory: ./dev/app
+        run: bash build.sh "${{ matrix.args }}"
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Build Tauri app (Ubuntu/Windows)
+        if: matrix.platform != 'macos-latest'
+        working-directory: ./dev/app
+        run: yarn tauri build ${{ matrix.args }}
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
       - name: Upload artifacts (macOS)
-        if: matrix.platform == 'macos-latest'
+        if: matrix.platform == 'macos-latest' && success()
         uses: actions/upload-artifact@v4
         with:
           name: tauri-app-macos-${{ contains(matrix.args, 'aarch64') && 'aarch64' || 'x86_64' }}
@@ -86,7 +96,7 @@ jobs:
             dev/app/src-tauri/target/*/release/bundle/macos/*.app
 
       - name: Upload artifacts (Ubuntu)
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.platform == 'ubuntu-22.04' && success()
         uses: actions/upload-artifact@v4
         with:
           name: tauri-app-linux
@@ -95,7 +105,7 @@ jobs:
             dev/app/src-tauri/target/release/bundle/appimage/*.AppImage
 
       - name: Upload artifacts (Windows)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' && success()
         uses: actions/upload-artifact@v4
         with:
           name: tauri-app-windows

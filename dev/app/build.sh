@@ -12,7 +12,6 @@ echo "Building Tauri app (app bundle only)..."
 echo "================================"
 
 # Build app bundle only (skip DMG)
-yarn tauri icon src-tauri/icons/icon.png
 yarn run tauri build $ARGS --bundles app
 
 echo ""
