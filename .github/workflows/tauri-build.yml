@@ -66,7 +66,12 @@ jobs:
 
       - name: Build Tauri app
         working-directory: ./dev/app
-        run: yarn tauri build ${{ matrix.args }}
+        run: |
+          if [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
+            bash build.sh
+          else
+            yarn tauri build ${{ matrix.args }}
+          fi
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
