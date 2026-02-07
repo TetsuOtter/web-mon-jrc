@@ -9,7 +9,8 @@
 		"preview": "vite preview",
 		"tauri": "tauri",
 		"tauri:dev": "tauri dev",
-		"tauri:build": "tauri build"
+		"tauri:icon": "tauri icon src-tauri/icons/icon.png",
+		"tauri:build": "yarn tauri:icon && tauri build"
 	},
 	"dependencies": {
 		"@fontsource/dotgothic16": "^5.2.8",
