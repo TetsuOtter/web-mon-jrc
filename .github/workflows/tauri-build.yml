@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: "yarn"
+          cache-dependency-path: "dev/app/yarn.lock"
 
       - name: Setup Yarn
         run: corepack enable
@@ -67,10 +69,19 @@ jobs:
         with:
           targets: aarch64-apple-darwin,x86_64-apple-darwin
 
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "dev/app/src-tauri"
+          cache-on-failure: true
+          prefix-key: ${{ matrix.target }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: "yarn"
+          cache-dependency-path: "dev/app/yarn.lock"
 
       - name: Setup Yarn
         run: corepack enable
@@ -122,9 +133,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+          cache: "yarn"
+          cache-dependency-path: "dev/app/yarn.lock"
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "dev/app/src-tauri"
+          cache-on-failure: true
+          prefix-key: ${{ matrix.platform }}
 
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
