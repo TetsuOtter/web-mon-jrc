@@ -14,6 +14,7 @@ export type GridRowDefinition = {
 	renderLabel: (relX: number, relY: number) => ReactNode;
 	renderCell: (relX: number, relY: number, carIndex: number) => ReactNode;
 	rowHeight: number;
+	marginTop?: number;
 };
 type ConductorStateGridProps = {
 	offsetY?: number;
@@ -34,11 +35,13 @@ export default memo<ConductorStateGridProps>(function ConductorStateGrid({
 		const nodeList: ReactNode[] = [];
 		let currentY = 0;
 		for (const rowDef of rowDefinitionList) {
-			nodeList.push(rowDef.renderLabel(0, currentY));
+			nodeList.push(rowDef.renderLabel(0, currentY + (rowDef.marginTop ?? 0)));
 
 			SAMPLE_TRAIN_FORMATION.forEach((_, carIndex) => {
 				const cellX = TRAIN_FORMATION_LEFT + CAR_IMAGE_WIDTH * carIndex;
-				nodeList.push(rowDef.renderCell(cellX, currentY, carIndex));
+				nodeList.push(
+					rowDef.renderCell(cellX, currentY + (rowDef.marginTop ?? 0), carIndex)
+				);
 			});
 
 			currentY += rowDef.rowHeight;

@@ -187,7 +187,7 @@ const GRID_DEFINITION = [
 				stateSelector={fanStateSelector}
 			/>
 		),
-		rowHeight: GRID_2X_CONTENT_HEIGHT + ROOM_TEMP_PADDING_TOP,
+		rowHeight: GRID_2X_CONTENT_HEIGHT,
 	},
 	{
 		renderLabel: (relX, relY) => (
@@ -208,7 +208,8 @@ const GRID_DEFINITION = [
 				textSelector={roomTemperatureTextSelector}
 			/>
 		),
-		rowHeight: GRID_1X_CONTENT_HEIGHT,
+		rowHeight: GRID_1X_CONTENT_HEIGHT + ROOM_TEMP_PADDING_TOP,
+		marginTop: ROOM_TEMP_PADDING_TOP,
 	},
 	{
 		renderLabel: (relX, relY) => (
