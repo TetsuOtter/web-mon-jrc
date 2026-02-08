@@ -8,7 +8,7 @@ import {
 } from "../../../components/car-image/TrainFormationImage";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
 
-const BASE_Y = 140;
+export const BASE_Y = 140;
 
 export type GridRowDefinition = {
 	renderLabel: (relX: number, relY: number) => ReactNode;

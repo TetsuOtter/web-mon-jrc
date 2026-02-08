@@ -1,27 +1,25 @@
 import { memo } from "react";
 
-import { CanvasRect, CanvasText } from "../../../../../../canvas-renderer";
+import { CanvasText } from "../../../../../../canvas-renderer";
 import { useAppSelectorWithParams } from "../../../../../../store/hooks";
+import RoundedButton from "../../../components/RoundedButton";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
-import { COLORS } from "../../../constants";
+import { QUADRANT_SIZE } from "../../../components/roundedButtonImageCache";
 
+import type { RgbColor } from "../../../../../../canvas-renderer/utils/colorUtil";
 import type { AppSelector } from "../../../../../../store/types";
 
-const PADDING_X = 2;
-const RECT_WIDTH = CAR_IMAGE_WIDTH - PADDING_X * 2;
-const RECT_HEIGHT = 21;
-
-export type LabelStyle = {
+export type RoundedButtonStyle = {
 	text: string;
-	scaleX?: number;
-	fillColor: string;
+	fillColor: RgbColor;
 	textColor: string;
 };
 export type CarStateLabelProps<T extends string | number | symbol> = {
 	readonly relX: number;
 	readonly relY: number;
+	readonly width?: number;
 	readonly carIndex: number;
-	readonly styleMap: Record<T, LabelStyle>;
+	readonly styleMap: Record<T, RoundedButtonStyle>;
 	readonly stateSelector: AppSelector<T, [carIndex: number]>;
 };
 const CarStateLabel = <T extends string | number | symbol>({
@@ -30,6 +28,7 @@ const CarStateLabel = <T extends string | number | symbol>({
 	carIndex,
 	styleMap,
 	stateSelector,
+	width = QUADRANT_SIZE * 2,
 }: CarStateLabelProps<T>) => {
 	const state = useAppSelectorWithParams(stateSelector, carIndex);
 	const labelStyle = styleMap[state];
@@ -37,14 +36,12 @@ const CarStateLabel = <T extends string | number | symbol>({
 		return null;
 	}
 
+	const marginX = (CAR_IMAGE_WIDTH - width) / 2;
 	return (
-		<CanvasRect
-			relX={relX + PADDING_X}
+		<RoundedButton
+			relX={relX + marginX}
 			relY={relY}
-			width={RECT_WIDTH}
-			height={RECT_HEIGHT}
-			strokeColor={COLORS.WHITE}
-			strokeWidth={1}
+			width={width}
 			fillColor={labelStyle.fillColor}>
 			<CanvasText
 				relX={0}
@@ -53,9 +50,8 @@ const CarStateLabel = <T extends string | number | symbol>({
 				align="center"
 				verticalAlign="center"
 				fillColor={labelStyle.textColor}
-				scaleX={labelStyle.scaleX}
 			/>
-		</CanvasRect>
+		</RoundedButton>
 	);
 };
 
