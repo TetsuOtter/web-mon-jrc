@@ -97,11 +97,9 @@ const GUIDE_3_Y = GUIDE_2_Y + FONT_SIZE_1X;
 export default memo(function WorkSettingTop() {
 	const mode = useWorkSettingPageMode();
 
-	const handleTrainNumberClick = useCallback(() => {
-		// TODO: Navigate to DirectionSettingNumber page
-		console.log("Train number button clicked");
-	}, []);
-
+	const handleTrainNumberClick = usePageNavigationTo(
+		PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER
+	);
 	const handleBulkTypeClick = usePageNavigationTo(PAGE_TYPES.WORK_SETTING_TYPE);
 
 	const handleDirectionBulkRowClick = useCallback(() => {

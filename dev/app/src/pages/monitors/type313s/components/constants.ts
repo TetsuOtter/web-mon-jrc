@@ -72,6 +72,7 @@ export const PAGE_NAME_MAP = {
 	// Work Setting pages
 	[PAGE_TYPES.WORK_SETTING_TOP]: "運行設定",
 	[PAGE_TYPES.WORK_SETTING_TYPE]: "運行設定",
+	[PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER]: "運行設定",
 	[PAGE_TYPES.WORK_SETTING_SEAT]: "運行設定",
 
 	// Driver pages

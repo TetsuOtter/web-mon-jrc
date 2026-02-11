@@ -43,6 +43,7 @@ import SettingMonitor from "./setting/SettingMonitor";
 import TableOfContents from "./toc/TableOfContents";
 import WorkSettingSeat from "./work-setting/WorkSettingSeat";
 import WorkSettingTop from "./work-setting/WorkSettingTop";
+import WorkSettingTrainNumber from "./work-setting/WorkSettingTrainNumber";
 import WorkSettingType from "./work-setting/WorkSettingType";
 
 import type { PageType } from "./pageTypes";
@@ -100,6 +101,7 @@ export const PAGE_COMPONENTS = {
 	// Work Setting pages
 	[PAGE_TYPES.WORK_SETTING_TOP]: WorkSettingTop,
 	[PAGE_TYPES.WORK_SETTING_TYPE]: WorkSettingType,
+	[PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER]: WorkSettingTrainNumber,
 	[PAGE_TYPES.WORK_SETTING_SEAT]: WorkSettingSeat,
 
 	// Driver pages
