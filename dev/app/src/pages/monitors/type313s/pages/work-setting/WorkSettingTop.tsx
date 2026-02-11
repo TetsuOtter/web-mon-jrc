@@ -10,6 +10,7 @@ import { COLORS, FONT_SIZE_1X, RGB_COLORS } from "../../constants";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
 import { PAGE_MODES, PAGE_TYPES } from "../pageTypes";
+import { usePageNavigationTo } from "../usePageNavigation";
 
 import BulkDirectionRow from "./components/BulkDirectionRow";
 import TrainDirectionRow from "./components/TrainDirectionRow";
@@ -101,10 +102,7 @@ export default memo(function WorkSettingTop() {
 		console.log("Train number button clicked");
 	}, []);
 
-	const handleBulkTypeClick = useCallback(() => {
-		// TODO: Navigate to DirectionSetting page (bulk type)
-		console.log("Bulk type button clicked");
-	}, []);
+	const handleBulkTypeClick = usePageNavigationTo(PAGE_TYPES.WORK_SETTING_TYPE);
 
 	const handleDirectionBulkRowClick = useCallback(() => {
 		// TODO: Navigate to DirectionSetting page with editing target

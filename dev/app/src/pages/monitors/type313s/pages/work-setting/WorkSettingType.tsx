@@ -1,26 +1,134 @@
-import { memo } from "react";
+import { memo, useCallback, useState } from "react";
 
-import { CanvasText } from "../../../../../canvas-renderer";
+import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
+import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
-import { COLORS } from "../../constants";
+import { COLORS, DISPLAY_WIDTH, RGB_COLORS } from "../../constants";
+import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
+import { PAGE_TYPES } from "../pageTypes";
 
-import { FOOTER_MENU } from "./constants";
+import SelectionGrid, {
+	CELL_COUNT as GRID_CELL_COUNT,
+} from "./components/SelectionGrid";
+import TypeCell, { ELEM_LIST as TYPE_ELEM_LIST } from "./components/TypeCell";
+
+import type { FooterButtonInfo } from "../../footer/FooterArea";
+
+const TOP_BG_HEIGHT = 88;
+
+const CURRENT_TYPE_AREA_BG_X = 128;
+const CURRENT_TYPE_AREA_BG_Y = 12;
+const CURRENT_TYPE_AREA_BG_WIDTH = 384;
+const CURRENT_TYPE_AREA_BG_HEIGHT = 64;
+
+const CURRENT_TYPE_LABEL_X = 16;
+const CURRENT_TYPE_LABEL_Y = 16;
+
+const CURRENT_TYPE_BOX_X = 112;
+const CURRENT_TYPE_BOX_Y = 6;
+const CURRENT_TYPE_BOX_WIDTH = 240;
+const CURRENT_TYPE_BOX_HEIGHT = 52;
+
+const CURRENT_TYPE_DISPLAY_TEXT_X = 16;
+
+const CONFIRM_BUTTON_X = 590;
+const CONFIRM_BUTTON_Y = 29;
+const CONFIRM_BUTTON_WIDTH = 90;
+const CONFIRM_BUTTON_HEIGHT = 30;
+
+const GUIDE_TEXT_X = 10;
+const GUIDE_TEXT_Y = 472;
 
 export default memo(function WorkSettingType() {
 	const mode = useWorkSettingPageMode();
+	const pagerProps = useFooterAreaWithPagerProps(
+		Math.floor(TYPE_ELEM_LIST.length / GRID_CELL_COUNT)
+	);
+	const [text, setText] = useState("");
+	const onClickCell = useCallback((index: number) => {
+		const typeName = TYPE_ELEM_LIST[index];
+		setText(`${index + 1}.${typeName.replace("\n", " ")}`);
+	}, []);
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
-			<CanvasText
+			footerItems={FOOTER_MENU}
+			pagerProps={pagerProps}>
+			<CanvasRect
 				relX={0}
 				relY={0}
-				verticalAlign="center"
-				align="center"
-				text="準備中"
+				width={DISPLAY_WIDTH}
+				height={TOP_BG_HEIGHT}
+				fillColor={COLORS.GRAY}>
+				<CanvasRect
+					relX={CURRENT_TYPE_AREA_BG_X}
+					relY={CURRENT_TYPE_AREA_BG_Y}
+					width={CURRENT_TYPE_AREA_BG_WIDTH}
+					height={CURRENT_TYPE_AREA_BG_HEIGHT}
+					fillColor={COLORS.CYAN}>
+					<CanvasText
+						relX={CURRENT_TYPE_LABEL_X}
+						relY={CURRENT_TYPE_LABEL_Y}
+						text="種別表示器"
+						scaleY={2}
+						fillColor={COLORS.WHITE}
+					/>
+					<Button
+						relX={CURRENT_TYPE_BOX_X}
+						relY={CURRENT_TYPE_BOX_Y}
+						width={CURRENT_TYPE_BOX_WIDTH}
+						height={CURRENT_TYPE_BOX_HEIGHT}
+						fillColor={RGB_COLORS.BLACK}>
+						<CanvasText
+							relX={CURRENT_TYPE_DISPLAY_TEXT_X}
+							relY={0}
+							align="left"
+							verticalAlign="center"
+							text={text}
+							scaleY={2}
+							fillColor={COLORS.WHITE}
+						/>
+					</Button>
+				</CanvasRect>
+				<Button
+					relX={CONFIRM_BUTTON_X}
+					relY={CONFIRM_BUTTON_Y}
+					width={CONFIRM_BUTTON_WIDTH}
+					height={CONFIRM_BUTTON_HEIGHT}
+					shadowWidth={SHADOW_WIDTH.EXTRA_SMALL}>
+					<CanvasText
+						relX={0}
+						relY={0}
+						align="center"
+						verticalAlign="center"
+						text="確　認"
+						fillColor={COLORS.WHITE}
+					/>
+				</Button>
+			</CanvasRect>
+			<SelectionGrid
+				pageIndex={pagerProps.currentPageIndex}
+				onClickCell={onClickCell}
+				CellComponent={TypeCell}
+			/>
+			<CanvasText
+				relX={GUIDE_TEXT_X}
+				relY={GUIDE_TEXT_Y}
+				text="種別名をタッチして選択し「確認」キーを押して下さい。（　）内は２１１系正面表示。"
 				fillColor={COLORS.WHITE}
 			/>
 		</FooterPageFrame>
 	);
 });
+
+export const FOOTER_MENU = [
+	{
+		label: "種別設定",
+		navigateTo: PAGE_TYPES.WORK_SETTING_TYPE,
+	},
+	{
+		label: "戻る",
+		navigateTo: PAGE_TYPES.WORK_SETTING_TOP,
+	},
+] as const satisfies FooterButtonInfo[];
