@@ -6,12 +6,14 @@ import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS, DISPLAY_WIDTH, RGB_COLORS } from "../../constants";
 import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
+import { ICONS } from "../../icons";
 import { PAGE_TYPES } from "../pageTypes";
 
 import SelectionGrid, {
 	CELL_COUNT as GRID_CELL_COUNT,
 } from "./components/SelectionGrid";
 import TypeCell, { ELEM_LIST as TYPE_ELEM_LIST } from "./components/TypeCell";
+import { PAGE_NAME_MAP } from "./constants";
 
 import type { FooterButtonInfo } from "../../footer/FooterArea";
 
@@ -53,6 +55,8 @@ export default memo(function WorkSettingType() {
 	return (
 		<FooterPageFrame
 			mode={mode}
+			pageIcon={ICONS.WORK_SETTING_1}
+			pageName={PAGE_NAME_MAP[mode]}
 			footerItems={FOOTER_MENU}
 			pagerProps={pagerProps}>
 			<CanvasRect
@@ -122,7 +126,7 @@ export default memo(function WorkSettingType() {
 	);
 });
 
-export const FOOTER_MENU = [
+const FOOTER_MENU = [
 	{
 		label: "種別設定",
 		navigateTo: PAGE_TYPES.WORK_SETTING_TYPE,

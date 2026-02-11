@@ -9,11 +9,12 @@ import RoundedButton from "../../components/RoundedButton";
 import { COLORS, FONT_SIZE_1X, RGB_COLORS } from "../../constants";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
-import { PAGE_MODES, PAGE_TYPES } from "../pageTypes";
+import { PAGE_TYPES } from "../pageTypes";
 import { usePageNavigationTo } from "../usePageNavigation";
 
 import BulkDirectionRow from "./components/BulkDirectionRow";
 import TrainDirectionRow from "./components/TrainDirectionRow";
+import { PAGE_NAME_MAP } from "./constants";
 
 import type { FooterButtonInfo } from "../../footer/FooterArea";
 
@@ -367,12 +368,6 @@ export default memo(function WorkSettingTop() {
 		</FooterPageFrame>
 	);
 });
-
-const PAGE_NAME_MAP = {
-	[PAGE_MODES.WORK_SETTING]: "運行設定",
-	[PAGE_MODES.DRIVER]: "運転士運行設定",
-	[PAGE_MODES.CONDUCTOR]: "車掌運行設定",
-} as const satisfies Record<ReturnType<typeof useWorkSettingPageMode>, string>;
 
 const FOOTER_MENU = [
 	{
