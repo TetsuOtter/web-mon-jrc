@@ -150,7 +150,7 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						-r + 0.5,
 						0.5,
 						-0.5,
-						r - 0.5
+						r + 0.5
 					);
 
 					// 右下
@@ -164,7 +164,7 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						-0.5,
 						r - 0.5,
 						-0.5,
-						r - 0.5
+						r + 0.5
 					);
 				}
 
