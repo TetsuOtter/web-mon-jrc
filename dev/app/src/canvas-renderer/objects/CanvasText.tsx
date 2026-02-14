@@ -381,29 +381,26 @@ function useDrawContentPromise({
 }: DrawContentHookParams): Promise<DrawContent> {
 	return useMemo(async () => {
 		const drawLines = await lineImagesPromise;
+		const normalizedSkipLineCount = Math.max(0, Math.floor(skipLineCount));
 
 		let maxWidth = 0;
-		let totalHeight = 0;
+		let visibleHeight = 0;
 		const lines: DrawLine[] = [];
 
 		const fontHeightPx = fontInfo.fontSize * scaleY;
 		const lineHeightPx = fontInfo.fontSize * lineHeight * scaleY;
 
 		drawLines.forEach((drawLine, index) => {
-			if (maxHeightPx && totalHeight + lineHeightPx > maxHeightPx) {
-				// maxHeightPxを超える場合は表示しないが、DrawContentには含める
-				totalHeight += lineHeightPx;
+			if (index < normalizedSkipLineCount) {
 				return;
 			}
 
-			// skipLineCountに基づいて表示を調整
-			if (index < skipLineCount) {
-				totalHeight += lineHeightPx;
+			if (maxHeightPx && visibleHeight + lineHeightPx > maxHeightPx) {
 				return;
 			}
 
 			if (drawLine.canvas == null) {
-				totalHeight += lineHeightPx;
+				visibleHeight += lineHeightPx;
 				return;
 			}
 
@@ -412,27 +409,27 @@ function useDrawContentPromise({
 
 			lines.push({
 				x: lineX,
-				y: totalHeight,
+				y: visibleHeight,
 				canvas: drawLine.canvas,
 				width: scaledWidth,
 				height: fontHeightPx,
 			});
 
 			maxWidth = Math.max(maxWidth, scaledWidth);
-			totalHeight += lineHeightPx;
+			visibleHeight += lineHeightPx;
 		});
 
 		// 垂直アライメントに基づいて行のY位置を調整
 		const adjustedLines = lines.map((line) => ({
 			...line,
-			y: calculateYPosition(line.y, totalHeight, maxHeightPx, verticalAlign),
+			y: calculateYPosition(line.y, visibleHeight, maxHeightPx, verticalAlign),
 		}));
 
 		return {
 			x,
 			y,
 			width: maxWidth,
-			height: totalHeight,
+			height: visibleHeight,
 			lines: adjustedLines,
 		};
 	}, [
