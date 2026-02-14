@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import {
 	CanvasLine,
@@ -6,6 +6,7 @@ import {
 	CanvasText,
 } from "../../../../../canvas-renderer";
 import CanvasRoundedRect from "../../../../../canvas-renderer/objects/CanvasRoundedRect";
+import { toWide } from "../../../../../utils/toWide";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import {
@@ -14,14 +15,23 @@ import {
 	FONT_SIZE_1X,
 	RGB_COLORS,
 } from "../../constants";
+import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
 import { PAGE_TYPES } from "../pageTypes";
 
-import TenKeyButton, { TEN_KEY_TYPE } from "./components/TenKeyButton";
+import TenKeyButton, {
+	isTenKeyTypePrefix,
+	isTenKeyTypeSuffix,
+	TEN_KEY_TYPE,
+} from "./components/TenKeyButton";
 import { PAGE_NAME_MAP } from "./constants";
 
-import type { TenKeyType } from "./components/TenKeyButton";
+import type {
+	TenKeyType,
+	TenKeyTypePrefix,
+	TenKeyTypeSuffix,
+} from "./components/TenKeyButton";
 import type { FooterButtonInfo } from "../../footer/FooterArea";
 
 const DISPLAY_RECT_X = 24;
@@ -33,8 +43,6 @@ const EACH_DISPLAY_WIDTH = 200;
 const EACH_DISPLAY_HEIGHT = 60;
 const EACH_DISPLAY_TOP = 32;
 const EACH_DISPLAY_LABEL_TOP = 8;
-
-const EACH_DISPLAY_TEXT_X = 16;
 
 const TYPE_DISPLAY_X = 40;
 const DESTINATION_DISPLAY_X = 276;
@@ -58,22 +66,120 @@ const CONFIRM_BUTTON_Y = SET_BUTTON_Y + 64;
 const CONFIRM_BUTTON_WIDTH = SET_BUTTON_WIDTH;
 const CONFIRM_BUTTON_HEIGHT = SET_BUTTON_HEIGHT;
 
+const STOP_STA_TEXT_X = 8;
+const STOP_STA_TEXT_Y = 180;
+const STOP_STA_TEXT_CHAR_PER_LINE = 18;
+const STOP_STA_TEXT_LINE_PER_PAGE = 15;
+const STOP_STA_TEXT_CHAR_PER_PAGE =
+	STOP_STA_TEXT_CHAR_PER_LINE * STOP_STA_TEXT_LINE_PER_PAGE;
+const STOP_STA_TEXT_WIDTH = FONT_SIZE_1X * STOP_STA_TEXT_CHAR_PER_LINE;
+const STOP_STA_TEXT_LINE_HEIGHT = (FONT_SIZE_1X + 2) / FONT_SIZE_1X;
+const STOP_STA_TEXT_HEIGHT = (FONT_SIZE_1X + 2) * STOP_STA_TEXT_LINE_PER_PAGE;
+
 const GUIDE_TEXT_1_X = 10;
 const GUIDE_TEXT_1_Y = 482;
 const GUIDE_TEXT_2_X = GUIDE_TEXT_1_X;
 const GUIDE_TEXT_2_Y = GUIDE_TEXT_1_Y + FONT_SIZE_1X;
 
+type TrainNumberObject = {
+	prefix: TenKeyTypePrefix | undefined;
+	trainNumber: string;
+	suffix: TenKeyTypeSuffix | undefined;
+};
+const TRAIN_NUMBER_OBJECT_INITIAL = {
+	prefix: undefined,
+	trainNumber: "",
+	suffix: undefined,
+} as const satisfies TrainNumberObject;
+
 export default memo(function WorkSettingTrainNumber() {
 	const mode = useWorkSettingPageMode();
+	const [trainType, setTrainType] = useState("");
+	const [destination, setDestination] = useState("");
+	const [trainNumber, setTrainNumber] = useState<TrainNumberObject>(
+		TRAIN_NUMBER_OBJECT_INITIAL
+	);
+	const [stopSta, setStopSta] = useState("");
+	const maxPageIndex = useMemo(
+		() => Math.ceil(stopSta.length / STOP_STA_TEXT_CHAR_PER_PAGE) - 1,
+		[stopSta.length]
+	);
+	const pagerProps = useFooterAreaWithPagerProps(maxPageIndex);
 	const onClickTenKey = useCallback((type: TenKeyType) => {
-		console.log(`Ten key clicked: ${type}`);
+		if (type === TEN_KEY_TYPE.CLEAR) {
+			setTrainNumber(TRAIN_NUMBER_OBJECT_INITIAL);
+			setTrainType("");
+			setDestination("");
+			setStopSta("");
+		} else if (isTenKeyTypePrefix(type)) {
+			setTrainNumber((prev) => ({ ...prev, prefix: type }));
+		} else if (isTenKeyTypeSuffix(type)) {
+			setTrainNumber((prev) => ({ ...prev, suffix: type }));
+		} else {
+			setTrainNumber((prev) => ({
+				...prev,
+				trainNumber:
+					prev.trainNumber.length < 4
+						? prev.trainNumber + type.toString()
+						: prev.trainNumber,
+			}));
+		}
 	}, []);
+	const onClickSet = useCallback(() => {
+		setTrainType("普通");
+		setDestination("豊橋");
+		setStopSta(IIDA_LINE_STA_LIST);
+		return true;
+	}, []);
+	const onClickConfirm = useCallback(() => {
+		console.log("確定", {
+			trainType,
+			destination,
+			trainNumber,
+		});
+		return true;
+	}, [trainType, destination, trainNumber]);
+
+	const trainNumberStr = useMemo(() => {
+		const prefixStr = (() => {
+			switch (trainNumber.prefix) {
+				case TEN_KEY_TYPE["回"]:
+					return "回";
+				case TEN_KEY_TYPE["救"]:
+					return "救";
+				case TEN_KEY_TYPE["試"]:
+					return "試";
+				default:
+					return "";
+			}
+		})();
+		const suffixStr = (() => {
+			switch (trainNumber.suffix) {
+				case TEN_KEY_TYPE["M"]:
+					return "M";
+				case TEN_KEY_TYPE["G"]:
+					return "G";
+				case TEN_KEY_TYPE["D"]:
+					return "D";
+				case TEN_KEY_TYPE["F"]:
+					return "F";
+				case TEN_KEY_TYPE["A"]:
+					return "A";
+				case TEN_KEY_TYPE["C"]:
+					return "C";
+				default:
+					return "■";
+			}
+		})();
+		return toWide(`${prefixStr}${trainNumber.trainNumber}${suffixStr}`);
+	}, [trainNumber]);
 	return (
 		<FooterPageFrame
 			mode={mode}
 			pageIcon={ICONS.WORK_SETTING_1}
 			pageName={PAGE_NAME_MAP[mode]}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+			pagerProps={pagerProps}>
 			<CanvasLine
 				relX1={0}
 				relY1={TOP_AREA_HR_Y}
@@ -105,11 +211,11 @@ export default memo(function WorkSettingTrainNumber() {
 					height={EACH_DISPLAY_HEIGHT}
 					fillColor={RGB_COLORS.BLACK}>
 					<CanvasText
-						relX={EACH_DISPLAY_TEXT_X}
+						relX={0}
 						relY={0}
-						align="left"
+						align="center"
 						verticalAlign="center"
-						text="種別1"
+						text={trainType}
 						scaleY={2}
 						fillColor={COLORS.WHITE}
 					/>
@@ -131,11 +237,11 @@ export default memo(function WorkSettingTrainNumber() {
 					height={EACH_DISPLAY_HEIGHT}
 					fillColor={RGB_COLORS.BLACK}>
 					<CanvasText
-						relX={EACH_DISPLAY_TEXT_X}
+						relX={0}
 						relY={0}
-						align="left"
+						align="center"
 						verticalAlign="center"
-						text="行先1"
+						text={destination}
 						scaleY={2}
 						fillColor={COLORS.WHITE}
 					/>
@@ -157,11 +263,11 @@ export default memo(function WorkSettingTrainNumber() {
 					height={EACH_DISPLAY_HEIGHT}
 					fillColor={RGB_COLORS.BLACK}>
 					<CanvasText
-						relX={EACH_DISPLAY_TEXT_X}
+						relX={0}
 						relY={0}
-						align="left"
+						align="center"
 						verticalAlign="center"
-						text="列車番号1"
+						text={trainNumberStr}
 						scaleY={2}
 						fillColor={COLORS.WHITE}
 					/>
@@ -192,7 +298,8 @@ export default memo(function WorkSettingTrainNumber() {
 					relY={SET_BUTTON_Y}
 					width={SET_BUTTON_WIDTH}
 					height={SET_BUTTON_HEIGHT}
-					shadowWidth={SHADOW_WIDTH.SMALL}>
+					shadowWidth={SHADOW_WIDTH.SMALL}
+					onClick={onClickSet}>
 					<CanvasText
 						relX={0}
 						relY={0}
@@ -207,7 +314,8 @@ export default memo(function WorkSettingTrainNumber() {
 					relY={CONFIRM_BUTTON_Y}
 					width={CONFIRM_BUTTON_WIDTH}
 					height={CONFIRM_BUTTON_HEIGHT}
-					shadowWidth={SHADOW_WIDTH.SMALL}>
+					shadowWidth={SHADOW_WIDTH.SMALL}
+					onClick={onClickConfirm}>
 					<CanvasText
 						relX={0}
 						relY={0}
@@ -218,6 +326,18 @@ export default memo(function WorkSettingTrainNumber() {
 					/>
 				</Button>
 			</CanvasRoundedRect>
+			<CanvasText
+				relX={STOP_STA_TEXT_X}
+				relY={STOP_STA_TEXT_Y}
+				lineHeight={STOP_STA_TEXT_LINE_HEIGHT}
+				maxWidthPx={STOP_STA_TEXT_WIDTH}
+				maxHeightPx={STOP_STA_TEXT_HEIGHT}
+				text={stopSta}
+				skipLineCount={
+					pagerProps.currentPageIndex * STOP_STA_TEXT_LINE_PER_PAGE
+				}
+				fillColor={COLORS.WHITE}
+			/>
 			<CanvasText
 				relX={GUIDE_TEXT_1_X}
 				relY={GUIDE_TEXT_1_Y}
@@ -281,3 +401,103 @@ const TEN_KEY_LAYOUT = [
 		TEN_KEY_TYPE["C"],
 	],
 ] as const satisfies TenKeyLayout;
+
+const IIDA_LINE_STA_LIST = [
+	"上諏訪",
+	"下諏訪",
+	"岡谷",
+	"川岸",
+	"辰野",
+	"宮木",
+	"伊那新町",
+	"羽場",
+	"沢",
+	"伊那松島",
+	"木ノ下",
+	"北殿",
+	"田畑",
+	"伊那北",
+	"伊那市",
+	"下島",
+	"沢渡",
+	"赤木",
+	"宮田",
+	"太田切",
+	"駒ヶ根小町屋",
+	"伊那福岡",
+	"田切",
+	"飯島",
+	"伊那本郷",
+	"七久保",
+	"高遠原",
+	"伊那田島",
+	"上片桐",
+	"伊那大島",
+	"山吹",
+	"下平",
+	"市田",
+	"下市田",
+	"元善光寺",
+	"伊那上郷",
+	"桜町",
+	"飯田",
+	"切石",
+	"鼎",
+	"下山村",
+	"伊那八幡",
+	"毛賀",
+	"駄科",
+	"時又",
+	"川路",
+	"天竜峡",
+	"千代",
+	"金野",
+	"唐笠",
+	"門島",
+	"田本",
+	"温田",
+	"為栗",
+	"平岡",
+	"鶯巣",
+	"伊那小沢",
+	"中井侍",
+	"小和田",
+	"大嵐",
+	"水窪",
+	"向市場",
+	"城西",
+	"相月",
+	"佐久間",
+	"中部天竜",
+	"下川合",
+	"早瀬",
+	"浦川",
+	"上市場",
+	"出馬",
+	"東栄",
+	"池場",
+	"三河川合",
+	"柿平",
+	"三河槙原",
+	"湯谷温泉",
+	"三河大野",
+	"本長篠",
+	"長篠城",
+	"鳥居",
+	"大海",
+	"三河東郷",
+	"茶臼山",
+	"東新町",
+	"新城",
+	"野田城",
+	"東上",
+	"江島",
+	"長山",
+	"三河一宮",
+	"豊川",
+	"牛久保",
+	"小坂井",
+	"下地",
+	"船町",
+	"豊橋",
+].join("→");

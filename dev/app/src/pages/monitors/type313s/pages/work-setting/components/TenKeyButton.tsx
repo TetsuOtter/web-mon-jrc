@@ -61,8 +61,7 @@ export default memo<TenKeyButtonProps>(function TenKeyButton({
 	);
 });
 
-export const TEN_KEY_TYPE = {
-	EMPTY: -1,
+export const TEN_KEY_TYPE_NUMBER = {
 	0: 0,
 	1: 1,
 	2: 2,
@@ -73,18 +72,50 @@ export const TEN_KEY_TYPE = {
 	7: 7,
 	8: 8,
 	9: 9,
-	CLEAR: 10,
-	回: 11,
-	救: 12,
-	試: 13,
-	A: 14,
-	C: 15,
-	D: 16,
-	F: 17,
-	G: 18,
-	M: 19,
 } as const;
+export const TEN_KEY_TYPE_PREFIX = {
+	回: 101,
+	救: 102,
+	試: 103,
+} as const;
+export const TEN_KEY_TYPE_SUFFIX = {
+	A: 201,
+	C: 202,
+	D: 203,
+	F: 204,
+	G: 205,
+	M: 206,
+} as const;
+export const TEN_KEY_TYPE_OTHER = {
+	EMPTY: -1,
+	CLEAR: -2,
+} as const;
+export const TEN_KEY_TYPE = {
+	...TEN_KEY_TYPE_NUMBER,
+	...TEN_KEY_TYPE_PREFIX,
+	...TEN_KEY_TYPE_SUFFIX,
+	...TEN_KEY_TYPE_OTHER,
+} as const;
+export type TenKeyTypeNumber =
+	(typeof TEN_KEY_TYPE_NUMBER)[keyof typeof TEN_KEY_TYPE_NUMBER];
+export type TenKeyTypePrefix =
+	(typeof TEN_KEY_TYPE_PREFIX)[keyof typeof TEN_KEY_TYPE_PREFIX];
+export type TenKeyTypeSuffix =
+	(typeof TEN_KEY_TYPE_SUFFIX)[keyof typeof TEN_KEY_TYPE_SUFFIX];
 export type TenKeyType = (typeof TEN_KEY_TYPE)[keyof typeof TEN_KEY_TYPE];
+
+const tenKeyTypeNumberValuesSet = new Set(Object.values(TEN_KEY_TYPE_NUMBER));
+export function isTenKeyTypeNumber(type: TenKeyType): type is TenKeyTypeNumber {
+	return tenKeyTypeNumberValuesSet.has(type as TenKeyTypeNumber);
+}
+const tenKeyTypePrefixValuesSet = new Set(Object.values(TEN_KEY_TYPE_PREFIX));
+export function isTenKeyTypePrefix(type: TenKeyType): type is TenKeyTypePrefix {
+	return tenKeyTypePrefixValuesSet.has(type as TenKeyTypePrefix);
+}
+const tenKeyTypeSuffixValuesSet = new Set(Object.values(TEN_KEY_TYPE_SUFFIX));
+export function isTenKeyTypeSuffix(type: TenKeyType): type is TenKeyTypeSuffix {
+	return tenKeyTypeSuffixValuesSet.has(type as TenKeyTypeSuffix);
+}
 
 export const TYPE_LABEL = {
 	[TEN_KEY_TYPE.EMPTY]: "",

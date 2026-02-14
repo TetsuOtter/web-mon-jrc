@@ -5,14 +5,14 @@ import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS } from "../../constants";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 
-import { FOOTER_MENU } from "./constants";
+import { FOOTER_MENU_FOR_CONDUCTOR } from "./constants";
 
 export default memo(function WorkSettingSeat() {
 	const mode = useWorkSettingPageMode();
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU_FOR_CONDUCTOR}>
 			<CanvasText
 				relX={0}
 				relY={0}
