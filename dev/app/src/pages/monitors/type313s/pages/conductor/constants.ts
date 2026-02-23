@@ -66,7 +66,9 @@ export const FOOTER_MENU_AC_RIGHT = [
 	{
 		label: "空調制御",
 		isSelected: true,
-		handleClick: () => {},
+		handleClick: () => {
+			// no-op
+		},
 	},
 	{
 		label: "サービス",
