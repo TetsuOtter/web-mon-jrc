@@ -289,7 +289,7 @@ export default memo(function WorkSettingTop() {
 			{/* Train Direction Rows (1-6) */}
 			{Array.from({ length: 6 }, (_, i) => (
 				<TrainDirectionRow
-					key={i}
+					key={`direction-${i + 1}`}
 					index={i + 1}
 					relY={DIRECTION_BUTTON_TOP + (i + 1) * BUTTON_HEIGHT}
 					onClick={handleDirectionRowClick}
