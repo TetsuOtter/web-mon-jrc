@@ -1,6 +1,8 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
+import { useAppDispatch } from "../../../../../store/hooks";
+import { setTrainType } from "../../../../../store/monitors/type313s/type313sSlice";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS, DISPLAY_WIDTH, RGB_COLORS } from "../../constants";
@@ -43,15 +45,29 @@ const GUIDE_TEXT_X = 10;
 const GUIDE_TEXT_Y = 472;
 
 export default memo(function WorkSettingType() {
+	const dispatch = useAppDispatch();
 	const mode = useWorkSettingPageMode();
 	const pagerProps = useFooterAreaWithPagerProps(
 		Math.floor(TYPE_ELEM_LIST.length / GRID_CELL_COUNT)
 	);
-	const [text, setText] = useState("");
+	const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>();
+	const selectedTypeDisplayText = useMemo(() => {
+		if (selectedTypeIndex == null) {
+			return "";
+		}
+		const typeName = TYPE_ELEM_LIST[selectedTypeIndex];
+		return `${selectedTypeIndex + 1}.${typeName.replace("\n", " ")}`;
+	}, [selectedTypeIndex]);
 	const onClickCell = useCallback((index: number) => {
-		const typeName = TYPE_ELEM_LIST[index];
-		setText(`${index + 1}.${typeName.replace("\n", " ")}`);
+		setSelectedTypeIndex(index);
 	}, []);
+	const onClickConfirm = useCallback(() => {
+		if (selectedTypeIndex != null) {
+			const typeName = TYPE_ELEM_LIST[selectedTypeIndex];
+			dispatch(setTrainType(typeName.replace("\n", " ")));
+		}
+		return true;
+	}, [dispatch, selectedTypeIndex]);
 	return (
 		<FooterPageFrame
 			mode={mode}
@@ -89,7 +105,7 @@ export default memo(function WorkSettingType() {
 							relY={0}
 							align="left"
 							verticalAlign="center"
-							text={text}
+							text={selectedTypeDisplayText}
 							scaleY={2}
 							fillColor={COLORS.WHITE}
 						/>
@@ -108,6 +124,7 @@ export default memo(function WorkSettingType() {
 						verticalAlign="center"
 						text="確　認"
 						fillColor={COLORS.WHITE}
+						onClick={onClickConfirm}
 					/>
 				</Button>
 			</CanvasRect>
