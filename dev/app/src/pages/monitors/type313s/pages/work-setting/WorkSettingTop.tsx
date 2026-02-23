@@ -42,9 +42,8 @@ const TRAIN_NUMBER_AREA_TOP = 82;
 const TRAIN_NUMBER_AREA_LEFT = 12;
 const TRAIN_NUMBER_AREA_HEIGHT = 122;
 const TRAIN_NUMBER_AREA_WIDTH = 345;
-const TRAIN_NUMBER_BUTTON_LEFT = 56;
-const TRAIN_NUMBER_BUTTON_TOP =
-	TRAIN_NUMBER_AREA_TOP + (TRAIN_NUMBER_AREA_HEIGHT - BUTTON_HEIGHT) / 2;
+const TRAIN_NUMBER_BUTTON_LEFT = 44;
+const TRAIN_NUMBER_BUTTON_TOP = (TRAIN_NUMBER_AREA_HEIGHT - BUTTON_HEIGHT) / 2;
 const TRAIN_NUMBER_DISPLAY_SPACING = 24;
 const TRAIN_NUMBER_DISPLAY_LEFT =
 	TRAIN_NUMBER_BUTTON_LEFT + BUTTON_WIDTH + TRAIN_NUMBER_DISPLAY_SPACING;
@@ -56,8 +55,8 @@ const TRAIN_TYPE_AREA_LEFT = TRAIN_NUMBER_AREA_LEFT;
 const TRAIN_TYPE_AREA_HEIGHT = 142;
 const TRAIN_TYPE_AREA_WIDTH = 382;
 const TRAIN_TYPE_CORNER_RADIUS = 8;
-const TRAIN_TYPE_BUTTON_LEFT = TRAIN_TYPE_AREA_LEFT + FONT_SIZE_1X;
-const TRAIN_TYPE_TITLE_TOP = TRAIN_TYPE_AREA_TOP + 16;
+const TRAIN_TYPE_BUTTON_LEFT = FONT_SIZE_1X;
+const TRAIN_TYPE_TITLE_TOP = 16;
 const TRAIN_TYPE_TITLE_LEFT = TRAIN_TYPE_BUTTON_LEFT + BUTTON_WIDTH;
 const TRAIN_TYPE_TITLE_SPACING = 16;
 const TRAIN_TYPE_BUTTON_TOP =
@@ -71,11 +70,11 @@ const DIRECTION_AREA_LEFT = 408;
 const DIRECTION_AREA_HEIGHT = 454;
 const DIRECTION_AREA_WIDTH = 382;
 const DIRECTION_CORNER_RADIUS = TRAIN_TYPE_CORNER_RADIUS;
-const DIRECTION_BUTTON_LEFT = DIRECTION_AREA_LEFT + 16;
+const DIRECTION_BUTTON_LEFT = 16;
 const DIRECTION_DISPLAY_DISPLAY_SPACING = 5;
 const DIRECTION_TITLE_LEFT =
 	DIRECTION_BUTTON_LEFT + BUTTON_WIDTH + BUTTON_DISPLAY_PADDING;
-const DIRECTION_TITLE_TOP = DIRECTION_AREA_TOP + 12;
+const DIRECTION_TITLE_TOP = 12;
 const DIRECTION_BULK_BUTTON_TOP =
 	DIRECTION_TITLE_TOP + TITLE_HEIGHT + DIRECTION_DISPLAY_DISPLAY_SPACING;
 const DIRECTION_BUTTON_TOP =
@@ -133,168 +132,152 @@ export default memo(function WorkSettingTop() {
 			footerItems={FOOTER_MENU}>
 			<LocationLabel />
 
-			{/* Train Number Section */}
 			<CanvasRoundedRect
 				relX={TRAIN_NUMBER_AREA_LEFT}
 				relY={TRAIN_NUMBER_AREA_TOP}
 				width={TRAIN_NUMBER_AREA_WIDTH}
 				height={TRAIN_NUMBER_AREA_HEIGHT}
 				radius={TRAIN_NUMBER_AREA_HEIGHT / 2}
-				fillColor={COLORS.GRAY}
-			/>
+				fillColor={COLORS.GRAY}>
+				<Button
+					relX={TRAIN_NUMBER_BUTTON_LEFT}
+					relY={TRAIN_NUMBER_BUTTON_TOP}
+					width={BUTTON_WIDTH}
+					height={BUTTON_HEIGHT}
+					shadowWidth={SHADOW_WIDTH.SMALL}
+					onClick={handleTrainNumberClick}>
+					<CanvasText
+						relX={0}
+						relY={0}
+						align="center"
+						verticalAlign="center"
+						text="列車番号"
+						fillColor={COLORS.WHITE}
+						scaleY={2}
+					/>
+				</Button>
+				<Button
+					relX={TRAIN_NUMBER_DISPLAY_LEFT}
+					relY={TRAIN_NUMBER_BUTTON_TOP}
+					width={TRAIN_NUMBER_DISPLAY_WIDTH}
+					height={BUTTON_HEIGHT}
+					fillColor={RGB_COLORS.BLACK}>
+					<CanvasText
+						relX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
+						relY={0}
+						maxWidthPx={
+							TRAIN_NUMBER_DISPLAY_WIDTH -
+							(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
+						}
+						align="right"
+						verticalAlign="center"
+						text={trainNumber ?? ""}
+						fillColor={COLORS.WHITE}
+					/>
+				</Button>
+			</CanvasRoundedRect>
 
-			{/* Train Number Button */}
-			<Button
-				relX={TRAIN_NUMBER_BUTTON_LEFT}
-				relY={TRAIN_NUMBER_BUTTON_TOP}
-				width={BUTTON_WIDTH}
-				height={BUTTON_HEIGHT}
-				shadowWidth={SHADOW_WIDTH.SMALL}
-				onClick={handleTrainNumberClick}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text="列車番号"
-					fillColor={COLORS.WHITE}
-					scaleY={2}
-				/>
-			</Button>
-
-			{/* Train Number Display Area */}
-			<Button
-				relX={TRAIN_NUMBER_DISPLAY_LEFT}
-				relY={TRAIN_NUMBER_BUTTON_TOP}
-				width={TRAIN_NUMBER_DISPLAY_WIDTH}
-				height={BUTTON_HEIGHT}
-				fillColor={RGB_COLORS.BLACK}>
-				<CanvasText
-					relX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
-					relY={0}
-					maxWidthPx={
-						TRAIN_NUMBER_DISPLAY_WIDTH -
-						(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
-					}
-					align="right"
-					verticalAlign="center"
-					text={trainNumber ?? ""}
-					fillColor={COLORS.WHITE}
-				/>
-			</Button>
-
-			{/* Train Type Section */}
 			<CanvasRoundedRect
 				relX={TRAIN_TYPE_AREA_LEFT}
 				relY={TRAIN_TYPE_AREA_TOP}
 				width={TRAIN_TYPE_AREA_WIDTH}
 				height={TRAIN_TYPE_AREA_HEIGHT}
 				radius={TRAIN_TYPE_CORNER_RADIUS}
-				fillColor={COLORS.GRAY}
-			/>
+				fillColor={COLORS.GRAY}>
+				<CanvasRect
+					relX={TRAIN_TYPE_TITLE_LEFT}
+					relY={TRAIN_TYPE_TITLE_TOP}
+					width={TITLE_WIDTH}
+					height={TITLE_HEIGHT}
+					fillColor={COLORS.BLACK}>
+					<CanvasText
+						relX={0}
+						relY={0}
+						align="center"
+						verticalAlign="center"
+						text="種別表示器"
+						fillColor={COLORS.WHITE}
+						scaleY={2}
+					/>
+				</CanvasRect>
 
-			{/* Train Type Title */}
-			<CanvasRect
-				relX={TRAIN_TYPE_TITLE_LEFT}
-				relY={TRAIN_TYPE_TITLE_TOP}
-				width={TITLE_WIDTH}
-				height={TITLE_HEIGHT}
-				fillColor={COLORS.BLACK}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text="種別表示器"
-					fillColor={COLORS.WHITE}
-					scaleY={2}
-				/>
-			</CanvasRect>
+				<Button
+					relX={TRAIN_TYPE_BUTTON_LEFT}
+					relY={TRAIN_TYPE_BUTTON_TOP}
+					width={BUTTON_WIDTH}
+					height={BUTTON_HEIGHT}
+					shadowWidth={SHADOW_WIDTH.SMALL}
+					onClick={handleBulkTypeClick}>
+					<CanvasText
+						relX={0}
+						relY={0}
+						align="center"
+						verticalAlign="center"
+						text="一　括"
+						fillColor={COLORS.WHITE}
+						scaleY={2}
+					/>
+				</Button>
+				<Button
+					relX={TRAIN_TYPE_DISPLAY_LEFT}
+					relY={TRAIN_TYPE_BUTTON_TOP}
+					width={TYPE_DIRECTION_DISPLAY_WIDTH}
+					height={BUTTON_HEIGHT}
+					fillColor={RGB_COLORS.BLACK}>
+					<CanvasText
+						relX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
+						relY={0}
+						maxWidthPx={
+							TYPE_DIRECTION_DISPLAY_WIDTH -
+							(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
+						}
+						align="left"
+						verticalAlign="center"
+						text={trainType ?? ""}
+						fillColor={COLORS.WHITE}
+					/>
+				</Button>
+			</CanvasRoundedRect>
 
-			{/* Train Type Button */}
-			<Button
-				relX={TRAIN_TYPE_BUTTON_LEFT}
-				relY={TRAIN_TYPE_BUTTON_TOP}
-				width={BUTTON_WIDTH}
-				height={BUTTON_HEIGHT}
-				shadowWidth={SHADOW_WIDTH.SMALL}
-				onClick={handleBulkTypeClick}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text="一　括"
-					fillColor={COLORS.WHITE}
-					scaleY={2}
-				/>
-			</Button>
-
-			{/* Train Type Display Area */}
-			<Button
-				relX={TRAIN_TYPE_DISPLAY_LEFT}
-				relY={TRAIN_TYPE_BUTTON_TOP}
-				width={TYPE_DIRECTION_DISPLAY_WIDTH}
-				height={BUTTON_HEIGHT}
-				fillColor={RGB_COLORS.BLACK}>
-				<CanvasText
-					relX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
-					relY={0}
-					maxWidthPx={
-						TYPE_DIRECTION_DISPLAY_WIDTH -
-						(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
-					}
-					align="left"
-					verticalAlign="center"
-					text={trainType ?? ""}
-					fillColor={COLORS.WHITE}
-				/>
-			</Button>
-
-			{/* Direction Area */}
 			<CanvasRoundedRect
 				relX={DIRECTION_AREA_LEFT}
 				relY={DIRECTION_AREA_TOP}
 				width={DIRECTION_AREA_WIDTH}
 				height={DIRECTION_AREA_HEIGHT}
 				radius={DIRECTION_CORNER_RADIUS}
-				fillColor={COLORS.GRAY}
-			/>
+				fillColor={COLORS.GRAY}>
+				<CanvasRect
+					relX={DIRECTION_TITLE_LEFT}
+					relY={DIRECTION_TITLE_TOP}
+					width={TITLE_WIDTH}
+					height={TITLE_HEIGHT}
+					fillColor={COLORS.BLACK}>
+					<CanvasText
+						relX={0}
+						relY={0}
+						align="center"
+						verticalAlign="center"
+						text="行先表示器"
+						fillColor={COLORS.WHITE}
+						scaleY={2}
+					/>
+				</CanvasRect>
 
-			{/* Direction Title */}
-			<CanvasRect
-				relX={DIRECTION_TITLE_LEFT}
-				relY={DIRECTION_TITLE_TOP}
-				width={TITLE_WIDTH}
-				height={TITLE_HEIGHT}
-				fillColor={COLORS.BLACK}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text="行先表示器"
-					fillColor={COLORS.WHITE}
-					scaleY={2}
+				<BulkDirectionRow
+					key="bulk"
+					relY={DIRECTION_BULK_BUTTON_TOP}
+					onClick={handleDirectionBulkRowClick}
 				/>
-			</CanvasRect>
 
-			{/* Bulk Direction Row */}
-			<BulkDirectionRow
-				key="bulk"
-				relY={DIRECTION_BULK_BUTTON_TOP}
-				onClick={handleDirectionBulkRowClick}
-			/>
-
-			{/* Train Direction Rows (1-6) */}
-			{Array.from({ length: 6 }, (_, i) => (
-				<TrainDirectionRow
-					key={`direction-${i + 1}`}
-					index={i + 1}
-					relY={DIRECTION_BUTTON_TOP + (i + 1) * BUTTON_HEIGHT}
-					onClick={handleDirectionRowClick}
-				/>
-			))}
+				{Array.from({ length: 6 }, (_, i) => (
+					<TrainDirectionRow
+						key={`direction-${i + 1}`}
+						index={i + 1}
+						relY={DIRECTION_BUTTON_TOP + (i + 1) * BUTTON_HEIGHT}
+						onClick={handleDirectionRowClick}
+					/>
+				))}
+			</CanvasRoundedRect>
 
 			{/* Submit Button (起動) */}
 			<Button
