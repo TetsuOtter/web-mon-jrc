@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useSyncExternalStore } from "react";
 
 import {
 	CanvasLine,
@@ -7,6 +7,12 @@ import {
 } from "../../../../canvas-renderer";
 import CanvasDotPattern from "../../../../canvas-renderer/objects/CanvasDotPattern";
 import CanvasQuadrilateral from "../../../../canvas-renderer/objects/CanvasQuadrilateral";
+import { useAppSelector } from "../../../../store/hooks";
+import {
+	trainNumberSelector,
+	trainTypeSelector,
+	destinationSelector,
+} from "../../../../store/monitors/type313s/type313sSelector";
 import {
 	COLORS,
 	DISPLAY_WIDTH,
@@ -19,10 +25,6 @@ import type { IconData } from "../icons";
 type HeaderAreaProps = {
 	icon: IconData;
 	pageName: string;
-	trainNumber: string;
-	trainType: string;
-	trainDestination: string;
-	timeMinutes?: number;
 };
 
 const PAGE_ICON_SIZE = 40;
@@ -61,24 +63,20 @@ const TIME_LABEL_WIDTH = 100;
 
 const LINE_WIDTH = 1;
 
-export default memo<HeaderAreaProps>(function HeaderArea({
-	icon,
-	pageName,
-	trainNumber,
-	trainType,
-	trainDestination,
-	timeMinutes = 0,
-}) {
+export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
+	const timeMinutes = useSyncExternalStore(
+		subscribeRealMinutes,
+		getRealMinutes
+	);
 	const timeLabel = useMemo(() => {
 		const hh = Math.floor(timeMinutes / 60) % 24;
 		const mm = timeMinutes % 60;
 		return `${hh}:${mm.toString().padStart(2, "0")}`;
 	}, [timeMinutes]);
 
-	const wideTrainNumber = useMemo(
-		() => toWideString(trainNumber),
-		[trainNumber]
-	);
+	const trainNumber = useAppSelector(trainNumberSelector);
+	const trainType = useAppSelector(trainTypeSelector);
+	const destination = useAppSelector(destinationSelector);
 
 	return (
 		<CanvasRect
@@ -108,7 +106,7 @@ export default memo<HeaderAreaProps>(function HeaderArea({
 			<CanvasText
 				relX={TRAIN_NUMBER_LEFT}
 				relY={TEXT_TOP}
-				text={wideTrainNumber}
+				text={trainNumber ?? "列番未設定"}
 				fillColor={COLORS.WHITE}
 				align="right"
 				maxWidthPx={TRAIN_NUMBER_WIDTH}
@@ -118,7 +116,7 @@ export default memo<HeaderAreaProps>(function HeaderArea({
 			<CanvasText
 				relX={TRAIN_TYPE_LEFT}
 				relY={TEXT_TOP}
-				text={trainType}
+				text={trainType ?? ""}
 				fillColor={COLORS.WHITE}
 				scaleY={2}
 			/>
@@ -126,7 +124,7 @@ export default memo<HeaderAreaProps>(function HeaderArea({
 			<CanvasText
 				relX={TRAIN_DEST_LEFT}
 				relY={TEXT_TOP}
-				text={trainDestination}
+				text={destination ?? ""}
 				fillColor={COLORS.WHITE}
 				scaleY={2}
 			/>
@@ -184,16 +182,20 @@ export default memo<HeaderAreaProps>(function HeaderArea({
 	);
 });
 
-function toWideString(str: string): string {
-	return str
-		.split("")
-		.map((char) => {
-			const code = char.charCodeAt(0);
-			// Convert ASCII to full-width
-			if (code >= 0x21 && code <= 0x7e) {
-				return String.fromCharCode(code + 0xfee0);
-			}
-			return char;
-		})
-		.join("");
-}
+const subscribeRealMinutes = (callback: () => void) => {
+	const now = new Date();
+	const firstCallDelay = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+	const timeoutIdHolder = {
+		current: setTimeout(() => {
+			callback();
+			timeoutIdHolder.current = setInterval(callback, 60 * 1000);
+		}, firstCallDelay),
+	};
+	return () => {
+		clearTimeout(timeoutIdHolder.current);
+	};
+};
+const getRealMinutes = () => {
+	const now = new Date();
+	return now.getHours() * 60 + now.getMinutes();
+};

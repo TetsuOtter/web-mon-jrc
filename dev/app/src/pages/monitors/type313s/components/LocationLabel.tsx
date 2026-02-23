@@ -2,6 +2,8 @@ import { memo, useMemo } from "react";
 
 import { CanvasLine, CanvasText } from "../../../../canvas-renderer";
 import CanvasObjectGroup from "../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { useAppSelector } from "../../../../store/hooks";
+import { currentLocationSelector } from "../../../../store/monitors/type313s/type313sSelector";
 import { COLORS, FONT_SIZE_1X, FONT_SIZE_2X } from "../constants";
 
 const WIDTH = 210;
@@ -16,13 +18,8 @@ const LINE_Y = HEIGHT - 1;
 const NUMBER_BOTTOM = 4;
 const UNIT_RIGHT = 6;
 
-type LocationLabelProps = {
-	readonly locationKm?: number;
-};
-
-export default memo<LocationLabelProps>(function LocationLabel({
-	locationKm = 0,
-}) {
+export default memo(function LocationLabel() {
+	const locationKm = useAppSelector(currentLocationSelector);
 	const displayText = useMemo(() => {
 		const integerValue = Math.floor(locationKm);
 		const decimalValue = Math.abs(Math.floor((locationKm - integerValue) * 10));

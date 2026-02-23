@@ -6,6 +6,12 @@ import {
 	CanvasText,
 } from "../../../../../canvas-renderer";
 import CanvasRoundedRect from "../../../../../canvas-renderer/objects/CanvasRoundedRect";
+import { useAppDispatch } from "../../../../../store/hooks";
+import {
+	setTrainNumber as setTrainNumberToStore,
+	setTrainType as setTrainTypeToStore,
+	setDestination as setDestinationToStore,
+} from "../../../../../store/monitors/type313s/type313sSlice";
 import { toWide } from "../../../../../utils/toWide";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
@@ -97,6 +103,7 @@ const TRAIN_NUMBER_OBJECT_INITIAL = {
 } as const satisfies TrainNumberObject;
 
 export default memo(function WorkSettingTrainNumber() {
+	const dispatch = useAppDispatch();
 	const mode = useWorkSettingPageMode();
 	const navigateToWorkSettingTop = usePageNavigationTo(
 		PAGE_TYPES.WORK_SETTING_TOP
@@ -131,46 +138,21 @@ export default memo(function WorkSettingTrainNumber() {
 			}));
 		}
 	}, []);
+
 	const onClickSet = useCallback(() => {
 		setTrainType("普通");
 		setDestination("豊橋");
 		setStopSta(IIDA_LINE_STA_LIST);
+		dispatch(setTrainNumberToStore(getTrainNumberStr(trainNumber, false)));
+		dispatch(setTrainTypeToStore("普通"));
+		dispatch(setDestinationToStore("豊橋"));
 		return true;
-	}, []);
+	}, [dispatch, trainNumber]);
+	const trainNumberStr = useMemo(
+		() => getTrainNumberStr(trainNumber, true),
+		[trainNumber]
+	);
 
-	const trainNumberStr = useMemo(() => {
-		const prefixStr = (() => {
-			switch (trainNumber.prefix) {
-				case TEN_KEY_TYPE["回"]:
-					return "回";
-				case TEN_KEY_TYPE["救"]:
-					return "救";
-				case TEN_KEY_TYPE["試"]:
-					return "試";
-				default:
-					return "";
-			}
-		})();
-		const suffixStr = (() => {
-			switch (trainNumber.suffix) {
-				case TEN_KEY_TYPE["M"]:
-					return "M";
-				case TEN_KEY_TYPE["G"]:
-					return "G";
-				case TEN_KEY_TYPE["D"]:
-					return "D";
-				case TEN_KEY_TYPE["F"]:
-					return "F";
-				case TEN_KEY_TYPE["A"]:
-					return "A";
-				case TEN_KEY_TYPE["C"]:
-					return "C";
-				default:
-					return "■";
-			}
-		})();
-		return toWide(`${prefixStr}${trainNumber.trainNumber}${suffixStr}`);
-	}, [trainNumber]);
 	return (
 		<FooterPageFrame
 			mode={mode}
@@ -355,6 +337,43 @@ export default memo(function WorkSettingTrainNumber() {
 		</FooterPageFrame>
 	);
 });
+
+function getTrainNumberStr(
+	trainNumber: TrainNumberObject,
+	showSuffixPlaceholder: boolean
+): string {
+	const prefixStr = (() => {
+		switch (trainNumber.prefix) {
+			case TEN_KEY_TYPE["回"]:
+				return "回";
+			case TEN_KEY_TYPE["救"]:
+				return "救";
+			case TEN_KEY_TYPE["試"]:
+				return "試";
+			default:
+				return "";
+		}
+	})();
+	const suffixStr = (() => {
+		switch (trainNumber.suffix) {
+			case TEN_KEY_TYPE["M"]:
+				return "M";
+			case TEN_KEY_TYPE["G"]:
+				return "G";
+			case TEN_KEY_TYPE["D"]:
+				return "D";
+			case TEN_KEY_TYPE["F"]:
+				return "F";
+			case TEN_KEY_TYPE["A"]:
+				return "A";
+			case TEN_KEY_TYPE["C"]:
+				return "C";
+			default:
+				return showSuffixPlaceholder ? "■" : "";
+		}
+	})();
+	return toWide(`${prefixStr}${trainNumber.trainNumber}${suffixStr}`);
+}
 
 const FOOTER_MENU = [
 	{

@@ -70,7 +70,7 @@ export default memo(function CarStateSwitches() {
 			mode={mode}
 			footerItems={FOOTER_MENU}
 			pagerProps={pagerProps}>
-			<LocationLabel locationKm={123.4} />
+			<LocationLabel />
 
 			<TrainFormationImage />
 

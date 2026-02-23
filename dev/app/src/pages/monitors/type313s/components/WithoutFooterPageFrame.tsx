@@ -28,10 +28,6 @@ export default memo<PropsWithChildren<WithoutFooterPageFrameProps>>(
 				<HeaderArea
 					icon={ICON_MAP_BY_MODE[mode]}
 					pageName={PAGE_NAME_MAP[pageType]}
-					trainNumber="1234"
-					trainType="普通"
-					trainDestination="大垣"
-					timeMinutes={5}
 				/>
 				<CanvasObjectGroup
 					relX={0}

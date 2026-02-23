@@ -1,5 +1,7 @@
 import { memo, useCallback } from "react";
 
+import { useAppSelector } from "../../../../../../store/hooks";
+import { destinationSelector } from "../../../../../../store/monitors/type313s/type313sSelector";
 import { toWide } from "../../../../../../utils/toWide";
 
 import DirectionRowBase from "./DirectionRowBase";
@@ -15,12 +17,13 @@ export default memo<TrainDirectionRowProps>(function TrainDirectionRow({
 	onClick,
 }) {
 	const handleClick = useCallback(() => onClick(index), [index, onClick]);
+	const destination = useAppSelector(destinationSelector);
 
 	return (
 		<DirectionRowBase
 			relY={relY}
 			buttonText={toWide(`${index}編成`)}
-			displayText={`編成${index}行先`}
+			displayText={destination ?? ""}
 			onButtonClick={handleClick}
 		/>
 	);

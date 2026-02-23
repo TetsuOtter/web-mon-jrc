@@ -65,7 +65,7 @@ export default memo(function ConductorService() {
 		<FooterPageFrame
 			mode={mode}
 			footerItems={FOOTER_MENU}>
-			<LocationLabel locationKm={123.4} />
+			<LocationLabel />
 
 			<TrainFormationImage />
 

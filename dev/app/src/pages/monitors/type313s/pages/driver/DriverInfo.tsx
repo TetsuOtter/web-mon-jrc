@@ -28,7 +28,7 @@ export default memo(function DriverInfo() {
 		<FooterPageFrame
 			mode={mode}
 			footerItems={FOOTER_MENU}>
-			<LocationLabel locationKm={0.0} />
+			<LocationLabel />
 
 			<TrainFormationImage />
 

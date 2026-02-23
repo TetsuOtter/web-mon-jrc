@@ -2,6 +2,11 @@ import { memo, useCallback } from "react";
 
 import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
 import CanvasRoundedRect from "../../../../../canvas-renderer/objects/CanvasRoundedRect";
+import { useAppSelector } from "../../../../../store/hooks";
+import {
+	trainNumberSelector,
+	trainTypeSelector,
+} from "../../../../../store/monitors/type313s/type313sSelector";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
@@ -117,13 +122,16 @@ export default memo(function WorkSettingTop() {
 		console.log("Startup button clicked");
 	}, []);
 
+	const trainNumber = useAppSelector(trainNumberSelector);
+	const trainType = useAppSelector(trainTypeSelector);
+
 	return (
 		<FooterPageFrame
 			mode={mode}
 			pageIcon={ICONS.WORK_SETTING_1}
 			pageName={PAGE_NAME_MAP[mode]}
 			footerItems={FOOTER_MENU}>
-			<LocationLabel locationKm={123.4} />
+			<LocationLabel />
 
 			{/* Train Number Section */}
 			<CanvasRoundedRect
@@ -170,7 +178,7 @@ export default memo(function WorkSettingTop() {
 					}
 					align="right"
 					verticalAlign="center"
-					text="1216F"
+					text={trainNumber ?? ""}
 					fillColor={COLORS.WHITE}
 				/>
 			</Button>
@@ -238,7 +246,7 @@ export default memo(function WorkSettingTop() {
 					}
 					align="left"
 					verticalAlign="center"
-					text="1.回 送"
+					text={trainType ?? ""}
 					fillColor={COLORS.WHITE}
 				/>
 			</Button>
