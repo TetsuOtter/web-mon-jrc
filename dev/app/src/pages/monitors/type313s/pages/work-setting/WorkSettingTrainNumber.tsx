@@ -18,14 +18,18 @@ import {
 import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
-import { PAGE_TYPES } from "../pageTypes";
+import { PAGE_MODES, PAGE_TYPES } from "../pageTypes";
+import {
+	usePageBackNavigation,
+	usePageNavigationTo,
+} from "../usePageNavigation";
 
 import TenKeyButton, {
 	isTenKeyTypePrefix,
 	isTenKeyTypeSuffix,
 	TEN_KEY_TYPE,
 } from "./components/TenKeyButton";
-import { PAGE_NAME_MAP } from "./constants";
+import { FOOTER_MENU_FOR_CONDUCTOR, PAGE_NAME_MAP } from "./constants";
 
 import type {
 	TenKeyType,
@@ -94,6 +98,11 @@ const TRAIN_NUMBER_OBJECT_INITIAL = {
 
 export default memo(function WorkSettingTrainNumber() {
 	const mode = useWorkSettingPageMode();
+	const navigateToWorkSettingTop = usePageNavigationTo(
+		PAGE_TYPES.WORK_SETTING_TOP
+	);
+	const backNavigate = usePageBackNavigation();
+
 	const [trainType, setTrainType] = useState("");
 	const [destination, setDestination] = useState("");
 	const [trainNumber, setTrainNumber] = useState<TrainNumberObject>(
@@ -108,9 +117,6 @@ export default memo(function WorkSettingTrainNumber() {
 	const onClickTenKey = useCallback((type: TenKeyType) => {
 		if (type === TEN_KEY_TYPE.CLEAR) {
 			setTrainNumber(TRAIN_NUMBER_OBJECT_INITIAL);
-			setTrainType("");
-			setDestination("");
-			setStopSta("");
 		} else if (isTenKeyTypePrefix(type)) {
 			setTrainNumber((prev) => ({ ...prev, prefix: type }));
 		} else if (isTenKeyTypeSuffix(type)) {
@@ -131,14 +137,6 @@ export default memo(function WorkSettingTrainNumber() {
 		setStopSta(IIDA_LINE_STA_LIST);
 		return true;
 	}, []);
-	const onClickConfirm = useCallback(() => {
-		console.log("確定", {
-			trainType,
-			destination,
-			trainNumber,
-		});
-		return true;
-	}, [trainType, destination, trainNumber]);
 
 	const trainNumberStr = useMemo(() => {
 		const prefixStr = (() => {
@@ -178,7 +176,9 @@ export default memo(function WorkSettingTrainNumber() {
 			mode={mode}
 			pageIcon={ICONS.WORK_SETTING_1}
 			pageName={PAGE_NAME_MAP[mode]}
-			footerItems={FOOTER_MENU}
+			footerItems={
+				mode === PAGE_MODES.CONDUCTOR ? FOOTER_MENU_FOR_CONDUCTOR : FOOTER_MENU
+			}
 			pagerProps={pagerProps}>
 			<CanvasLine
 				relX1={0}
@@ -315,7 +315,9 @@ export default memo(function WorkSettingTrainNumber() {
 					width={CONFIRM_BUTTON_WIDTH}
 					height={CONFIRM_BUTTON_HEIGHT}
 					shadowWidth={SHADOW_WIDTH.SMALL}
-					onClick={onClickConfirm}>
+					onClick={
+						mode === PAGE_MODES.DRIVER ? backNavigate : navigateToWorkSettingTop
+					}>
 					<CanvasText
 						relX={0}
 						relY={0}
@@ -360,8 +362,9 @@ const FOOTER_MENU = [
 		navigateTo: PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER,
 	},
 	{
-		label: "戻る",
-		navigateTo: PAGE_TYPES.WORK_SETTING_TOP,
+		label: "メニュー",
+		navigateTo: PAGE_TYPES.MENU,
+		queryParams: { mode: PAGE_MODES.MENU },
 	},
 ] as const satisfies FooterButtonInfo[];
 

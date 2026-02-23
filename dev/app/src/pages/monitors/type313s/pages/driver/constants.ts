@@ -15,7 +15,7 @@ export const FOOTER_MENU = [
 	},
 	{
 		label: "運行設定",
-		navigateTo: PAGE_TYPES.WORK_SETTING_TOP,
+		navigateTo: PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER,
 		queryParams: { mode: "DRIVER" },
 	},
 	{
