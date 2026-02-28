@@ -5,7 +5,8 @@ export const WIDTH = 48;
 
 export const CAB_Y = 1;
 export const ROOF_Y = 11;
-export const SEPARATOR_Y = ROOF_Y + FONT_SIZE_1X;
+export const ROOF_HEIGHT = FONT_SIZE_1X;
+export const SEPARATOR_Y = ROOF_Y + ROOF_HEIGHT;
 export const SEPARATOR_HEIGHT = 2;
 export const CAB_WIDTH = 25;
 export const CAB_BORDER_ROW_COUNT = ROOF_Y - CAB_Y + 1;

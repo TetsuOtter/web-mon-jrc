@@ -1,12 +1,14 @@
 import { memo } from "react";
 
 import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { COLORS, type ColorValue } from "../../constants";
 
-import CarImage, {
+import CarImage from "./CarImage";
+import { BOGIE_STATE } from "./bogieImageCache";
+import {
 	WIDTH as CAR_IMAGE_WIDTH,
 	HEIGHT as CAR_IMAGE_HEIGHT,
-} from "./CarImage";
-import { BOGIE_STATE } from "./bogieImageCache";
+} from "./constants";
 
 import type { BaseCarImageInfo } from "./baseCarImageCache";
 import type { CarImageBogieInfo } from "./bogieImageCache";
@@ -18,6 +20,10 @@ export const SAMPLE_TRAIN_FORMATION: {
 	key: string;
 	baseInfo: BaseCarImageInfo;
 	bogieInfo: CarImageBogieInfo;
+	roofBackgroundColor?: ColorValue;
+	bodyBackgroundColor?: ColorValue;
+	carType?: string;
+	carNumber: number;
 }[] = [
 	{
 		key: "car1",
@@ -28,6 +34,10 @@ export const SAMPLE_TRAIN_FORMATION: {
 			hasRightPantograph: true,
 		},
 		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
+		roofBackgroundColor: COLORS.RED,
+		bodyBackgroundColor: COLORS.LIME,
+		carType: "Mc",
+		carNumber: 1,
 	},
 	{
 		key: "car2",
@@ -38,6 +48,8 @@ export const SAMPLE_TRAIN_FORMATION: {
 			hasRightPantograph: false,
 		},
 		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
+		carType: "M",
+		carNumber: 2,
 	},
 	{
 		key: "car3",
@@ -48,6 +60,8 @@ export const SAMPLE_TRAIN_FORMATION: {
 			hasRightPantograph: false,
 		},
 		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
+		carType: "T'",
+		carNumber: 3,
 	},
 	{
 		key: "car4",
@@ -58,6 +72,10 @@ export const SAMPLE_TRAIN_FORMATION: {
 			hasRightPantograph: false,
 		},
 		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
+		roofBackgroundColor: COLORS.RED,
+		bodyBackgroundColor: COLORS.YELLOW,
+		carType: "Tc",
+		carNumber: 4,
 	},
 ];
 
@@ -75,8 +93,10 @@ export default memo(function TrainFormationImage() {
 					relY={0}
 					baseInfo={info.baseInfo}
 					bogieInfo={info.bogieInfo}
-					// roofBackgroundColor={info.roofBackgroundColor}
-					// bodyBackgroundColor={info.bodyBackgroundColor}
+					roofBackgroundColor={info.roofBackgroundColor}
+					bodyBackgroundColor={info.bodyBackgroundColor}
+					carType={info.carType}
+					carNumber={info.carNumber}
 				/>
 			))}
 		</CanvasObjectGroup>

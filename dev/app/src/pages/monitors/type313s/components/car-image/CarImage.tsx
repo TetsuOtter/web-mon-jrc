@@ -1,10 +1,27 @@
 import { memo, useCallback, useMemo } from "react";
 
+import { CanvasText } from "../../../../../canvas-renderer";
 import CanvasObjectBase from "../../../../../canvas-renderer/objects/CanvasObjectBase";
-import { FONT_SIZE_1X } from "../../constants";
+import { toWide } from "../../../../../utils/toWide";
+import { COLORS, FONT_SIZE_1X } from "../../constants";
 
 import { getBaseCarImage } from "./baseCarImageCache";
 import { getBogieImage } from "./bogieImageCache";
+import {
+	CAB_BORDER,
+	CAB_INNER,
+	CAB_WIDTH,
+	CAB_Y,
+	FLOOR_Y,
+	HEIGHT,
+	LEFT_CAB_PATTERN,
+	RIGHT_CAB_CLIFF_COL,
+	RIGHT_CAB_PATTERN,
+	ROOF_HEIGHT,
+	ROOF_Y,
+	SEPARATOR_Y,
+	WIDTH,
+} from "./constants";
 
 import type { BaseCarImageInfo } from "./baseCarImageCache";
 import type { CarImageBogieInfo } from "./bogieImageCache";
@@ -14,12 +31,7 @@ import type {
 	CanvasRenderFunction,
 } from "../../../../../canvas-renderer/contexts/CanvasObjectContext";
 
-export const HEIGHT = 60;
-export const WIDTH = 48;
-
-const ROOF_Y = 11;
-const SEPARATOR_Y = ROOF_Y + FONT_SIZE_1X;
-const CAB_WIDTH = 25;
+const CAR_NUMBER_HEIGHT = FONT_SIZE_1X + 2;
 
 type CarImageProps = {
 	relX: number;
@@ -30,6 +42,8 @@ type CarImageProps = {
 
 	roofBackgroundColor?: string;
 	bodyBackgroundColor?: string;
+	carType?: string;
+	carNumber: number;
 
 	onClick?: ClickEventHandler;
 };
@@ -41,6 +55,8 @@ export default memo<CarImageProps>(function CarImage({
 	bogieInfo,
 	roofBackgroundColor,
 	bodyBackgroundColor,
+	carType,
+	carNumber,
 	onClick,
 }) {
 	const baseImage = useMemo(() => getBaseCarImage(baseInfo), [baseInfo]);
@@ -54,50 +70,52 @@ export default memo<CarImageProps>(function CarImage({
 			ctx.drawImage(baseImage, absX, absY);
 			ctx.drawImage(bogieImage, absX, absY);
 
-			// 色を反映させる描画
-			if (roofBackgroundColor || bodyBackgroundColor) {
-				const absX = Math.round(metadata.absX);
-				const absY = Math.round(metadata.absY);
-
-				// 屋根部分の色付け
-				if (roofBackgroundColor && baseInfo.isLeftCab) {
-					ctx.fillStyle = roofBackgroundColor;
-					ctx.fillRect(
-						absX + CAB_WIDTH - 1,
-						absY + ROOF_Y,
-						WIDTH - CAB_WIDTH,
-						FONT_SIZE_1X
-					);
-				} else if (roofBackgroundColor && baseInfo.isRightCab) {
-					ctx.fillStyle = roofBackgroundColor;
-					ctx.fillRect(absX, absY + ROOF_Y, WIDTH - CAB_WIDTH, FONT_SIZE_1X);
-				} else if (roofBackgroundColor) {
-					ctx.fillStyle = roofBackgroundColor;
-					ctx.fillRect(absX, absY + ROOF_Y, WIDTH, FONT_SIZE_1X);
-				}
-
-				// キャブ内部の色付け
-				if (bodyBackgroundColor) {
-					ctx.fillStyle = bodyBackgroundColor;
-					const cabStartRow = ROOF_Y + 1;
-					const cabEndRow = SEPARATOR_Y;
-					const cabHeight = cabEndRow - cabStartRow;
-					if (baseInfo.isLeftCab) {
-						ctx.fillRect(
-							absX + 1,
-							absY + cabStartRow,
-							CAB_WIDTH - 2,
-							cabHeight
-						);
-					} else if (baseInfo.isRightCab) {
-						ctx.fillRect(
-							absX + WIDTH - CAB_WIDTH + 1,
-							absY + cabStartRow,
-							CAB_WIDTH - 2,
-							cabHeight
-						);
+			if (roofBackgroundColor) {
+				ctx.fillStyle = roofBackgroundColor;
+				if (baseInfo.isLeftCab) {
+					for (let row = 0; row < LEFT_CAB_PATTERN.length; row++) {
+						const patternRow = LEFT_CAB_PATTERN[row];
+						const startCol = patternRow.findIndex((cell) => cell === CAB_INNER);
+						if (0 <= startCol) {
+							ctx.fillRect(
+								absX + startCol,
+								absY + CAB_Y + row,
+								CAB_WIDTH - startCol - CAB_BORDER,
+								1
+							);
+						}
+					}
+				} else if (baseInfo.isRightCab) {
+					for (let row = 0; row < RIGHT_CAB_PATTERN.length; row++) {
+						const patternRow = RIGHT_CAB_PATTERN[row];
+						const endCol =
+							patternRow.length -
+							[...patternRow].reverse().findIndex((cell) => cell === CAB_INNER);
+						if (0 <= endCol && endCol < patternRow.length) {
+							ctx.fillRect(
+								absX + RIGHT_CAB_CLIFF_COL + CAB_BORDER,
+								absY + CAB_Y + row,
+								endCol - CAB_BORDER,
+								1
+							);
+						}
 					}
 				}
+				ctx.fillRect(
+					absX + CAB_BORDER,
+					absY + ROOF_Y + CAB_BORDER,
+					WIDTH - CAB_BORDER * 2,
+					ROOF_HEIGHT - 1
+				);
+			}
+			if (bodyBackgroundColor) {
+				ctx.fillStyle = bodyBackgroundColor;
+				ctx.fillRect(
+					absX + CAB_BORDER,
+					absY + SEPARATOR_Y + CAB_INNER,
+					WIDTH - CAB_BORDER * 2,
+					FLOOR_Y - SEPARATOR_Y - CAB_INNER - CAB_BORDER
+				);
 			}
 		},
 		[
@@ -116,6 +134,13 @@ export default memo<CarImageProps>(function CarImage({
 		},
 		[]
 	);
+	const carNumberStr = useMemo(() => {
+		if (10 <= carNumber) {
+			return carNumber.toString();
+		} else {
+			return toWide(carNumber.toString());
+		}
+	}, [carNumber]);
 
 	return (
 		<CanvasObjectBase
@@ -125,9 +150,27 @@ export default memo<CarImageProps>(function CarImage({
 			relX={relX}
 			relY={relY}
 			width={WIDTH}
-			height={HEIGHT}
+			height={HEIGHT + CAR_NUMBER_HEIGHT}
 			isFilled>
-			{/* TODO: 文字描画を実装する */}
+			{carType != null && (
+				<CanvasText
+					key="carType"
+					relX={0}
+					relY={ROOF_Y + CAB_BORDER}
+					align="center"
+					fillColor={COLORS.WHITE}
+					text={carType}
+				/>
+			)}
+			<CanvasText
+				key="carNumber"
+				relX={0}
+				relY={0}
+				align="center"
+				verticalAlign="bottom"
+				fillColor={COLORS.WHITE}
+				text={carNumberStr}
+			/>
 		</CanvasObjectBase>
 	);
 });
