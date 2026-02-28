@@ -12,6 +12,7 @@ import {
 	trainNumberSelector,
 	trainTypeSelector,
 	destinationSelector,
+	timeMsSelector,
 } from "../../../../store/monitors/type313s/type313sSelector";
 import {
 	COLORS,
@@ -68,11 +69,14 @@ export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
 		subscribeRealMinutes,
 		getRealMinutes
 	);
+	const bidsTimeMs = useAppSelector(timeMsSelector);
 	const timeLabel = useMemo(() => {
-		const hh = Math.floor(timeMinutes / 60) % 24;
-		const mm = timeMinutes % 60;
+		const minutes =
+			bidsTimeMs != null ? Math.floor(bidsTimeMs / 60000) : timeMinutes;
+		const hh = Math.floor(minutes / 60) % 24;
+		const mm = minutes % 60;
 		return `${hh}:${mm.toString().padStart(2, "0")}`;
-	}, [timeMinutes]);
+	}, [bidsTimeMs, timeMinutes]);
 
 	const trainNumber = useAppSelector(trainNumberSelector);
 	const trainType = useAppSelector(trainTypeSelector);

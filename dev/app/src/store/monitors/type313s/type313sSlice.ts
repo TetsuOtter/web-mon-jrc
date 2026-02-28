@@ -7,6 +7,7 @@ export type Type313sState = {
 	trainType?: string;
 	destination?: string;
 	currentLocation: number;
+	timeMs?: number;
 };
 
 const initialState: Type313sState = {
@@ -29,6 +30,9 @@ const type313sSlice = createSlice({
 		setCurrentLocation(state, action: PayloadAction<number>) {
 			state.currentLocation = action.payload;
 		},
+		setTimeMs(state, action: PayloadAction<number>) {
+			state.timeMs = action.payload;
+		},
 	},
 });
 
@@ -37,5 +41,6 @@ export const {
 	setTrainType,
 	setDestination,
 	setCurrentLocation,
+	setTimeMs,
 } = type313sSlice.actions;
 export default type313sSlice.reducer;

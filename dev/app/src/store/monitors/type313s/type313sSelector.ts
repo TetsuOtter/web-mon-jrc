@@ -15,3 +15,5 @@ export const destinationSelector: AppSelector<Type313sState["destination"]> = (
 export const currentLocationSelector: AppSelector<
 	Type313sState["currentLocation"]
 > = (state) => type313sSelector(state).currentLocation;
+export const timeMsSelector: AppSelector<Type313sState["timeMs"]> = (state) =>
+	type313sSelector(state).timeMs;
