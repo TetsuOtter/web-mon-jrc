@@ -4,6 +4,7 @@ import { CanvasRect, CanvasText } from "../../../../../../canvas-renderer";
 import { useAppSelectorWithParams } from "../../../../../../store/hooks";
 import { FONT_SIZE_1X } from "../../../constants";
 
+import type { CanvasTextProps } from "../../../../../../canvas-renderer/objects/CanvasText";
 import type { AppSelector } from "../../../../../../store/types";
 
 export type CarStateStringLabelProps = {
@@ -12,6 +13,8 @@ export type CarStateStringLabelProps = {
 	readonly carIndex: number;
 	readonly fillColor?: string;
 	readonly fillWidth?: number;
+	readonly align?: CanvasTextProps["align"];
+	readonly verticalAlign?: CanvasTextProps["verticalAlign"];
 	readonly textColor: string;
 	readonly textSelector: AppSelector<string | undefined, [carIndex: number]>;
 };
@@ -21,6 +24,8 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 	carIndex,
 	fillColor,
 	fillWidth,
+	align,
+	verticalAlign,
 	textColor,
 	textSelector,
 }) {
@@ -35,6 +40,9 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 				relX={relX}
 				relY={relY}
 				text={text}
+				align={align}
+				maxWidthPx={fillWidth}
+				verticalAlign={verticalAlign}
 				fillColor={textColor}
 			/>
 		);
@@ -51,8 +59,8 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 				relX={0}
 				relY={0}
 				text={text}
-				align="center"
-				verticalAlign="center"
+				align={align ?? "center"}
+				verticalAlign={verticalAlign ?? "center"}
 				fillColor={textColor}
 			/>
 		</CanvasRect>
