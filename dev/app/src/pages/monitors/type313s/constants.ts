@@ -28,6 +28,7 @@ export const COLORS = {
 	CYAN: "#5096F0",
 } as const satisfies Record<string, string>;
 export type ColorName = keyof typeof COLORS;
+export type ColorValue = (typeof COLORS)[ColorName];
 
 export const RGB_COLORS = Object.fromEntries(
 	Object.entries(COLORS).map(([name, hex]) => [name, hexToRgb(hex)])
