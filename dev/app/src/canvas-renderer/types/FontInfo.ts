@@ -3,6 +3,20 @@ import { AVAILABLE_FONTS, type AvailableFont } from "../utils/fontLoader";
 import type { Bitmap } from "bdfparser";
 
 /**
+ * グリフの描画データ（ビットマップ + 配置情報）
+ */
+export type GlyphData = {
+	/** グリフのビットマップ（BBXサイズ） */
+	bitmap: Bitmap;
+	/** 水平方向の進み幅（DWIDTH） */
+	advanceWidth: number;
+	/** セル左端からビットマップ左端までのオフセット（BBX x-offset） */
+	xOffset: number;
+	/** セル上端からビットマップ上端までのオフセット（フォントの ascent と BBX y-offset から計算） */
+	yOffset: number;
+};
+
+/**
  * 全角・半角を含むフォント情報型
  */
 export type FontInfo = {
@@ -13,7 +27,7 @@ export type FontInfo = {
 	/** 半角文字用フォント */
 	readonly halfWidth: AvailableFont | readonly AvailableFont[];
 
-	readonly cache: Map<string, Bitmap>;
+	readonly cache: Map<string, GlyphData>;
 };
 
 /**

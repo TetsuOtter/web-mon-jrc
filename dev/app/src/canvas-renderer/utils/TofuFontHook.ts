@@ -2,18 +2,18 @@ import { useMemo } from "react";
 
 import { Bitmap } from "bdfparser";
 
-import type { FontInfo } from "../types/FontInfo";
+import type { FontInfo, GlyphData } from "../types/FontInfo";
 
 export type Tofu = {
-	halfWidth: Bitmap;
-	fullWidth: Bitmap;
+	halfWidth: GlyphData;
+	fullWidth: GlyphData;
 };
 export function useTofu(font: FontInfo): Tofu {
 	const fontWidth = font.fontSize;
 	return useMemo(() => {
 		const widthForHalfWidth = fontWidth / 2;
-		const halfWidth: string[] = [];
-		const fullWidth: string[] = [];
+		const halfWidthRows: string[] = [];
+		const fullWidthRows: string[] = [];
 
 		for (let row = 0; row < fontWidth; row++) {
 			let halfWidthRow = "";
@@ -27,13 +27,23 @@ export function useTofu(font: FontInfo): Tofu {
 				}
 				halfWidthRow += getTofuLine(row, col, fontWidth, widthForHalfWidth);
 			}
-			halfWidth.push(halfWidthRow);
-			fullWidth.push(fullWidthRow);
+			halfWidthRows.push(halfWidthRow);
+			fullWidthRows.push(fullWidthRow);
 		}
 
 		return {
-			halfWidth: new Bitmap(halfWidth),
-			fullWidth: new Bitmap(fullWidth),
+			halfWidth: {
+				bitmap: new Bitmap(halfWidthRows),
+				advanceWidth: widthForHalfWidth,
+				xOffset: 0,
+				yOffset: 0,
+			},
+			fullWidth: {
+				bitmap: new Bitmap(fullWidthRows),
+				advanceWidth: fontWidth,
+				xOffset: 0,
+				yOffset: 0,
+			},
 		};
 	}, [fontWidth]);
 }

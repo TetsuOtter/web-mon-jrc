@@ -12,8 +12,7 @@ import { loadFont, type AvailableFont } from "../utils/fontLoader";
 
 import CanvasObjectBase from "./CanvasObjectBase";
 
-import type { FontInfo } from "../types/FontInfo";
-import type { Bitmap } from "bdfparser";
+import type { FontInfo, GlyphData } from "../types/FontInfo";
 
 export type CanvasTextProps = {
 	readonly relX: number;
@@ -58,7 +57,7 @@ type DrawContent = {
 };
 
 type WrappedLineInfo = {
-	glyphs: Bitmap[];
+	glyphs: GlyphData[];
 	width: number;
 };
 
@@ -211,23 +210,45 @@ async function getGlyphFromFonts(
 	return null;
 }
 
+/**
+ * グリフオブジェクトから GlyphData を生成する
+ * - ビットマップは BBX サイズ（mode=1）
+ * - advanceWidth は DWIDTH x（glyph.meta.dwx0）
+ * - yOffset = FONT_ASCENT - BBX_y_offset - BBX_height
+ * - xOffset = BBX_x_offset
+ */
+function glyphToGlyphData(
+	glyph: NonNullable<ReturnType<Awaited<ReturnType<typeof loadFont>>["glyph"]>>,
+	fontSize: number
+): GlyphData {
+	const bitmap = glyph.draw(1); // BBX サイズのビットマップ
+	const advanceWidth = glyph.meta.dwx0 ?? glyph.meta.bbw;
+	const xOffset = glyph.meta.bbxoff;
+	const bbyoff = glyph.meta.bbyoff ?? 0;
+	// bdfparser は props のキーを小文字で保持する
+	const fontAscentStr = glyph.font.props["font_ascent"];
+	const fontAscent = fontAscentStr != null ? parseInt(fontAscentStr) : fontSize;
+	const yOffset = fontAscent - bbyoff - glyph.meta.bbh;
+	return { bitmap, advanceWidth, xOffset, yOffset };
+}
+
 function useCharBitmaps({
 	fontInfo,
 	text,
-}: UseCharBitmapsHookParams): Promise<Bitmap[][]> {
+}: UseCharBitmapsHookParams): Promise<GlyphData[][]> {
 	const tofu = useTofu(fontInfo);
 	return useMemo(async () => {
 		try {
 			const lines = text.split("\n");
-			const result: Bitmap[][] = [];
+			const result: GlyphData[][] = [];
 
 			for (const line of lines) {
-				const lineBitmaps: Bitmap[] = [];
+				const lineGlyphs: GlyphData[] = [];
 
 				for (const char of line) {
-					const cachedBitmap = fontInfo.cache.get(char);
-					if (cachedBitmap) {
-						lineBitmaps.push(cachedBitmap);
+					const cached = fontInfo.cache.get(char);
+					if (cached) {
+						lineGlyphs.push(cached);
 						continue;
 					}
 					const isFullWidth = isFullWidthChar(char);
@@ -237,19 +258,18 @@ function useCharBitmaps({
 
 					const glyph = await getGlyphFromFonts(char, fontSpec);
 
-					const bitmap = (() => {
-						if (isFullWidth) {
-							return glyph?.draw(1) ?? tofu.fullWidth;
-						} else {
-							return glyph?.draw() ?? tofu.halfWidth;
-						}
-					})();
+					const glyphData: GlyphData =
+						glyph != null
+							? glyphToGlyphData(glyph, fontInfo.fontSize)
+							: isFullWidth
+								? tofu.fullWidth
+								: tofu.halfWidth;
 
-					fontInfo.cache.set(char, bitmap);
-					lineBitmaps.push(bitmap);
+					fontInfo.cache.set(char, glyphData);
+					lineGlyphs.push(glyphData);
 				}
 
-				result.push(lineBitmaps);
+				result.push(lineGlyphs);
 			}
 
 			return result;
@@ -261,6 +281,7 @@ function useCharBitmaps({
 		fontInfo.cache,
 		fontInfo.fullWidth,
 		fontInfo.halfWidth,
+		fontInfo.fontSize,
 		text,
 		tofu.fullWidth,
 		tofu.halfWidth,
@@ -313,27 +334,32 @@ function useLineImagesPromise({
 					}
 
 					let currentX = 0;
-					for (const bitmap of glyphs) {
+					for (const glyphData of glyphs) {
+						const { bitmap, advanceWidth, xOffset, yOffset } = glyphData;
 						const bitmapWidth = bitmap.width();
 						const bitmapHeight = bitmap.height();
 
-						// ImageData を作成して描画
-						const imageData = ctx.createImageData(bitmapWidth, bitmapHeight);
-						const data = imageData.data;
+						if (bitmapWidth > 0 && bitmapHeight > 0) {
+							// ImageData を作成して描画
+							const imageData = ctx.createImageData(bitmapWidth, bitmapHeight);
+							const data = imageData.data;
 
-						for (let row = 0; row < bitmapHeight; row++) {
-							for (let col = 0; col < bitmapWidth; col++) {
-								const pixelIndex = (row * bitmapWidth + col) * 4;
-								if (bitmap.bindata[row][col] === "1") {
-									fillColorRgb.setToData(data, pixelIndex);
-								} else {
-									setTransparentToData(data, pixelIndex);
+							for (let row = 0; row < bitmapHeight; row++) {
+								for (let col = 0; col < bitmapWidth; col++) {
+									const pixelIndex = (row * bitmapWidth + col) * 4;
+									if (bitmap.bindata[row][col] === "1") {
+										fillColorRgb.setToData(data, pixelIndex);
+									} else {
+										setTransparentToData(data, pixelIndex);
+									}
 								}
 							}
-						}
 
-						ctx.putImageData(imageData, currentX, 0);
-						currentX += bitmapWidth;
+							// BBX x/y オフセットを考慮した位置に描画
+							ctx.putImageData(imageData, currentX + xOffset, yOffset);
+						}
+						// DWIDTH を使って x を進める
+						currentX += advanceWidth;
 					}
 
 					drawLines.push({
@@ -449,18 +475,18 @@ function useDrawContentPromise({
 }
 
 function wrapLineByWidth(
-	charBitmaps: Bitmap[],
+	charGlyphs: GlyphData[],
 	maxWidthPx: number
 ): WrappedLineInfo[] {
 	const wrappedLines: WrappedLineInfo[] = [];
-	let currentGlyphs: Bitmap[] = [];
+	let currentGlyphs: GlyphData[] = [];
 	let currentWidth = 0;
 
-	for (const bitmap of charBitmaps) {
-		const charWidth = bitmap.width();
-		const charHeight = bitmap.height();
+	for (const glyphData of charGlyphs) {
+		// advance width でセル幅を判定する
+		const charWidth = glyphData.advanceWidth;
 
-		if (charWidth === 0 || charHeight === 0) {
+		if (charWidth === 0) {
 			continue;
 		}
 
@@ -470,10 +496,10 @@ function wrapLineByWidth(
 				glyphs: currentGlyphs,
 				width: currentWidth,
 			});
-			currentGlyphs = [bitmap];
+			currentGlyphs = [glyphData];
 			currentWidth = charWidth;
 		} else {
-			currentGlyphs.push(bitmap);
+			currentGlyphs.push(glyphData);
 			currentWidth += charWidth;
 		}
 	}
@@ -488,16 +514,16 @@ function wrapLineByWidth(
 	return 0 < wrappedLines.length ? wrappedLines : [{ glyphs: [], width: 0 }];
 }
 
-function createLineGlyphInfo(charBitmaps: Bitmap[]): WrappedLineInfo {
-	const glyphs: Bitmap[] = [];
+function createLineGlyphInfo(charGlyphs: GlyphData[]): WrappedLineInfo {
+	const glyphs: GlyphData[] = [];
 	let lineWidth = 0;
 
-	for (const bitmap of charBitmaps) {
-		const charWidth = bitmap.width();
-		const charHeight = bitmap.height();
+	for (const glyphData of charGlyphs) {
+		// advance width を使ってセル幅を積算する
+		const charWidth = glyphData.advanceWidth;
 
-		if (charWidth > 0 && charHeight > 0) {
-			glyphs.push(bitmap);
+		if (charWidth > 0) {
+			glyphs.push(glyphData);
 			lineWidth += charWidth;
 		}
 	}
