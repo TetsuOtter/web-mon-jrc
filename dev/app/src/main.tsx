@@ -2,7 +2,6 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
-import { listen } from "@tauri-apps/api/event";
 import { Provider } from "react-redux";
 
 import { router } from "./router";
@@ -17,12 +16,19 @@ type BidsStatePayload = {
 	location_m: number;
 };
 
-listen<BidsStatePayload>("bids-state", (event) => {
-	store.dispatch(setTimeMs(event.payload.time_ms));
-	store.dispatch(setCurrentLocation(event.payload.location_m / 1000));
-}).catch((err: unknown) => {
-	console.error("Failed to register BIDS state listener:", err);
-});
+// Tauri環境でのみ BIDS連携を有効化
+const isTauriApp = typeof window !== "undefined" && "__TAURI__" in window;
+
+if (isTauriApp) {
+	const { listen } = await import("@tauri-apps/api/event");
+
+	listen<BidsStatePayload>("bids-state", (event) => {
+		store.dispatch(setTimeMs(event.payload.time_ms));
+		store.dispatch(setCurrentLocation(event.payload.location_m / 1000));
+	}).catch((err: unknown) => {
+		console.error("Failed to register BIDS state listener:", err);
+	});
+}
 
 const rootElement = document.getElementById("root");
 if (rootElement == null) {
