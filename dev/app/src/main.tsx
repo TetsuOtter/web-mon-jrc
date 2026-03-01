@@ -20,13 +20,20 @@ type BidsStatePayload = {
 const isTauriApp = typeof window !== "undefined" && "__TAURI__" in window;
 
 if (isTauriApp) {
-	const { listen } = await import("@tauri-apps/api/event");
+	// Initialize Tauri listener asynchronously
+	const initTauriListener = async () => {
+		const { listen } = await import("@tauri-apps/api/event");
 
-	listen<BidsStatePayload>("bids-state", (event) => {
-		store.dispatch(setTimeMs(event.payload.time_ms));
-		store.dispatch(setCurrentLocation(event.payload.location_m / 1000));
-	}).catch((err: unknown) => {
-		console.error("Failed to register BIDS state listener:", err);
+		listen<BidsStatePayload>("bids-state", (event) => {
+			store.dispatch(setTimeMs(event.payload.time_ms));
+			store.dispatch(setCurrentLocation(event.payload.location_m / 1000));
+		}).catch((err: unknown) => {
+			console.error("Failed to register BIDS state listener:", err);
+		});
+	};
+	// Start initialization
+	initTauriListener().catch((err: unknown) => {
+		console.error("Failed to initialize Tauri listener:", err);
 	});
 }
 
