@@ -236,6 +236,12 @@ const type313sSlice = createSlice({
 		setFullState(_state, action: PayloadAction<Type313sState>) {
 			return action.payload;
 		},
+		/**
+		 * State を初期値にリセットする
+		 */
+		resetState() {
+			return defaultInitialState;
+		},
 	},
 });
 
@@ -248,6 +254,7 @@ export const {
 	setConductorState,
 	setCarStateList,
 	setFullState,
+	resetState,
 } = type313sSlice.actions;
 
 export default type313sSlice.reducer;

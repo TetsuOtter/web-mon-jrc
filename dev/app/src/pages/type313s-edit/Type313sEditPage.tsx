@@ -9,6 +9,7 @@ import {
 	setDestination,
 	setTrainNumber,
 	setTrainType,
+	resetState,
 } from "../../store/monitors/type313s/type313sSlice";
 
 import styles from "./Type313sEditPage.module.css";
@@ -135,6 +136,12 @@ export default memo(function Type313sEditPage() {
 		[carStateList, dispatch]
 	);
 
+	const handleResetState = useCallback(() => {
+		if (window.confirm("本当にデータをリセットしてもよろしいですか?")) {
+			dispatch(resetState());
+		}
+	}, [dispatch]);
+
 	const handleCompositionItemClick = useCallback((index: number) => {
 		const element = carDetailsRefs.current[index];
 		if (!element) return;
@@ -160,11 +167,20 @@ export default memo(function Type313sEditPage() {
 		<div className={styles.container}>
 			<header className={styles.header}>
 				<h1>313系 モニター設定</h1>
-				<Link
-					to="/"
-					className={styles.homeLink}>
-					← トップへ戻る
-				</Link>
+				<div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+					<button
+						type="button"
+						onClick={handleResetState}
+						className={styles.deleteButton}
+						style={{ marginRight: "auto" }}>
+						↻ リセット
+					</button>
+					<Link
+						to="/"
+						className={styles.homeLink}>
+						← トップへ戻る
+					</Link>
+				</div>
 			</header>
 
 			<main className={styles.main}>
