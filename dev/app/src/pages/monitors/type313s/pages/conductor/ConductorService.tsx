@@ -1,6 +1,7 @@
 import { memo } from "react";
 
 import { CanvasLine, CanvasText } from "../../../../../canvas-renderer";
+import { createCarStateByCarIndexSelector } from "../../../../../store/monitors/type313s/type313sSelector";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import RoundedButton from "../../components/RoundedButton";
@@ -23,10 +24,7 @@ import ConductorStateGrid, {
 } from "./components/ConductorStateGrid";
 import { FOOTER_MENU } from "./constants";
 
-import type {
-	LabelStyle,
-	CarStateLabelProps,
-} from "./components/CarStateLabel";
+import type { LabelStyle } from "./components/CarStateLabel";
 import type { RoundedButtonStyle } from "./components/ConductorRoundedButton";
 import type { GridRowDefinition } from "./components/ConductorStateGrid";
 
@@ -284,9 +282,13 @@ const ANNOUNCE_BUTTON_STYLE = {
 		textColor: COLORS.WHITE,
 	},
 } as const satisfies Record<AnnounceState, RoundedButtonStyle>;
-const announceStateSelector: CarStateLabelProps<AnnounceState>["stateSelector"] =
-	() => "ON";
-
+const announceStateSelector = createCarStateByCarIndexSelector<AnnounceState>(
+	(carState) => {
+		if (carState.isAnnounceOn === true) return "ON";
+		if (carState.isAnnounceOn === false) return "OFF";
+		return "UNKNOWN";
+	}
+);
 type RoomLightState = "ON" | "OFF" | "UNKNOWN";
 const ROOM_LIGHT_STATE_LABEL_STYLE = {
 	ON: {
@@ -308,5 +310,10 @@ const ROOM_LIGHT_STATE_LABEL_STYLE = {
 		scaleX: 2,
 	},
 } as const satisfies Record<RoomLightState, LabelStyle>;
-const roomLightStateSelector: CarStateLabelProps<RoomLightState>["stateSelector"] =
-	() => "ON";
+const roomLightStateSelector = createCarStateByCarIndexSelector<RoomLightState>(
+	(carState) => {
+		if (carState.isRoomLightOn === true) return "ON";
+		if (carState.isRoomLightOn === false) return "OFF";
+		return "UNKNOWN";
+	}
+);

@@ -2,10 +2,9 @@ import type { ReactNode } from "react";
 import { memo, useMemo } from "react";
 
 import CanvasObjectGroup from "../../../../../../canvas-renderer/objects/CanvasObjectGroup";
-import {
-	SAMPLE_TRAIN_FORMATION,
-	LEFT as TRAIN_FORMATION_LEFT,
-} from "../../../components/car-image/TrainFormationImage";
+import { useAppSelector } from "../../../../../../store/hooks";
+import { carCountSelector } from "../../../../../../store/monitors/type313s/type313sSelector";
+import { LEFT as TRAIN_FORMATION_LEFT } from "../../../components/car-image/TrainFormationImage";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
 
 export const BASE_Y = 140;
@@ -24,12 +23,12 @@ export default memo<ConductorStateGridProps>(function ConductorStateGrid({
 	offsetY = 0,
 	rowDefinitionList,
 }) {
+	const carCount = useAppSelector(carCountSelector);
 	const height = useMemo(
 		() => rowDefinitionList.reduce((sum, def) => sum + def.rowHeight, 0),
 		[rowDefinitionList]
 	);
-	const width =
-		TRAIN_FORMATION_LEFT + CAR_IMAGE_WIDTH * SAMPLE_TRAIN_FORMATION.length;
+	const width = TRAIN_FORMATION_LEFT + CAR_IMAGE_WIDTH * carCount;
 
 	const nodeList = useMemo(() => {
 		const nodeList: ReactNode[] = [];
@@ -37,17 +36,17 @@ export default memo<ConductorStateGridProps>(function ConductorStateGrid({
 		for (const rowDef of rowDefinitionList) {
 			nodeList.push(rowDef.renderLabel(0, currentY + (rowDef.marginTop ?? 0)));
 
-			SAMPLE_TRAIN_FORMATION.forEach((_, carIndex) => {
+			for (let carIndex = 0; carIndex < carCount; carIndex++) {
 				const cellX = TRAIN_FORMATION_LEFT + CAR_IMAGE_WIDTH * carIndex;
 				nodeList.push(
 					rowDef.renderCell(cellX, currentY + (rowDef.marginTop ?? 0), carIndex)
 				);
-			});
+			}
 
 			currentY += rowDef.rowHeight;
 		}
 		return nodeList;
-	}, [rowDefinitionList]);
+	}, [rowDefinitionList, carCount]);
 
 	return (
 		<CanvasObjectGroup

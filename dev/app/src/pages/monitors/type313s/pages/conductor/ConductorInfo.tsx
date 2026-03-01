@@ -1,6 +1,12 @@
 import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";
+import { useAppSelector } from "../../../../../store/hooks";
+import {
+	conductorIsGuidanceOnSelector,
+	conductorIsRoomLightOnSelector,
+	createCarStateByCarIndexSelector,
+} from "../../../../../store/monitors/type313s/type313sSelector";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
@@ -24,12 +30,12 @@ import ConductorInfoOnOffState from "./components/ConductorInfoOnOffState";
 import ConductorStateGrid from "./components/ConductorStateGrid";
 import { FOOTER_MENU } from "./constants";
 
-import type {
-	LabelStyle,
-	CarStateLabelProps,
-} from "./components/CarStateLabel";
-import type { CarStateStringLabelProps } from "./components/CarStateStringLabel";
+import type { LabelStyle } from "./components/CarStateLabel";
 import type { GridRowDefinition } from "./components/ConductorStateGrid";
+import type {
+	AirConditionerState,
+	FanState,
+} from "../../../../../store/monitors/type313s/type313sTypes";
 
 const ROOM_TEMP_PADDING_TOP = 2;
 const ROOM_HUMIDITY_PADDING_BOTTOM = 2;
@@ -55,6 +61,8 @@ const INSTRUCTION_Y = WITH_FOOTER_CONTENT_HEIGHT - FONT_SIZE_1X - 8;
 
 export default memo(function ConductorInfo() {
 	const mode = useConductorPageMode();
+	const isRoomLightOn = useAppSelector(conductorIsRoomLightOnSelector);
+	const isGuidanceOn = useAppSelector(conductorIsGuidanceOnSelector);
 
 	return (
 		<FooterPageFrame
@@ -77,7 +85,7 @@ export default memo(function ConductorInfo() {
 			<ConductorInfoOnOffState
 				relX={ROOM_LIGHT_STATE_X}
 				relY={ROOM_LIGHT_STATE_Y}
-				isOn={false}
+				isOn={isRoomLightOn ?? false}
 			/>
 
 			<CanvasText
@@ -91,7 +99,7 @@ export default memo(function ConductorInfo() {
 			<ConductorInfoOnOffState
 				relX={GUIDANCE_STATE_X}
 				relY={GUIDANCE_STATE_Y}
-				isOn={false}
+				isOn={isGuidanceOn ?? false}
 			/>
 
 			<CanvasText
@@ -233,10 +241,14 @@ const ANNOUNCE_STATE_LABEL_STYLE = {
 		textColor: COLORS.WHITE,
 	},
 } as const satisfies Record<AnnounceState, LabelStyle>;
-const announceStateSelector: CarStateLabelProps<AnnounceState>["stateSelector"] =
-	() => "ON";
+const announceStateSelector = createCarStateByCarIndexSelector<AnnounceState>(
+	(carState) => {
+		if (carState.isAnnounceOn === true) return "ON";
+		if (carState.isAnnounceOn === false) return "OFF";
+		return "UNKNOWN";
+	}
+);
 
-type AirConditionerState = "AUTO_HEATING" | "AUTO_COOLING" | "OFF" | "UNKNOWN";
 const AIR_CONDITIONER_STATE_LABEL_STYLE = {
 	AUTO_HEATING: {
 		text: "自暖",
@@ -258,18 +270,11 @@ const AIR_CONDITIONER_STATE_LABEL_STYLE = {
 		fillColor: COLORS.BLACK,
 		textColor: COLORS.WHITE,
 	},
-} as const satisfies Record<AirConditionerState, LabelStyle>;
-const airConditionerStateSelector: CarStateLabelProps<AirConditionerState>["stateSelector"] =
-	() => "AUTO_HEATING";
+} as const satisfies Record<AirConditionerState | "UNKNOWN", LabelStyle>;
+const airConditionerStateSelector = createCarStateByCarIndexSelector<
+	AirConditionerState | "UNKNOWN"
+>((carState) => carState.airConditionerState ?? "UNKNOWN");
 
-type FanState =
-	| "AUTO_HIGH"
-	| "AUTO_LOW"
-	| "AUTO_OFF"
-	| "MANUAL_HIGH"
-	| "MANUAL_LOW"
-	| "MANUAL_OFF"
-	| "UNKNOWN";
 const FAN_STATE_LABEL_STYLE = {
 	AUTO_HIGH: {
 		text: "自強",
@@ -306,11 +311,18 @@ const FAN_STATE_LABEL_STYLE = {
 		fillColor: COLORS.BLACK,
 		textColor: COLORS.WHITE,
 	},
-} as const satisfies Record<FanState, LabelStyle>;
-const fanStateSelector: CarStateLabelProps<FanState>["stateSelector"] = () =>
-	"AUTO_OFF";
+} as const satisfies Record<FanState | "UNKNOWN", LabelStyle>;
+const fanStateSelector = createCarStateByCarIndexSelector<FanState | "UNKNOWN">(
+	(carState) => carState.fanState ?? "UNKNOWN"
+);
 
-const roomTemperatureTextSelector: CarStateStringLabelProps["textSelector"] =
-	() => "20.5";
-const roomHumidityTextSelector: CarStateStringLabelProps["textSelector"] = () =>
-	"37";
+const roomTemperatureTextSelector = createCarStateByCarIndexSelector<
+	string | undefined
+>((carState) =>
+	carState.temperature != null ? carState.temperature.toFixed(1) : undefined
+);
+const roomHumidityTextSelector = createCarStateByCarIndexSelector<
+	string | undefined
+>((carState) =>
+	carState.humidity != null ? carState.humidity.toFixed(0) : undefined
+);

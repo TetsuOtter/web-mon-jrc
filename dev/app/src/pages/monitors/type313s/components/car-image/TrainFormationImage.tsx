@@ -1,104 +1,119 @@
+import type { FC } from "react";
 import { memo } from "react";
 
 import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
-import { COLORS, type ColorValue } from "../../constants";
+import {
+	useAppSelector,
+	useAppSelectorWithParams,
+	useAppSelectorWithParamsAndEqualityFn,
+} from "../../../../../store/hooks";
+import {
+	carCountSelector,
+	createCarStateByCarIndexSelector,
+} from "../../../../../store/monitors/type313s/type313sSelector";
+import { COLORS } from "../../constants";
 
 import CarImage from "./CarImage";
-import { BOGIE_STATE } from "./bogieImageCache";
 import {
 	WIDTH as CAR_IMAGE_WIDTH,
 	HEIGHT as CAR_IMAGE_HEIGHT,
 } from "./constants";
+import {
+	BOGIE_STATE,
+	isBaseCarImageEqual,
+	isCarImageBogieInfoEqual,
+} from "./types";
 
-import type { BaseCarImageInfo } from "./baseCarImageCache";
-import type { CarImageBogieInfo } from "./bogieImageCache";
+import type { CarImageBogieInfo, BaseCarImageInfo } from "./types";
+import type { ColorValue } from "../../constants";
 
 const TOP = 50;
 export const LEFT = 194;
 
-export const SAMPLE_TRAIN_FORMATION: {
-	key: string;
-	baseInfo: BaseCarImageInfo;
-	bogieInfo: CarImageBogieInfo;
-	roofBackgroundColor?: ColorValue;
-	bodyBackgroundColor?: ColorValue;
-	carType?: string;
-	carNumber: number;
-}[] = [
-	{
-		key: "car1",
-		baseInfo: {
-			isLeftCab: true,
-			isRightCab: false,
-			hasLeftPantograph: false,
-			hasRightPantograph: true,
-		},
-		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
-		roofBackgroundColor: COLORS.RED,
-		bodyBackgroundColor: COLORS.LIME,
-		carType: "Mc",
-		carNumber: 1,
-	},
-	{
-		key: "car2",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: false,
-			hasLeftPantograph: false,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
-		carType: "M",
-		carNumber: 2,
-	},
-	{
-		key: "car3",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: false,
-			hasLeftPantograph: true,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.MOTORED, right: BOGIE_STATE.MOTORED },
-		carType: "T'",
-		carNumber: 3,
-	},
-	{
-		key: "car4",
-		baseInfo: {
-			isLeftCab: false,
-			isRightCab: true,
-			hasLeftPantograph: false,
-			hasRightPantograph: false,
-		},
-		bogieInfo: { left: BOGIE_STATE.NONE, right: BOGIE_STATE.NONE },
-		roofBackgroundColor: COLORS.RED,
-		bodyBackgroundColor: COLORS.YELLOW,
-		carType: "Tc",
-		carNumber: 4,
-	},
-];
-
 export default memo(function TrainFormationImage() {
+	const carCount = useAppSelector(carCountSelector);
+
 	return (
 		<CanvasObjectGroup
 			relX={LEFT}
 			relY={TOP}
-			width={CAR_IMAGE_WIDTH * SAMPLE_TRAIN_FORMATION.length}
+			width={CAR_IMAGE_WIDTH * carCount}
 			height={CAR_IMAGE_HEIGHT}>
-			{SAMPLE_TRAIN_FORMATION.map((info, index) => (
-				<CarImage
-					key={info.key}
-					relX={CAR_IMAGE_WIDTH * index}
-					relY={0}
-					baseInfo={info.baseInfo}
-					bogieInfo={info.bogieInfo}
-					roofBackgroundColor={info.roofBackgroundColor}
-					bodyBackgroundColor={info.bodyBackgroundColor}
-					carType={info.carType}
-					carNumber={info.carNumber}
+			{Array.from({ length: carCount }, (_, index) => (
+				<CarImageByCarIndex
+					key={index}
+					carIndex={index}
 				/>
 			))}
 		</CanvasObjectGroup>
 	);
 });
+
+type CarImageByCarIndexProps = {
+	readonly carIndex: number;
+};
+// eslint-disable-next-line react/no-multi-comp
+const CarImageByCarIndex: FC<CarImageByCarIndexProps> = ({ carIndex }) => {
+	const baseInfo = useAppSelectorWithParamsAndEqualityFn(
+		baseInfoSelector,
+		isBaseCarImageEqual,
+		carIndex
+	);
+	const bogieInfo = useAppSelectorWithParamsAndEqualityFn(
+		bogieInfoSelector,
+		isCarImageBogieInfoEqual,
+		carIndex
+	);
+	const roofBackgroundColor = useAppSelectorWithParams(
+		roofBackgroundColorSelector,
+		carIndex
+	);
+	const carType = useAppSelectorWithParams(carTypeSelector, carIndex);
+	const carNumber = useAppSelectorWithParams(carNumberSelector, carIndex);
+	return (
+		<CarImage
+			relX={CAR_IMAGE_WIDTH * carIndex}
+			relY={0}
+			baseInfo={baseInfo}
+			bogieInfo={bogieInfo}
+			roofBackgroundColor={roofBackgroundColor}
+			carType={carType}
+			carNumber={carNumber}
+		/>
+	);
+};
+
+const baseInfoSelector = createCarStateByCarIndexSelector<BaseCarImageInfo>(
+	(carState) => ({
+		isLeftCab: carState.cabState?.side === "left",
+		isRightCab: carState.cabState?.side === "right",
+		hasLeftPantograph: carState.hasLeftPantograph ?? false,
+		hasRightPantograph: carState.hasRightPantograph ?? false,
+	})
+);
+const bogieInfoSelector = createCarStateByCarIndexSelector<CarImageBogieInfo>(
+	(carState) => ({
+		left:
+			carState.bogieState?.left != null
+				? BOGIE_STATE.MOTORED
+				: BOGIE_STATE.NONE,
+		right:
+			carState.bogieState?.right != null
+				? BOGIE_STATE.MOTORED
+				: BOGIE_STATE.NONE,
+	})
+);
+const roofBackgroundColorSelector = createCarStateByCarIndexSelector<
+	ColorValue | undefined
+>((carState) => {
+	if (carState.cabState?.orderedNotchCommand != null) {
+		return COLORS.BLUE;
+	}
+	return undefined;
+});
+const carTypeSelector = createCarStateByCarIndexSelector(
+	(carState) => carState.carType
+);
+const carNumberSelector = createCarStateByCarIndexSelector(
+	(carState) => carState.carNumber
+);

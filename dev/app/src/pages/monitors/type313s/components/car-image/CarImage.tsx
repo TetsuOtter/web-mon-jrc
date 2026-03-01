@@ -23,8 +23,7 @@ import {
 	WIDTH,
 } from "./constants";
 
-import type { BaseCarImageInfo } from "./baseCarImageCache";
-import type { CarImageBogieInfo } from "./bogieImageCache";
+import type { CarImageBogieInfo, BaseCarImageInfo } from "./types";
 import type {
 	ClickEventHandler,
 	ClickDetector,

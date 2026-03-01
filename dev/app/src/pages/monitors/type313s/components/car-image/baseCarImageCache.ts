@@ -15,15 +15,9 @@ import {
 	FLOOR_Y,
 } from "./constants";
 
+import type { BaseCarImageInfo } from "./types";
+
 const BaseCarImageCache = new Map<string, OffscreenCanvas>();
-
-export type BaseCarImageInfo = {
-	isLeftCab: boolean;
-	isRightCab: boolean;
-
-	hasLeftPantograph: boolean;
-	hasRightPantograph: boolean;
-};
 
 function getBaseCarImageInfoKey(info: BaseCarImageInfo): string {
 	if (info.isLeftCab && info.isRightCab) {

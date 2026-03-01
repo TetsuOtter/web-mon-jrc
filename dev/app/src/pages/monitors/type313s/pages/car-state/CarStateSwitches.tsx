@@ -1,12 +1,12 @@
 import { memo, useMemo } from "react";
 
 import { toWide } from "../../../../../utils/toWide";
+import { useAppSelector } from "../../../../../store/hooks";
+import { carStateListSelector } from "../../../../../store/monitors/type313s/type313sSelector";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import Table from "../../components/Table";
-import TrainFormationImage, {
-	SAMPLE_TRAIN_FORMATION,
-} from "../../components/car-image/TrainFormationImage";
+import TrainFormationImage from "../../components/car-image/TrainFormationImage";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../components/car-image/constants";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
 import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
@@ -14,7 +14,8 @@ import { useCarStatePageMode } from "../../hooks/usePageMode";
 
 import { FOOTER_MENU } from "./constants";
 
-import type { CellListForRow, RowList } from "../../components/Table";
+import type { Type313sCarState } from "../../../../../store/monitors/type313s/type313sTypes";
+import type { CellInfo, CellListForRow, RowList } from "../../components/Table";
 
 const TABLE_TOP = 186;
 const TABLE_LEFT = 36;
@@ -59,11 +60,9 @@ const SWITCH_LABEL_MAP: string[][] = [SWITCH_TYPES_1, SWITCH_TYPES_2];
 export default memo(function CarStateSwitches() {
 	const mode = useCarStatePageMode();
 	const pagerProps = useFooterAreaWithPagerProps(SWITCH_LABEL_MAP.length - 1);
-	const tableDefinition = useTableDefinition(SAMPLE_TRAIN_FORMATION.length);
-	const tableRowList = useTableCells(
-		SAMPLE_TRAIN_FORMATION.length,
-		pagerProps.currentPageIndex
-	);
+	const carStateList = useAppSelector(carStateListSelector);
+	const tableDefinition = useTableDefinition(carStateList.length);
+	const tableRowList = useTableCells(carStateList, pagerProps.currentPageIndex);
 
 	return (
 		<FooterPageFrame
@@ -101,7 +100,7 @@ function useTableDefinition(carCount: number) {
 	);
 }
 
-function useTableCells(carCount: number, page: number) {
+function useTableCells(carStateList: Type313sCarState[], page: number) {
 	const labelList = SWITCH_LABEL_MAP[page];
 	return useMemo(() => {
 		if (!labelList) {
@@ -120,16 +119,125 @@ function useTableCells(carCount: number, page: number) {
 					textColor: COLORS.WHITE,
 				},
 			];
-			for (let carIndex = 0; carIndex < carCount; carIndex++) {
-				// TODO: スイッチの状態に応じて表示切り替え
-				// cellList.push({
-				// 	text: "ON",
-				// 	textColor: COLORS.WHITE,
-				// 	horizontalAlign: "center",
-				// });
+			for (const carState of carStateList) {
+				const cell =
+					page === 0
+						? getSwitchPage1Cell(carState, rowIndex)
+						: getSwitchPage2Cell(carState, rowIndex);
+				cellList.push(cell);
 			}
 			rowList.push(cellList);
 		}
 		return rowList;
-	}, [carCount, labelList]);
+	}, [carStateList, labelList]);
+}
+
+function boolCell(value: boolean | null | undefined): CellInfo {
+	if (value === true) {
+		return { text: "○", textColor: COLORS.LIME, horizontalAlign: "center" };
+	}
+	if (value === false) {
+		return { text: "×", textColor: COLORS.GRAY, horizontalAlign: "center" };
+	}
+	return { text: "-", textColor: COLORS.GRAY, horizontalAlign: "center" };
+}
+
+function getSwitchPage1Cell(
+	carState: Type313sCarState,
+	rowIndex: number
+): CellInfo {
+	const { carStates, bogieState } = carState;
+	switch (rowIndex) {
+		case 0:
+			return boolCell(carStates.isMSOn);
+		case 1:
+			return boolCell(bogieState?.isHBOn);
+		case 2:
+			return boolCell(bogieState?.isLB1On);
+		case 3:
+			return boolCell(bogieState?.left?.isLbOn);
+		case 4:
+			return boolCell(bogieState?.right?.isLbOn);
+		case 5:
+			return boolCell(bogieState?.left?.isMCOS1On);
+		case 6:
+			return boolCell(bogieState?.left?.isMCOS2On);
+		case 7:
+			return boolCell(bogieState?.right?.isMCOS1On);
+		case 8:
+			return boolCell(bogieState?.right?.isMCOS2On);
+		case 9:
+			return boolCell(bogieState?.isCCOSNormal);
+		default:
+			return { text: "-", textColor: COLORS.GRAY, horizontalAlign: "center" };
+	}
+}
+
+function getSwitchPage2Cell(
+	carState: Type313sCarState,
+	rowIndex: number
+): CellInfo {
+	const { carStates, bogieState, cabState } = carState;
+	switch (rowIndex) {
+		case 0:
+			return boolCell(carStates.sivLineState?.isSIVOn);
+		case 1:
+			return boolCell(carStates.isCPOn);
+		case 2:
+			return boolCell(carStates.isMRPressureNormal);
+		case 3: {
+			const cabSes = cabState?.cabSesState;
+			if (cabSes === "FORWARD")
+				return {
+					text: "前進",
+					textColor: COLORS.WHITE,
+					horizontalAlign: "center",
+				};
+			if (cabSes === "NEUTRAL")
+				return {
+					text: "中立",
+					textColor: COLORS.YELLOW,
+					horizontalAlign: "center",
+				};
+			if (cabSes === "REVERSE")
+				return {
+					text: "後退",
+					textColor: COLORS.WHITE,
+					horizontalAlign: "center",
+				};
+			return { text: "-", textColor: COLORS.GRAY, horizontalAlign: "center" };
+		}
+		case 4: {
+			const vvvf2 = bogieState?.vvvf2State;
+			if (vvvf2 === "VVVF")
+				return {
+					text: "VVVF",
+					textColor: COLORS.WHITE,
+					horizontalAlign: "center",
+				};
+			if (vvvf2 === "VVVF2")
+				return {
+					text: "VVV2",
+					textColor: COLORS.AQUA,
+					horizontalAlign: "center",
+				};
+			return { text: "-", textColor: COLORS.GRAY, horizontalAlign: "center" };
+		}
+		case 5:
+			return boolCell(carStates.sivLineState?.isCgKForSIVOn);
+		case 6:
+			return boolCell(bogieState?.isCgKForVVVF2On);
+		case 7:
+			return boolCell(carStates.isTestSWOn);
+		case 8:
+			return boolCell(cabState?.isBHEBOn);
+		case 9:
+			return boolCell(cabState?.isConductorEBOn);
+		case 10:
+			return boolCell(carStates.isSnowBrakeOn);
+		case 11:
+			return boolCell(cabState?.isSpareStraightBrakeOn);
+		default:
+			return { text: "-", textColor: COLORS.GRAY, horizontalAlign: "center" };
+	}
 }

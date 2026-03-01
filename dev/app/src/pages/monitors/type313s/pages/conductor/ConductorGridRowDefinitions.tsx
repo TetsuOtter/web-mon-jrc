@@ -1,12 +1,10 @@
 import { CanvasText } from "../../../../../canvas-renderer";
+import { createCarStateByCarIndexSelector } from "../../../../../store/monitors/type313s/type313sSelector";
 import { COLORS, FONT_SIZE_2X } from "../../constants";
 
 import CarStateLabel from "./components/CarStateLabel";
 
-import type {
-	CarStateLabelProps,
-	LabelStyle,
-} from "./components/CarStateLabel";
+import type { LabelStyle } from "./components/CarStateLabel";
 import type { GridRowDefinition } from "./components/ConductorStateGrid";
 
 export const GRID_LABEL_X = 10;
@@ -54,5 +52,11 @@ const DOOR_STATE_LABEL_STYLE = {
 		textColor: COLORS.WHITE,
 	},
 } as const satisfies Record<DoorState, LabelStyle>;
-const doorStateSelector: CarStateLabelProps<DoorState>["stateSelector"] = () =>
-	"CLOSED";
+
+const doorStateSelector = createCarStateByCarIndexSelector<DoorState>(
+	(carState) => {
+		if (carState.isDoorClosed === true) return "CLOSED";
+		if (carState.isDoorClosed === false) return "OPEN";
+		return "UNKNOWN";
+	}
+);

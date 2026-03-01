@@ -7,24 +7,16 @@ import {
 	BOGIE_H_W,
 	BOGIE_PATTERN,
 } from "./constants";
+import { BOGIE_STATE } from "./types";
+
+import type { BogieState, CarImageBogieInfo } from "./types";
 
 const BogieImageCache = new Map<string, OffscreenCanvas>();
 
-export const BOGIE_STATE = {
-	NONE: 0,
-	MOTORED: 1,
-	WORKING: 2,
-} as const;
-export type BogieState = (typeof BOGIE_STATE)[keyof typeof BOGIE_STATE];
 const isMotoredOrWorking = (
 	state: BogieState
 ): state is Extract<BogieState, "MOTORED" | "WORKING"> =>
 	state === BOGIE_STATE.MOTORED || state === BOGIE_STATE.WORKING;
-
-export type CarImageBogieInfo = {
-	left: BogieState;
-	right: BogieState;
-};
 
 const BOGIE_FILL_COLOR = BORDER_COLOR;
 

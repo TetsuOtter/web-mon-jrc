@@ -2,6 +2,11 @@
 import { memo } from "react";
 
 import { CanvasText } from "../../../../../canvas-renderer";
+import { useAppSelector } from "../../../../../store/hooks";
+import {
+	carStateListSelector,
+	createCarStateByCarIndexSelector,
+} from "../../../../../store/monitors/type313s/type313sSelector";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
@@ -12,7 +17,6 @@ import ConductorStateGrid from "../conductor/components/ConductorStateGrid";
 import { PAGE_MODES, PAGE_TYPES } from "../pageTypes";
 
 import type { FooterButtonInfo } from "../../footer/FooterArea";
-import type { CarStateStringLabelProps } from "../conductor/components/CarStateStringLabel";
 import type { GridRowDefinition } from "../conductor/components/ConductorStateGrid";
 
 const GRID_LABEL_X = 12;
@@ -29,6 +33,22 @@ const PASSENGER_COUNT_SUM_Y = 288;
 const PASSENGER_COUNT_SUM_DISPLAY_Y = PASSENGER_COUNT_SUM_Y + 2;
 
 export default memo(function OccupancyRate() {
+	const carStateList = useAppSelector(carStateListSelector);
+	const avgRateText = (() => {
+		const rates = carStateList
+			.map((c) => c.occupancyRate)
+			.filter((r): r is number => r != null);
+		if (rates.length === 0) return "-";
+		return ((rates.reduce((a, b) => a + b, 0) / rates.length) * 100).toFixed(0);
+	})();
+	const totalPassengersText = (() => {
+		const counts = carStateList
+			.map((c) => c.occupancy)
+			.filter((n): n is number => n != null);
+		if (counts.length === 0) return "-";
+		return counts.reduce((a, b) => a + b, 0).toString();
+	})();
+
 	return (
 		<FooterPageFrame
 			mode={PAGE_MODES.OCCUPANCY_RATE}
@@ -54,7 +74,7 @@ export default memo(function OccupancyRate() {
 				relY={AVG_RATE_DISPLAY_Y}
 				maxWidthPx={AVG_RATE_DISPLAY_WIDTH}
 				align="right"
-				text="68"
+				text={avgRateText}
 				fillColor={COLORS.WHITE}
 				scaleY={2}
 			/>
@@ -70,7 +90,7 @@ export default memo(function OccupancyRate() {
 				relY={PASSENGER_COUNT_SUM_DISPLAY_Y}
 				maxWidthPx={AVG_RATE_DISPLAY_WIDTH}
 				align="right"
-				text="304"
+				text={totalPassengersText}
 				fillColor={COLORS.WHITE}
 				scaleY={2}
 			/>
@@ -150,14 +170,19 @@ const GRID_DEFINITION = [
 				align="right"
 				carIndex={carIndex}
 				textColor={COLORS.YELLOW}
-				textSelector={occupancyNumberTextSelector}
+				textSelector={occupancyTextSelector}
 			/>
 		),
 		rowHeight: GRID_1X_CONTENT_HEIGHT,
 	},
 ] as const satisfies GridRowDefinition[];
 
-const occupancyRateTextSelector: CarStateStringLabelProps["textSelector"] =
-	() => "82";
-const occupancyNumberTextSelector: CarStateStringLabelProps["textSelector"] =
-	() => "114";
+const occupancyRateTextSelector = createCarStateByCarIndexSelector((state) => {
+	const rate = state.occupancyRate;
+	return rate != null ? (rate * 100).toFixed(0) : undefined;
+});
+
+const occupancyTextSelector = createCarStateByCarIndexSelector((state) => {
+	const occupancy = state.occupancy;
+	return occupancy != null ? occupancy.toString() : undefined;
+});

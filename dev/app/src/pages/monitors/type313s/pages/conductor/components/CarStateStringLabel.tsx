@@ -5,7 +5,7 @@ import { useAppSelectorWithParams } from "../../../../../../store/hooks";
 import { FONT_SIZE_1X } from "../../../constants";
 
 import type { CanvasTextProps } from "../../../../../../canvas-renderer/objects/CanvasText";
-import type { AppSelector } from "../../../../../../store/types";
+import type { CarStateByCarIndexSelector } from "../../../../../../store/monitors/type313s/type313sSelector";
 
 export type CarStateStringLabelProps = {
 	readonly relX: number;
@@ -16,7 +16,7 @@ export type CarStateStringLabelProps = {
 	readonly align?: CanvasTextProps["align"];
 	readonly verticalAlign?: CanvasTextProps["verticalAlign"];
 	readonly textColor: string;
-	readonly textSelector: AppSelector<string | undefined, [carIndex: number]>;
+	readonly textSelector: CarStateByCarIndexSelector<string | undefined>;
 };
 export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 	relX,
