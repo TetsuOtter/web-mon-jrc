@@ -92,6 +92,22 @@
 	border-radius: 6px;
 	font-size: 0.85rem;
 	cursor: pointer;
+	transition:
+		opacity 0.2s,
+		background-color 0.2s;
+}
+
+.actionButton:hover:not(:disabled),
+.deleteButton:hover:not(:disabled) {
+	opacity: 0.9;
+}
+
+.actionButton:disabled,
+.deleteButton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	background-color: #9ca3af;
+	border-color: #9ca3af;
 }
 
 .deleteButton {
@@ -100,8 +116,8 @@
 }
 
 .deleteButton:disabled {
-	opacity: 0.45;
-	cursor: not-allowed;
+	background-color: #9ca3af;
+	border-color: #9ca3af;
 }
 
 .formGroup {

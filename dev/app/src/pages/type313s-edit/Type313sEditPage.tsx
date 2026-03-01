@@ -105,6 +105,9 @@ export default memo(function Type313sEditPage() {
 	);
 
 	const handleAddCar = useCallback(() => {
+		if (carStateList.length >= 12) {
+			return;
+		}
 		const maxCarNumber = carStateList.reduce(
 			(maxValue, carState) => Math.max(maxValue, carState.carNumber),
 			0
@@ -230,6 +233,7 @@ export default memo(function Type313sEditPage() {
 									e.stopPropagation();
 									handleAddCar();
 								}}
+								disabled={carStateList.length >= 12}
 								className={styles.actionButton}>
 								+ 車両追加
 							</button>
@@ -274,7 +278,7 @@ export default memo(function Type313sEditPage() {
 									className={styles.subSection}>
 									<summary className={styles.subTitleRow}>
 										<span className={styles.subTitle}>
-											{index + 1}号車 ({carState.carType})
+											{carState.carNumber}号車 ({carState.carType})
 										</span>
 										<button
 											type="button"
