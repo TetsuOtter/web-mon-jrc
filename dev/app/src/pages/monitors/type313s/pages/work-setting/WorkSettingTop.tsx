@@ -15,13 +15,18 @@ import { COLORS, FONT_SIZE_1X, RGB_COLORS } from "../../constants";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
 import { PAGE_TYPES } from "../pageTypes";
-import { usePageNavigationTo } from "../usePageNavigation";
+import {
+	FORMATION_NUM,
+	usePageNavigation,
+	usePageNavigationTo,
+} from "../usePageNavigation";
 
 import BulkDirectionRow from "./components/BulkDirectionRow";
 import TrainDirectionRow from "./components/TrainDirectionRow";
 import { PAGE_NAME_MAP } from "./constants";
 
 import type { FooterButtonInfo } from "../../footer/FooterArea";
+import type { FormationNum } from "../usePageNavigation";
 
 const INNER_BUTTON_TEXT_X = SHADOW_WIDTH.DEFAULT + 2;
 const INNER_BUTTON_PADDING_X = 4;
@@ -101,20 +106,27 @@ const GUIDE_3_Y = GUIDE_2_Y + FONT_SIZE_1X;
 
 export default memo(function WorkSettingTop() {
 	const mode = useWorkSettingPageMode();
+	const navigate = usePageNavigation();
 
 	const handleTrainNumberClick = usePageNavigationTo(
 		PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER
 	);
 	const handleBulkTypeClick = usePageNavigationTo(PAGE_TYPES.WORK_SETTING_TYPE);
+	const handleBulkDirectionClick = usePageNavigationTo(
+		PAGE_TYPES.WORK_SETTING_DESTINATION
+	);
 
-	const handleDirectionBulkRowClick = useCallback(() => {
-		// TODO: Navigate to DirectionSetting page with editing target
-		console.log(`Direction Bulk row clicked`);
-	}, []);
-	const handleDirectionRowClick = useCallback((index: number) => {
-		// TODO: Navigate to DirectionSetting page with editing target
-		console.log(`Direction row ${index} clicked`);
-	}, []);
+	const handleDirectionRowClick = useCallback(
+		(index: number) => {
+			const formationNum = getFormationNumFromIndex(index);
+			if (formationNum != null) {
+				navigate(PAGE_TYPES.WORK_SETTING_DESTINATION, {
+					formationNum,
+				});
+			}
+		},
+		[navigate]
+	);
 
 	const handleStartupClick = useCallback(() => {
 		// TODO: Navigate to DirectionSetting page with startup
@@ -266,7 +278,7 @@ export default memo(function WorkSettingTop() {
 				<BulkDirectionRow
 					key="bulk"
 					relY={DIRECTION_BULK_BUTTON_TOP}
-					onClick={handleDirectionBulkRowClick}
+					onClick={handleBulkDirectionClick}
 				/>
 
 				{Array.from({ length: 6 }, (_, i) => (
@@ -371,3 +383,22 @@ const FOOTER_MENU = [
 		queryParams: { mode: "MENU" },
 	},
 ] as const satisfies FooterButtonInfo[];
+
+const getFormationNumFromIndex = (index: number): FormationNum | undefined => {
+	switch (index) {
+		case 0:
+			return FORMATION_NUM[1];
+		case 1:
+			return FORMATION_NUM[2];
+		case 2:
+			return FORMATION_NUM[3];
+		case 3:
+			return FORMATION_NUM[4];
+		case 4:
+			return FORMATION_NUM[5];
+		case 5:
+			return FORMATION_NUM[6];
+		default:
+			return undefined;
+	}
+};

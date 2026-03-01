@@ -10,8 +10,19 @@ import type { PageMode, PageType } from "./pageTypes";
 
 export type NavigationQueryParams = {
 	mode?: PageMode;
-	[key: string]: string | undefined;
+	formationNum?: FormationNum | null;
+	[key: string]: string | undefined | null;
 };
+
+export const FORMATION_NUM = {
+	1: "1",
+	2: "2",
+	3: "3",
+	4: "4",
+	5: "5",
+	6: "6",
+} as const;
+export type FormationNum = (typeof FORMATION_NUM)[keyof typeof FORMATION_NUM];
 
 function buildMergedQueryString(
 	currentSearchParams: URLSearchParams,
@@ -20,7 +31,9 @@ function buildMergedQueryString(
 	const mergedParams = new URLSearchParams(currentSearchParams);
 
 	for (const [key, value] of Object.entries(newParams)) {
-		if (value != null) {
+		if (value === null && mergedParams.has(key)) {
+			mergedParams.delete(key);
+		} else if (value != null) {
 			mergedParams.set(key, value);
 		}
 	}
@@ -80,9 +93,8 @@ export function usePageBackNavigation() {
 				}
 			}
 			const queryString = searchParams.toString();
-			const url = `/monitors/type313s/${previousPage.pageType}${
-				queryString ? `?${queryString}` : ""
-			}`;
+			const path = `/monitors/type313s/${previousPage.pageType}`;
+			const url = `${path}${queryString ? `?${queryString}` : ""}`;
 			navigate(url);
 		} else {
 			navigateToMenu();

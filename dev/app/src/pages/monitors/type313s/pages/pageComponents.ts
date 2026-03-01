@@ -41,6 +41,7 @@ import SettingEntrance from "./setting/SettingEntrance";
 import SettingMenu from "./setting/SettingMenu";
 import SettingMonitor from "./setting/SettingMonitor";
 import TableOfContents from "./toc/TableOfContents";
+import WorkSettingDestination from "./work-setting/WorkSettingDestination";
 import WorkSettingSeat from "./work-setting/WorkSettingSeat";
 import WorkSettingTop from "./work-setting/WorkSettingTop";
 import WorkSettingTrainNumber from "./work-setting/WorkSettingTrainNumber";
@@ -101,6 +102,7 @@ export const PAGE_COMPONENTS = {
 	// Work Setting pages
 	[PAGE_TYPES.WORK_SETTING_TOP]: WorkSettingTop,
 	[PAGE_TYPES.WORK_SETTING_TYPE]: WorkSettingType,
+	[PAGE_TYPES.WORK_SETTING_DESTINATION]: WorkSettingDestination,
 	[PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER]: WorkSettingTrainNumber,
 	[PAGE_TYPES.WORK_SETTING_SEAT]: WorkSettingSeat,
 

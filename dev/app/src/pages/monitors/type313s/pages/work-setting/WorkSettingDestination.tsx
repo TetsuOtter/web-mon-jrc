@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from "react";
 
 import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
 import { useAppDispatch } from "../../../../../store/hooks";
-import { setTrainType } from "../../../../../store/monitors/type313s/type313sSlice";
+import { setDestination } from "../../../../../store/monitors/type313s/type313sSlice";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS, DISPLAY_WIDTH, RGB_COLORS } from "../../constants";
@@ -11,10 +11,12 @@ import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
 import { PAGE_TYPES } from "../pageTypes";
 
+import DestinationCell, {
+	ELEM_LIST as DEST_ELEM_LIST,
+} from "./components/DestinationCell";
 import SelectionGrid, {
 	CELL_COUNT as GRID_CELL_COUNT,
 } from "./components/SelectionGrid";
-import TypeCell, { ELEM_LIST as TYPE_ELEM_LIST } from "./components/TypeCell";
 import { PAGE_NAME_MAP } from "./constants";
 
 import type { FooterButtonInfo } from "../../footer/FooterArea";
@@ -44,30 +46,34 @@ const CONFIRM_BUTTON_HEIGHT = 30;
 const GUIDE_TEXT_X = 10;
 const GUIDE_TEXT_Y = 472;
 
-export default memo(function WorkSettingType() {
+export default memo(function WorkSettingDestination() {
 	const dispatch = useAppDispatch();
 	const mode = useWorkSettingPageMode();
 	const pagerProps = useFooterAreaWithPagerProps(
-		Math.ceil(TYPE_ELEM_LIST.length / GRID_CELL_COUNT) - 1
+		Math.ceil(DEST_ELEM_LIST.length / GRID_CELL_COUNT) - 1
 	);
-	const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>();
+	const [selectedDestinationIndex, setSelectedDestinationIndex] =
+		useState<number>();
 	const selectedTypeDisplayText = useMemo(() => {
-		if (selectedTypeIndex == null) {
+		if (selectedDestinationIndex == null) {
 			return "";
 		}
-		const typeName = TYPE_ELEM_LIST[selectedTypeIndex];
-		return `${selectedTypeIndex + 1}.${typeName.replace("\n", " ")}`;
-	}, [selectedTypeIndex]);
+		const destinationName = DEST_ELEM_LIST[selectedDestinationIndex];
+		if (!destinationName) {
+			return "";
+		}
+		return `${selectedDestinationIndex + 1}.${destinationName.replace("\n", " ")}`;
+	}, [selectedDestinationIndex]);
 	const onClickCell = useCallback((index: number) => {
-		setSelectedTypeIndex(index);
+		setSelectedDestinationIndex(index);
 	}, []);
 	const onClickConfirm = useCallback(() => {
-		if (selectedTypeIndex != null) {
-			const typeName = TYPE_ELEM_LIST[selectedTypeIndex];
-			dispatch(setTrainType(typeName.replace("\n", " ")));
+		if (selectedDestinationIndex != null) {
+			const typeName = DEST_ELEM_LIST[selectedDestinationIndex] ?? "";
+			dispatch(setDestination(typeName.replace("\n", " ")));
 		}
 		return true;
-	}, [dispatch, selectedTypeIndex]);
+	}, [dispatch, selectedDestinationIndex]);
 	return (
 		<FooterPageFrame
 			mode={mode}
@@ -90,7 +96,7 @@ export default memo(function WorkSettingType() {
 					<CanvasText
 						relX={CURRENT_TYPE_LABEL_X}
 						relY={CURRENT_TYPE_LABEL_Y}
-						text="種別表示器"
+						text="行先表示器"
 						scaleY={2}
 						fillColor={COLORS.WHITE}
 					/>
@@ -131,12 +137,12 @@ export default memo(function WorkSettingType() {
 			<SelectionGrid
 				pageIndex={pagerProps.currentPageIndex}
 				onClickCell={onClickCell}
-				CellComponent={TypeCell}
+				CellComponent={DestinationCell}
 			/>
 			<CanvasText
 				relX={GUIDE_TEXT_X}
 				relY={GUIDE_TEXT_Y}
-				text="種別名をタッチして選択し「確認」キーを押して下さい。（　）内は２１１系正面表示。"
+				text="行先名をタッチして選択し「確認」キーを押して下さい。（　）内は２１１系正面表示。"
 				fillColor={COLORS.WHITE}
 			/>
 		</FooterPageFrame>
@@ -145,8 +151,8 @@ export default memo(function WorkSettingType() {
 
 const FOOTER_MENU = [
 	{
-		label: "種別設定",
-		navigateTo: PAGE_TYPES.WORK_SETTING_TYPE,
+		label: "行先設定",
+		navigateTo: PAGE_TYPES.WORK_SETTING_DESTINATION,
 	},
 	{
 		label: "戻る",
