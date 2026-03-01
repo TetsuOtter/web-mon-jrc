@@ -15,9 +15,38 @@ export type CellInfo = {
 	scaleX?: number;
 	scaleY?: number;
 };
+export const isCellInfoEqual = (a: CellInfo, b: CellInfo): boolean => {
+	return (
+		a.text === b.text &&
+		a.textColor === b.textColor &&
+		a.backgroundColor === b.backgroundColor &&
+		a.verticalAlign === b.verticalAlign &&
+		a.horizontalAlign === b.horizontalAlign &&
+		a.scaleX === b.scaleX &&
+		a.scaleY === b.scaleY
+	);
+};
 
 export type CellListForRow = CellInfo[];
 export type RowList = CellListForRow[];
+export const areRowListsEqual = (a: RowList, b: RowList): boolean => {
+	if (a.length !== b.length) {
+		return false;
+	}
+	for (let i = 0; i < a.length; i++) {
+		const cellListA = a[i];
+		const cellListB = b[i];
+		if (cellListA.length !== cellListB.length) {
+			return false;
+		}
+		for (let j = 0; j < cellListA.length; j++) {
+			if (!isCellInfoEqual(cellListA[j], cellListB[j])) {
+				return false;
+			}
+		}
+	}
+	return true;
+};
 
 type TableProps = {
 	relX: number;
