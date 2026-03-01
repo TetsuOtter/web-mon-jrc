@@ -38,6 +38,7 @@ jobs:
         run: yarn build
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
+          VITE_USE_HASH_ROUTER: "true"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
