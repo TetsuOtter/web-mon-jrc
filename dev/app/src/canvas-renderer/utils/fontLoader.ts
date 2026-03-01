@@ -11,9 +11,9 @@ export type AvailableFont =
 	(typeof AVAILABLE_FONTS)[keyof typeof AVAILABLE_FONTS];
 
 const AVAILABLE_FONT_PATHS = {
-	jiskan16: "/jiskan16-unicode.bdf",
-	"8x16rk": "/8x16rk-unicode.bdf",
-	MonNumFont: "/MonNumFont-16.bdf",
+	jiskan16: `${import.meta.env.BASE_URL}jiskan16-unicode.bdf`,
+	"8x16rk": `${import.meta.env.BASE_URL}8x16rk-unicode.bdf`,
+	MonNumFont: `${import.meta.env.BASE_URL}MonNumFont-16.bdf`,
 } as const satisfies Record<AvailableFont, string>;
 
 async function* getLines(text: string): AsyncGenerator<string> {

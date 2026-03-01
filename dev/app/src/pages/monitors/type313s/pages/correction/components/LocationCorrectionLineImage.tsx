@@ -170,7 +170,7 @@ export default memo<LocationCorrectionLineImageProps>(
 				isFilled>
 				{isCarImageVisible && (
 					<CanvasImage
-						imagePath="/type313s/location_correction_car.png"
+						imagePath={`${import.meta.env.BASE_URL}type313s/location_correction_car.png`}
 						relX={FIRST_CELL_LEFT + STEP_X * carImageCol}
 						relY={0}
 						areaWidth={CELL_WIDTH}
