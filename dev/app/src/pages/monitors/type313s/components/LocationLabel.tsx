@@ -22,7 +22,7 @@ export default memo(function LocationLabel() {
 	const locationKm = useAppSelector(currentLocationSelector);
 	const displayText = useMemo(() => {
 		const integerValue = Math.floor(locationKm);
-		const decimalValue = Math.abs(Math.floor((locationKm - integerValue) * 10));
+		const decimalValue = Math.abs(Math.round((locationKm - integerValue) * 10));
 		let integerStr = integerValue.toString();
 		let decimalStr = decimalValue.toString();
 
