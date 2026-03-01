@@ -8,5 +8,6 @@ export const router = createBrowserRouter(
 		path,
 		element: <Element />,
 		errorElement: path === "/" ? <ErrorPage /> : undefined,
-	}))
+	})),
+	{ basename: import.meta.env.BASE_URL }
 );
