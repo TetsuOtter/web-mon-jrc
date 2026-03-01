@@ -16,6 +16,9 @@ export default memo(function IndexPage() {
 						<Link to={ROUTES.TYPE313S.path}>Type 313S</Link>
 					</li>
 					<li>
+						<Link to={ROUTES.TYPE313S_EDIT.path}>Type 313S Edit</Link>
+					</li>
+					<li>
 						<Link to={ROUTES.TYPE313V.path}>Type 313V</Link>
 					</li>
 					<hr />
