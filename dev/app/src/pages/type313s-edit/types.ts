@@ -1,5 +1,6 @@
 import type { AppSelector } from "../../store/types";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import type { Type313sCarState } from "../../store/monitors/type313s/type313sTypes";
 
 export type StringFormFieldConfig = {
   readonly id: string;
@@ -21,3 +22,69 @@ export type NumberFormFieldConfig = {
 };
 
 export type FormFieldConfig = StringFormFieldConfig | NumberFormFieldConfig;
+
+// CarState field type definitions
+export type CarStateBasicField =
+  | {
+    type: "string";
+    fieldKey: string;
+    label: string;
+    getValue: (car: Type313sCarState) => string;
+    setValue: (car: Type313sCarState, value: string) => Type313sCarState;
+  }
+  | {
+    type: "number";
+    fieldKey: string;
+    label: string;
+    getValue: (car: Type313sCarState) => number;
+    setValue: (car: Type313sCarState, value: number) => Type313sCarState;
+  }
+  | {
+    type: "nullable-number";
+    fieldKey: string;
+    label: string;
+    step?: string;
+    getValue: (car: Type313sCarState) => number | null;
+    setValue: (
+      car: Type313sCarState,
+      value: number | null
+    ) => Type313sCarState;
+  }
+  | {
+    type: "nullable-string";
+    fieldKey: string;
+    label: string;
+    getValue: (car: Type313sCarState) => string | null;
+    setValue: (
+      car: Type313sCarState,
+      value: string | null
+    ) => Type313sCarState;
+  }
+  | {
+    type: "select";
+    fieldKey: string;
+    label: string;
+    options: readonly { value: string; label: string }[];
+    toSelectValue: (car: Type313sCarState) => string;
+    fromSelectValue: (
+      car: Type313sCarState,
+      value: string
+    ) => Type313sCarState;
+  };
+
+export type SivLineStateField = Exclude<
+  CarStateBasicField,
+  { type: "string" } | { type: "number" }
+>;
+
+export type CabStateField = Exclude<CarStateBasicField, { type: "number" }>;
+
+export type BogieCommonField = Exclude<
+  CarStateBasicField,
+  { type: "string" | "number" }
+>;
+
+export type BogieSideField = Exclude<
+  CarStateBasicField,
+  { type: "string" | "number" }
+>;

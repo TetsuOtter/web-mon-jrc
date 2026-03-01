@@ -3,7 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { SLICE_NAME } from "./constants";
 import { loadType313sState } from "./type313sStorage";
 
-import type { Type313sState } from "./type313sTypes";
+import type {
+	Type313sCarState,
+	Type313sConductorState,
+	Type313sState,
+} from "./type313sTypes";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 const defaultInitialState: Type313sState = {
@@ -220,6 +224,12 @@ const type313sSlice = createSlice({
 		setTimeMs(state, action: PayloadAction<number>) {
 			state.timeMs = action.payload;
 		},
+		setConductorState(state, action: PayloadAction<Type313sConductorState>) {
+			state.conductorState = action.payload;
+		},
+		setCarStateList(state, action: PayloadAction<Type313sCarState[]>) {
+			state.carStateList = action.payload;
+		},
 		/**
 		 * LocalStorage や他タブからの変更を受け取り、State 全体を置き換える。
 		 */
@@ -235,6 +245,8 @@ export const {
 	setDestination,
 	setCurrentLocation,
 	setTimeMs,
+	setConductorState,
+	setCarStateList,
 	setFullState,
 } = type313sSlice.actions;
 

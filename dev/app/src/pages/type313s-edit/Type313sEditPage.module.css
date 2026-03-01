@@ -53,6 +53,57 @@
 	padding-bottom: 0.5rem;
 }
 
+.collapseSection summary {
+	cursor: pointer;
+	list-style: none;
+}
+
+.collapseSection summary::-webkit-details-marker {
+	display: none;
+}
+
+.sectionSummary {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #333;
+	border-bottom: 2px solid #0066cc;
+	padding-bottom: 0.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.sectionSummaryWithAction {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #333;
+	border-bottom: 2px solid #0066cc;
+	padding-bottom: 0.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.actionButton,
+.deleteButton {
+	border: 1px solid #2563eb;
+	background: #2563eb;
+	color: #fff;
+	padding: 0.4rem 0.75rem;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	cursor: pointer;
+}
+
+.deleteButton {
+	border-color: #dc2626;
+	background: #dc2626;
+}
+
+.deleteButton:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
 .formGroup {
 	margin-bottom: 1.5rem;
 }
@@ -81,6 +132,78 @@
 	outline: none;
 	border-color: #0066cc;
 	box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.formGroup select {
+	width: 100%;
+	padding: 0.75rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 1rem;
+	transition: border-color 0.2s;
+}
+
+.formGroup select:focus {
+	outline: none;
+	border-color: #0066cc;
+	box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.fieldGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.subSection {
+	padding: 1.25rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	margin-bottom: 1rem;
+}
+
+.subSection:last-child {
+	margin-bottom: 0;
+}
+
+.subTitle {
+	margin-top: 0;
+	margin-bottom: 1rem;
+	font-size: 1.05rem;
+	color: #1f2937;
+}
+
+.subTitleRow {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+
+.nestedSection {
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid #e5e7eb;
+}
+
+.nestedSectionInner {
+	margin-top: 1rem;
+	padding: 1rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+}
+
+.nestedTitle {
+	margin-top: 0;
+	margin-bottom: 0.75rem;
+	font-size: 0.95rem;
+	color: #374151;
+}
+
+@media (max-width: 768px) {
+	.fieldGrid {
+		grid-template-columns: 1fr;
+	}
 }
 
 .note {
