@@ -1,9 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { SLICE_NAME } from "./constants";
+import { loadType313sState } from "./type313sStorage";
+
 import type { Type313sState } from "./type313sTypes";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: Type313sState = {
+const defaultInitialState: Type313sState = {
 	currentLocation: 123.4,
 
 	carStateList: [
@@ -195,8 +198,11 @@ const initialState: Type313sState = {
 	},
 };
 
+// LocalStorage に保存済みのデータがあればそちらを初期値として使用する
+const initialState: Type313sState = loadType313sState() ?? defaultInitialState;
+
 const type313sSlice = createSlice({
-	name: "type313s",
+	name: SLICE_NAME,
 	initialState,
 	reducers: {
 		setTrainNumber(state, action: PayloadAction<string>) {
@@ -214,6 +220,12 @@ const type313sSlice = createSlice({
 		setTimeMs(state, action: PayloadAction<number>) {
 			state.timeMs = action.payload;
 		},
+		/**
+		 * LocalStorage や他タブからの変更を受け取り、State 全体を置き換える。
+		 */
+		setFullState(_state, action: PayloadAction<Type313sState>) {
+			return action.payload;
+		},
 	},
 });
 
@@ -223,5 +235,7 @@ export const {
 	setDestination,
 	setCurrentLocation,
 	setTimeMs,
+	setFullState,
 } = type313sSlice.actions;
+
 export default type313sSlice.reducer;
