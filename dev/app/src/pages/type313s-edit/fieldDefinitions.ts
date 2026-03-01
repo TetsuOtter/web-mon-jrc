@@ -81,7 +81,7 @@ export const AIR_CONDITIONER_ADJUSTMENT_MODE_OPTIONS = Object.values(
 export const CAB_SES_STATE_OPTIONS = Object.values(CAB_SES_STATE);
 export const VVVF2_STATE_OPTIONS = Object.values(VVVF2_STATE);
 export const NULLABLE_BOOLEAN_OPTIONS = [
-	{ value: "null", label: "未設定" },
+	{ value: "null", label: "状態不明" },
 	{ value: "true", label: "ON" },
 	{ value: "false", label: "OFF" },
 ] as const;
@@ -92,20 +92,20 @@ export const BOOLEAN_OPTIONS = [
 ] as const;
 
 export const NULLABLE_BOOLEAN_DOOR_OPTIONS = [
-	{ value: "null", label: "未設定" },
+	{ value: "null", label: "状態不明" },
 	{ value: "true", label: "閉" },
 	{ value: "false", label: "開" },
 ] as const;
 
 export const NULLABLE_BOOLEAN_NORMAL_OPTIONS = [
-	{ value: "null", label: "未設定" },
+	{ value: "null", label: "状態不明" },
 	{ value: "true", label: "正常" },
 	{ value: "false", label: "異常" },
 ] as const;
 
 export const BOOLEAN_OR_UNDEFINED_OPTIONS = [
-	{ value: "undefined", label: "未定義" },
-	{ value: "null", label: "未設定" },
+	{ value: "undefined", label: "非搭載" },
+	{ value: "null", label: "状態不明" },
 	{ value: "true", label: "ON" },
 	{ value: "false", label: "OFF" },
 ] as const;
