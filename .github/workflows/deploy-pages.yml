@@ -33,11 +33,15 @@ jobs:
 
       - name: Install canvas-renderer dependencies
         working-directory: dev/canvas-renderer
-        run: yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: Build canvas-renderer
+        working-directory: dev/canvas-renderer
+        run: yarn build
 
       - name: Install dependencies
         working-directory: dev/app
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build application
         working-directory: dev/app
