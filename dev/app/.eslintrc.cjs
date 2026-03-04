@@ -28,6 +28,12 @@ module.exports = {
 		react: {
 			version: "detect",
 		},
+		"import/resolver": {
+			typescript: {
+				alwaysTryTypes: true,
+				project: "./tsconfig.json",
+			},
+		},
 	},
 	plugins: ["react-refresh", "@typescript-eslint", "react"],
 	rules: {
