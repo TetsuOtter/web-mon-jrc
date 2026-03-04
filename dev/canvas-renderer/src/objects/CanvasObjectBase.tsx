@@ -5,6 +5,7 @@ import CanvasObjectContext, {
 	useCanvasObjectContext,
 	useCanvasChildIndex,
 } from "../contexts/CanvasObjectContext";
+import { intersectsRects } from "../utils/renderGeometry";
 
 import type {
 	ClickEventHandler,
@@ -55,6 +56,13 @@ export default memo<PropsWithChildren<CanvasObjectBaseProps>>(
 
 		const onRender: CanvasRenderFunction = useCallback(
 			async (ctx, metadata, renderArea) => {
+				// このオブジェクトがダーティ領域と交差しない場合はスキップ
+				if (
+					renderArea.length > 0 &&
+					!renderArea.some((area) => intersectsRects(metadata, area))
+				) {
+					return;
+				}
 				await propsOnRender(ctx, metadata, renderArea);
 				// リスト順に従って子要素を描画
 				for (const obj of registeredObjectListRef.current) {

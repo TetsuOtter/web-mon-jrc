@@ -8,6 +8,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import CanvasObjectContext from "./contexts/CanvasObjectContext";
 import { RenderRequesterContext } from "./contexts/RenderRequestContext";
+import { intersectsRects, mergeRenderAreas } from "./utils/renderGeometry";
 
 import type {
 	CanvasObjectMetadata,
@@ -67,19 +68,53 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 			if (renderRequestedAreaList.length === 0 || !ctx) {
 				return;
 			}
-			// 暫定で全消去＋全描画
-			ctx.clearRect(0, 0, width, height);
-			if (fill) {
-				ctx.fillStyle = fill;
-				ctx.fillRect(0, 0, width, height);
-			}
-			// renderRequestedAreaList.forEach((area) => {
-			// 	ctx.clearRect(area.absX, area.absY, area.width, area.height);
-			// });
-			// リスト順に従って描画
-			registeredObjectListRef.current.forEach((obj) => {
-				obj.onRender(ctx, obj.metadata, renderRequestedAreaList);
+
+			// ダーティ領域をマージして最小セットに
+			const mergedAreas = mergeRenderAreas(renderRequestedAreaList);
+
+			// 1. ダーティ領域のみクリア（背景色があれば塗りつぶし）
+			mergedAreas.forEach((area) => {
+				if (fill) {
+					ctx.fillStyle = fill;
+					ctx.fillRect(area.absX, area.absY, area.width, area.height);
+				} else {
+					ctx.clearRect(area.absX, area.absY, area.width, area.height);
+				}
 			});
+
+			// 2. ダーティ領域のみを描画するようクリップを設定
+			ctx.save();
+			ctx.beginPath();
+			mergedAreas.forEach((area) => {
+				ctx.rect(area.absX, area.absY, area.width, area.height);
+			});
+			ctx.clip();
+
+			// 3. ダーティ領域と交差するオブジェクトのみ描画（Z-order 保持）
+			const renderPromises: Promise<void>[] = [];
+			for (const obj of registeredObjectListRef.current) {
+				if (mergedAreas.some((area) => intersectsRects(obj.metadata, area))) {
+					const result = obj.onRender(ctx, obj.metadata, mergedAreas);
+					if (result instanceof Promise) {
+						renderPromises.push(result);
+					}
+				}
+			}
+
+			// 非同期描画が完了したらクリップを解除
+			if (renderPromises.length > 0) {
+				Promise.all(renderPromises)
+					.then(() => {
+						ctx.restore();
+					})
+					.catch((error) => {
+						console.error("Error during canvas render:", error);
+						ctx.restore();
+					});
+			} else {
+				ctx.restore();
+			}
+
 			setRenderRequestedAreaList([]);
 		}, [ctx, height, renderRequestedAreaList, width, fill]);
 

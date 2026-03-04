@@ -1,7 +1,8 @@
 import { memo } from "react";
 
-import { CanvasText } from "../../../../../../canvas-renderer";
-import CanvasObjectGroup from "../../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import Button, { SHADOW_WIDTH } from "../../../components/Button";
 import { COLORS, RGB_COLORS } from "../../../constants";
 

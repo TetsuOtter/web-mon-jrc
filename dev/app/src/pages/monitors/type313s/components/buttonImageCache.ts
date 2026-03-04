@@ -1,6 +1,6 @@
 import { RGB_COLORS } from "../constants";
 
-import type { RgbColor } from "../../../../canvas-renderer/utils/colorUtil";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
 const buttonImageCache = new Map<string, OffscreenCanvas>();
 

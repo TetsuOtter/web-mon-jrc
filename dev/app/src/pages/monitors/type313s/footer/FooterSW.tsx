@@ -1,8 +1,9 @@
 import { memo, useCallback } from "react";
 
-import { CanvasLine, CanvasText } from "../../../../canvas-renderer";
-import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
-import CanvasQuadrilateral from "../../../../canvas-renderer/objects/CanvasQuadrilateral";
+import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import CanvasQuadrilateral from "@web-mon-jrc/canvas-renderer/objects/CanvasQuadrilateral";
+
 import { useCurrentPageType } from "../components/CurrentPageContext";
 import { COLORS } from "../constants";
 import {
@@ -10,9 +11,9 @@ import {
 	usePageBackNavigation,
 } from "../pages/usePageNavigation";
 
-import type { ClickEventHandler } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
 import type { PageType } from "../pages/pageTypes";
 import type { NavigationQueryParams } from "../pages/usePageNavigation";
+import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 
 const WIDTH = 84;
 const HEIGHT = 32;

@@ -1,10 +1,22 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode: _mode }) => ({
 	base: process.env.VITE_BASE || "/",
 	plugins: [react()],
+	resolve: {
+		alias: {
+			"@web-mon-jrc/canvas-renderer": path.resolve(
+				__dirname,
+				"../canvas-renderer/src"
+			),
+		},
+	},
 	server: {
 		allowedHosts: ["localhost", "127.0.0.1"],
 		port: 5173,

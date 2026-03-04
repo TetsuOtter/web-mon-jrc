@@ -1,4 +1,5 @@
-import { CanvasText } from "../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { createCarStateByCarIndexSelector } from "../../../../../store/monitors/type313s/type313sSelector";
 import { COLORS, FONT_SIZE_2X } from "../../constants";
 

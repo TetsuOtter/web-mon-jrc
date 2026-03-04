@@ -1,7 +1,8 @@
 import type { PropsWithChildren } from "react";
 import { memo, useCallback, useMemo } from "react";
 
-import CanvasObjectBase from "../../../../canvas-renderer/objects/CanvasObjectBase";
+import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+
 import { RGB_COLORS } from "../constants";
 
 import { getButtonImage } from "./buttonImageCache";
@@ -9,8 +10,8 @@ import { getButtonImage } from "./buttonImageCache";
 import type {
 	CanvasRenderFunction,
 	ClickEventHandler,
-} from "../../../../canvas-renderer/contexts/CanvasObjectContext";
-import type { RgbColor } from "../../../../canvas-renderer/utils/colorUtil";
+} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
 export const SHADOW_WIDTH = {
 	EXTRA_SMALL: 1,

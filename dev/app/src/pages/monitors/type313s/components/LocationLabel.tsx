@@ -1,7 +1,8 @@
 import { memo, useMemo } from "react";
 
-import { CanvasLine, CanvasText } from "../../../../canvas-renderer";
-import CanvasObjectGroup from "../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import { useAppSelector } from "../../../../store/hooks";
 import { currentLocationSelector } from "../../../../store/monitors/type313s/type313sSelector";
 import { COLORS, FONT_SIZE_1X, FONT_SIZE_2X } from "../constants";

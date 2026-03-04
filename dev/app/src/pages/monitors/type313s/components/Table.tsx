@@ -1,10 +1,10 @@
 import { memo, useCallback, useMemo } from "react";
 
-import CanvasObjectBase from "../../../../canvas-renderer/objects/CanvasObjectBase";
-import CanvasText from "../../../../canvas-renderer/objects/CanvasText";
+import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+import CanvasText from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
 
-import type { CanvasRenderFunction } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
-import type { CanvasTextProps } from "../../../../canvas-renderer/objects/CanvasText";
+import type { CanvasRenderFunction } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
 
 export type CellInfo = {
 	text: string;

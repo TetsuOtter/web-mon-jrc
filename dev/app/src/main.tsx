@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode, Suspense } from "react";
+import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 import { Provider } from "react-redux";
@@ -41,13 +41,13 @@ const rootElement = document.getElementById("root");
 if (rootElement == null) {
 	alert("Root element not found");
 } else {
-	ReactDOM.createRoot(rootElement).render(
-		<React.StrictMode>
+	createRoot(rootElement).render(
+		<StrictMode>
 			<Provider store={store}>
 				<Suspense fallback={null}>
 					<RouterProvider router={router} />
 				</Suspense>
 			</Provider>
-		</React.StrictMode>
+		</StrictMode>
 	);
 }

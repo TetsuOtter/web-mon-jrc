@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo, useState } from "react";
 
-import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
+import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { useAppDispatch } from "../../../../../store/hooks";
 import { setDestination } from "../../../../../store/monitors/type313s/type313sSlice";
 import Button, { SHADOW_WIDTH } from "../../components/Button";

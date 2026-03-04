@@ -6,3 +6,6 @@ export { default as CanvasLine } from "./objects/CanvasLine";
 export { default as CanvasRect } from "./objects/CanvasRect";
 export { default as CanvasText } from "./objects/CanvasText";
 export { default as CanvasOrderDemoItem } from "./objects/CanvasOrderDemoItem";
+
+export { useRequestRenderFunction } from "./contexts/RenderRequestContext";
+export type { RenderArea } from "./contexts/RenderRequestContext";

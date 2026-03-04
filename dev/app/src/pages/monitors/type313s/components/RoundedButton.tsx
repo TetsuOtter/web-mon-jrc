@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { memo, useCallback, useMemo } from "react";
 
-import CanvasObjectBase from "../../../../canvas-renderer/objects/CanvasObjectBase";
+import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
 
 import {
 	getRoundedButtonImage,
@@ -11,8 +11,8 @@ import {
 import type {
 	CanvasRenderFunction,
 	ClickEventHandler,
-} from "../../../../canvas-renderer/contexts/CanvasObjectContext";
-import type { RgbColor } from "../../../../canvas-renderer/utils/colorUtil";
+} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
 type RoundedButtonProps = {
 	readonly relX: number;

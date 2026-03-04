@@ -27,11 +27,21 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: dev/app/yarn.lock
+          cache-dependency-path: |
+            dev/app/yarn.lock
+            dev/canvas-renderer/yarn.lock
+
+      - name: Install canvas-renderer dependencies
+        working-directory: dev/canvas-renderer
+        run: yarn install --frozen-lockfile
+
+      - name: Build canvas-renderer
+        working-directory: dev/canvas-renderer
+        run: yarn build
 
       - name: Install dependencies
         working-directory: dev/app
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build application
         working-directory: dev/app
@@ -46,6 +56,7 @@ jobs:
           path: dev/app/dist
 
   deploy:
+    if: github.event_name == 'push'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

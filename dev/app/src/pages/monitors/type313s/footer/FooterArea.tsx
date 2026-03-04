@@ -1,9 +1,10 @@
 import type { PropsWithChildren } from "react";
 import { memo } from "react";
 
-import { CanvasLine } from "../../../../canvas-renderer";
-import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
-import CanvasObjectGroup from "../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { CanvasLine } from "@web-mon-jrc/canvas-renderer";
+import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import { COLORS, FOOTER_HEIGHT } from "../constants";
 
 import FooterSW from "./FooterSW";

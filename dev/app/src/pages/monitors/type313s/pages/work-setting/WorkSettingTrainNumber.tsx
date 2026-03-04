@@ -4,8 +4,9 @@ import {
 	CanvasLine,
 	CanvasRect,
 	CanvasText,
-} from "../../../../../canvas-renderer";
-import CanvasRoundedRect from "../../../../../canvas-renderer/objects/CanvasRoundedRect";
+} from "@web-mon-jrc/canvas-renderer";
+import CanvasRoundedRect from "@web-mon-jrc/canvas-renderer/objects/CanvasRoundedRect";
+
 import { useAppDispatch } from "../../../../../store/hooks";
 import {
 	setTrainNumber as setTrainNumberToStore,

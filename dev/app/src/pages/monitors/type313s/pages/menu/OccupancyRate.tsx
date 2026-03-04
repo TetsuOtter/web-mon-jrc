@@ -1,7 +1,8 @@
 // TODO: 乗車率ページの実装が必要
 import { memo } from "react";
 
-import { CanvasText } from "../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { useAppSelector } from "../../../../../store/hooks";
 import {
 	carStateListSelector,

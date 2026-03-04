@@ -1,7 +1,8 @@
 import type { FC } from "react";
 import { memo } from "react";
 
-import CanvasObjectGroup from "../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import {
 	useAppSelector,
 	useAppSelectorWithParams,
