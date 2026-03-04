@@ -18,6 +18,7 @@
 		"@tauri-apps/api": "^2.2.0",
 		"@tauri-apps/plugin-dialog": "^2.0.2",
 		"@tauri-apps/plugin-fs": "^2.0.2",
+		"@web-mon-jrc/canvas-renderer": "link:../canvas-renderer",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"react-redux": "^9.1.2",
