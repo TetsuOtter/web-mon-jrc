@@ -17,11 +17,6 @@ export const ROUTES = {
 		path: "/setting",
 		Element: lazy(() => import("./pages/settings/SettingsPage")),
 	},
-	CANVAS_DEMO: {
-		path: "/canvas-demo",
-		Element: lazy(() => import("./pages/canvas-demo/CanvasDemoPage")),
-	},
-
 	TYPE313S: {
 		path: "/monitors/type313s/:page",
 		Element: lazy(() => import("./pages/monitors/type313s/Type313sPage")),

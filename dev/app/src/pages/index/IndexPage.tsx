@@ -21,10 +21,7 @@ export default memo(function IndexPage() {
 					<li>
 						<Link to={ROUTES.TYPE313V.path}>Type 313V</Link>
 					</li>
-					<hr />
-					<li>
-						<Link to={ROUTES.CANVAS_DEMO.path}>Canvas Demo</Link>
-					</li>
+	
 				</ul>
 			</nav>
 		</div>
