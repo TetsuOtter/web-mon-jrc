@@ -36,6 +36,10 @@ jobs:
         working-directory: ./dev/canvas-renderer
         run: yarn install --frozen-lockfile
 
+      - name: Build canvas-renderer
+        working-directory: ./dev/canvas-renderer
+        run: yarn build
+
       - name: Install frontend dependencies
         working-directory: ./dev/app
         run: yarn install --frozen-lockfile
@@ -87,10 +91,20 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: "dev/app/yarn.lock"
+          cache-dependency-path: |
+            dev/app/yarn.lock
+            dev/canvas-renderer/yarn.lock
 
       - name: Setup Yarn
         run: corepack enable
+
+      - name: Install canvas-renderer dependencies
+        working-directory: ./dev/canvas-renderer
+        run: yarn install --frozen-lockfile
+
+      - name: Build canvas-renderer
+        working-directory: ./dev/canvas-renderer
+        run: yarn build
 
       - name: Install frontend dependencies
         working-directory: ./dev/app
@@ -140,7 +154,9 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: "dev/app/yarn.lock"
+          cache-dependency-path: |
+            dev/app/yarn.lock
+            dev/canvas-renderer/yarn.lock
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -151,6 +167,17 @@ jobs:
           workspaces: "dev/app/src-tauri"
           cache-on-failure: true
           prefix-key: ${{ matrix.platform }}
+
+      - name: Setup Yarn
+        run: corepack enable
+
+      - name: Install canvas-renderer dependencies
+        working-directory: ./dev/canvas-renderer
+        run: yarn install --frozen-lockfile
+
+      - name: Build canvas-renderer
+        working-directory: ./dev/canvas-renderer
+        run: yarn build
 
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
@@ -165,9 +192,6 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-
-      - name: Setup Yarn
-        run: corepack enable
 
       - name: Install frontend dependencies
         working-directory: ./dev/app
