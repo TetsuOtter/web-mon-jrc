@@ -9,14 +9,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ mode: _mode }) => ({
 	base: process.env.VITE_BASE || "/",
 	plugins: [react()],
-	resolve: {
-		alias: {
-			"@web-mon-jrc/canvas-renderer": path.resolve(
-				__dirname,
-				"../canvas-renderer/src"
-			),
-		},
-	},
 	server: {
 		allowedHosts: ["localhost", "127.0.0.1"],
 		port: 5173,
