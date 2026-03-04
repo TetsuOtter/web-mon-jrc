@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
 	CanvasRenderer,
@@ -7,7 +7,68 @@ import {
 	CanvasCircle,
 	CanvasLine,
 	CanvasOrderDemoItem,
+	useRequestRenderFunction,
 } from "@web-mon-jrc/canvas-renderer";
+
+type BlinkingItemProps = {
+	relX: number;
+	relY: number;
+	width: number;
+	height: number;
+	intervalMs: number;
+	fillColor: string;
+	strokeColor: string;
+	label: string;
+};
+
+/** CanvasRenderer の子として使う点滅コンポーネント。
+ *  visible が false のとき null を返してキャンバスオブジェクトを解除し、
+ *  requestRender でその領域だけ再描画をトリガーする。 */
+function BlinkingItem({
+	relX,
+	relY,
+	width,
+	height,
+	intervalMs,
+	fillColor,
+	strokeColor,
+	label,
+}: BlinkingItemProps) {
+	const [visible, setVisible] = useState(true);
+	const requestRender = useRequestRenderFunction();
+
+	useEffect(() => {
+		const id = setInterval(() => {
+			setVisible((v) => !v);
+			requestRender({ absX: relX, absY: relY, width, height });
+		}, intervalMs);
+		return () => clearInterval(id);
+	}, [requestRender, relX, relY, width, height, intervalMs]);
+
+	if (!visible) return null;
+
+	return (
+		<>
+			<CanvasRect
+				relX={relX}
+				relY={relY}
+				width={width}
+				height={height}
+				fillColor={fillColor}
+				strokeColor={strokeColor}
+				strokeWidth={2}
+			/>
+			<CanvasText
+				relX={relX + width / 2}
+				relY={relY + height / 2 - 8}
+				text={label}
+				fillColor="#333333"
+				align="center"
+				lineHeight={1.4}
+			/>
+		</>
+	);
+}
 
 export const CanvasDemo: React.FC = () => {
 	const [clickedPoint, setClickedPoint] = useState<{
@@ -565,7 +626,99 @@ export const CanvasDemo: React.FC = () => {
 					</div>
 				)}
 			</div>
+
+		<div style={{ marginBottom: "30px" }}>
+			<h2>部分再描画デモ（点滅）</h2>
+			<p>
+				各図形は異なる間隔で独立して点滅します。点滅のたびに<strong>その図形の領域のみ</strong>が
+				クリア＋再描画され、背景や他の静的オブジェクトは再描画されません。
+			</p>
+			<CanvasRenderer
+				width={600}
+				height={220}
+				fill="#f8f9fa">
+				{/* 静的オブジェクト（点滅図形が再描画されても影響を受けない） */}
+				<CanvasText
+					relX={10}
+					relY={18}
+					text="← 静的オブジェクト（点滅による再描画の影響を受けません）"
+					fillColor="#868e96"
+				/>
+				<CanvasCircle
+					relX={555}
+					relY={110}
+					radius={45}
+					fillColor="#dee2e6"
+					strokeColor="#adb5bd"
+					strokeWidth={1}
+				/>
+				<CanvasText
+					relX={555}
+					relY={110}
+					text={"静的\n円"}
+					fillColor="#868e96"
+					align="center"
+					lineHeight={1.4}
+				/>
+				<CanvasLine
+					relX1={10}
+					relY1={155}
+					relX2={590}
+					relY2={155}
+					color="#dee2e6"
+					width={1}
+				/>
+				<CanvasText
+					relX={10}
+					relY={174}
+					text="↑ 静的な区切り線"
+					fillColor="#adb5bd"
+				/>
+				<CanvasText
+					relX={10}
+					relY={196}
+					text="点滅中も常に表示されます"
+					fillColor="#adb5bd"
+				/>
+
+				{/* 点滅する図形（各自の領域のみ部分再描画） */}
+				<BlinkingItem
+					relX={30}
+					relY={45}
+					width={130}
+					height={90}
+					intervalMs={400}
+					fillColor="#ff8787"
+					strokeColor="#fa5252"
+					label={"速い点滅\n400ms"}
+				/>
+				<BlinkingItem
+					relX={210}
+					relY={45}
+					width={130}
+					height={90}
+					intervalMs={900}
+					fillColor="#74c0fc"
+					strokeColor="#339af0"
+					label={"中程度\n900ms"}
+				/>
+				<BlinkingItem
+					relX={390}
+					relY={45}
+					width={130}
+					height={90}
+					intervalMs={1600}
+					fillColor="#8ce99a"
+					strokeColor="#40c057"
+					label={"遅い点滅\n1600ms"}
+				/>
+			</CanvasRenderer>
+			<p style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}>
+				DevTools の Rendering → Paint flashing を有効にすると、点滅図形の領域のみが
+				再描画されていることを視覚的に確認できます。
+			</p>
 		</div>
+	</div>
 	);
 };
 
