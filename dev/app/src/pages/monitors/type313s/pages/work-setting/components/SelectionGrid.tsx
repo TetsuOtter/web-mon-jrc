@@ -1,8 +1,8 @@
 import type { ComponentType } from "react";
 import { memo, useCallback } from "react";
 
-import { CanvasLine, CanvasText } from "../../../../../../canvas-renderer";
-import CanvasObjectGroup from "../../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 import { COLORS, DISPLAY_WIDTH, FONT_SIZE_1X } from "../../../constants";
 
 const ROW_COUNT = 6;

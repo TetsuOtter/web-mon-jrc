@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from "react";
 
-import { CanvasText } from "../../../../../canvas-renderer";
-import CanvasObjectBase from "../../../../../canvas-renderer/objects/CanvasObjectBase";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
 import { toWide } from "../../../../../utils/toWide";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
 
@@ -28,7 +28,7 @@ import type {
 	ClickEventHandler,
 	ClickDetector,
 	CanvasRenderFunction,
-} from "../../../../../canvas-renderer/contexts/CanvasObjectContext";
+} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 
 const CAR_NUMBER_HEIGHT = FONT_SIZE_1X + 2;
 

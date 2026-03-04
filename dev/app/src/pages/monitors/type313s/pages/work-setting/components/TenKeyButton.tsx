@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from "react";
 
-import { CanvasText } from "../../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import { toWide } from "../../../../../../utils/toWide";
 import Button, { SHADOW_WIDTH } from "../../../components/Button";
 import { COLORS } from "../../../constants";

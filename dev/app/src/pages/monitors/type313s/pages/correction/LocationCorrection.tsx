@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from "react";
 
-import { CanvasRect, CanvasText } from "../../../../../canvas-renderer";
+import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";

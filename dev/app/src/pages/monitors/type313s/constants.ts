@@ -1,6 +1,6 @@
-import { hexToRgb } from "../../../canvas-renderer/utils/colorUtil";
+import { hexToRgb } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
-import type { RgbColor } from "../../../canvas-renderer/utils/colorUtil";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
 export const DISPLAY_WIDTH = 800;
 export const DISPLAY_HEIGHT = 600;

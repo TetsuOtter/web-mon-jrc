@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { CanvasText } from "../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import Button, { SHADOW_WIDTH } from "../../components/Button";
 import WithoutFooterPageFrame from "../../components/WithoutFooterPageFrame";
 import { RGB_COLORS } from "../../constants";

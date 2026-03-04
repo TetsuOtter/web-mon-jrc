@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { CanvasText } from "../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import MonitorCanvas from "../../../components/MonitorCanvas";
 
 export default memo(function Type313vPage() {

@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { CanvasLine, CanvasText } from "../../../../../canvas-renderer";
+import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import { createCarStateByCarIndexSelector } from "../../../../../store/monitors/type313s/type313sSelector";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";

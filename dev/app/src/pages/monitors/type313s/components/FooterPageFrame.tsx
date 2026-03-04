@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from "react";
 import { memo } from "react";
 
-import { useCanvasObjectContext } from "../../../../canvas-renderer/contexts/CanvasObjectContext";
-import CanvasObjectGroup from "../../../../canvas-renderer/objects/CanvasObjectGroup";
+import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 import {
 	DISPLAY_HEIGHT,
 	DISPLAY_WIDTH,

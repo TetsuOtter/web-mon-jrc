@@ -1,13 +1,13 @@
 import { memo, useCallback } from "react";
 
-import { CanvasImage, CanvasText } from "../../../../../../canvas-renderer";
-import CanvasObjectBase from "../../../../../../canvas-renderer/objects/CanvasObjectBase";
+import { CanvasImage, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
 import { COLORS, DISPLAY_WIDTH } from "../../../constants";
 
 import type {
 	CanvasRenderFunction,
 	ClickEventHandler,
-} from "../../../../../../canvas-renderer/contexts/CanvasObjectContext";
+} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 
 const WIDTH = DISPLAY_WIDTH;
 const HEIGHT = 70;

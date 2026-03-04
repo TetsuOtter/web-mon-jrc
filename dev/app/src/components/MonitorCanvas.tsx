@@ -1,7 +1,7 @@
 import type { CSSProperties, PropsWithChildren } from "react";
 import { memo, useMemo } from "react";
 
-import { CanvasRenderer } from "../canvas-renderer";
+import { CanvasRenderer } from "@web-mon-jrc/canvas-renderer";
 
 type MonitorCanvasProps = {
 	height: number;

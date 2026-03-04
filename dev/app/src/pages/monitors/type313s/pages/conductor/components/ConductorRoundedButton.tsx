@@ -1,12 +1,12 @@
 import { memo } from "react";
 
-import { CanvasText } from "../../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import { useAppSelectorWithParams } from "../../../../../../store/hooks";
 import RoundedButton from "../../../components/RoundedButton";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
 import { QUADRANT_SIZE } from "../../../components/roundedButtonImageCache";
 
-import type { RgbColor } from "../../../../../../canvas-renderer/utils/colorUtil";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 import type { AppSelector } from "../../../../../../store/types";
 
 export type RoundedButtonStyle = {

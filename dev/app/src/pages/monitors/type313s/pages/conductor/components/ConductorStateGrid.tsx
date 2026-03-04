@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { memo, useMemo } from "react";
 
-import CanvasObjectGroup from "../../../../../../canvas-renderer/objects/CanvasObjectGroup";
+import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 import { useAppSelector } from "../../../../../../store/hooks";
 import { carCountSelector } from "../../../../../../store/monitors/type313s/type313sSelector";
 import { LEFT as TRAIN_FORMATION_LEFT } from "../../../components/car-image/TrainFormationImage";

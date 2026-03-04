@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { CanvasText } from "../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS } from "../../constants";
 import { useCorrectionPageMode } from "../../hooks/usePageMode";

@@ -1,7 +1,7 @@
 // TODO: 横流ファンページの実装が必要
 import { memo } from "react";
 
-import { CanvasText } from "../../../../../canvas-renderer";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import { COLORS } from "../../constants";
 import { useConductorPageMode } from "../../hooks/usePageMode";

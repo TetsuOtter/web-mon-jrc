@@ -1104,11 +1104,6 @@ baseline-browser-mapping@^2.9.0:
   resolved "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.9.11.tgz"
   integrity sha512-Sg0xJUNDU1sJNGdfGWhVHX0kkZ+HWcvmVymJbj6NSgZZmW/8S9Y2HQ5euytnIgakgxN6papOAWiwDo1ctFDcoQ==
 
-bdfparser@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.npmjs.org/bdfparser/-/bdfparser-2.2.5.tgz"
-  integrity sha512-XztB/5cPhbZlg9SI5vfA0glt9KUu5y5EXY8MQx6/5pFK3XYElSuZ3HvtMbeET55IJTl4E3oAHbitjjSgd9X2fA==
-
 brace-expansion@^1.1.7:
   version "1.1.12"
   resolved "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.12.tgz"
@@ -2615,11 +2610,6 @@ react@^19.1.0:
   version "19.2.3"
   resolved "https://registry.npmjs.org/react/-/react-19.2.3.tgz"
   integrity sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA==
-
-readlineiter@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/readlineiter/-/readlineiter-1.0.1.tgz"
-  integrity sha512-MBYfZO9b2UMXlIOHtx7CvlzCcGWPJqJS8Oaok02LaTiWNrBVuM74BE1xl3Z93NW48WSVwyds7XPJFhv7Skm5gw==
 
 redux-thunk@^3.1.0:
   version "3.1.0"
