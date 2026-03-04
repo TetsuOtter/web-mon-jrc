@@ -103,9 +103,14 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 
 			// 非同期描画が完了したらクリップを解除
 			if (renderPromises.length > 0) {
-				Promise.all(renderPromises).then(() => {
-					ctx.restore();
-				});
+				Promise.all(renderPromises)
+					.then(() => {
+						ctx.restore();
+					})
+					.catch((error) => {
+						console.error("Error during canvas render:", error);
+						ctx.restore();
+					});
 			} else {
 				ctx.restore();
 			}
