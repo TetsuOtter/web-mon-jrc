@@ -19,13 +19,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"exactOptionalPropertyTypes": false,
-
-		/* Path aliases for local packages */
-		"baseUrl": ".",
-		"paths": {
-			"@web-mon-jrc/canvas-renderer": ["../canvas-renderer/src/index.ts"],
-			"@web-mon-jrc/canvas-renderer/*": ["../canvas-renderer/src/*"]
-		}
+		"ignoreDeprecations": "5.0"
 	},
 	"include": ["src", "**/*.svg?react"],
 	"exclude": ["node_modules"]
