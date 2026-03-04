@@ -3,6 +3,7 @@ import { memo, useCallback } from "react";
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasDotPattern from "@web-mon-jrc/canvas-renderer/objects/CanvasDotPattern";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import Button from "../../../components/Button";
 import { COLORS, FONT_SIZE_2X } from "../../../constants";
 import { usePageNavigation } from "../../usePageNavigation";

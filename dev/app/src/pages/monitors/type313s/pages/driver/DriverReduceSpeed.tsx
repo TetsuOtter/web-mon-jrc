@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasRoundedRect from "@web-mon-jrc/canvas-renderer/objects/CanvasRoundedRect";
+
 import FooterPageFrame from "../../components/FooterPageFrame";
 import {
 	COLORS,

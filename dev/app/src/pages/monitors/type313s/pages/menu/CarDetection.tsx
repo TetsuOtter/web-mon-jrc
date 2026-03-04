@@ -2,6 +2,7 @@
 import { memo } from "react";
 
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { COLORS } from "../../constants";
 
 export default memo(function CarDetection() {

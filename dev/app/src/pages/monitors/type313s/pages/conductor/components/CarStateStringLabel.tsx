@@ -1,11 +1,12 @@
 import { memo } from "react";
 
 import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { useAppSelectorWithParams } from "../../../../../../store/hooks";
 import { FONT_SIZE_1X } from "../../../constants";
 
-import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
 import type { CarStateByCarIndexSelector } from "../../../../../../store/monitors/type313s/type313sSelector";
+import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
 
 export type CarStateStringLabelProps = {
 	readonly relX: number;

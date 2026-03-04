@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import { COLORS, FONT_SIZE_1X } from "../../constants";
 import Button, { SHADOW_WIDTH } from "../Button";
 

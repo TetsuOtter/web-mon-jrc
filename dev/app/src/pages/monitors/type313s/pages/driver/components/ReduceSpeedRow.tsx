@@ -6,6 +6,7 @@ import {
 	CanvasText,
 } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import { toWide } from "../../../../../../utils/toWide";
 import { COLORS, FONT_SIZE_1X } from "../../../constants";
 

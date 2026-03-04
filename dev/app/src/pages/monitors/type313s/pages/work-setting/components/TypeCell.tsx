@@ -3,6 +3,7 @@ import { memo } from "react";
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import { COLORS, FONT_SIZE_2X } from "../../../constants";
 
 import type { CellProps } from "./SelectionGrid";

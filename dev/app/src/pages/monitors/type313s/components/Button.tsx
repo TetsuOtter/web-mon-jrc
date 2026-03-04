@@ -2,6 +2,7 @@ import type { PropsWithChildren } from "react";
 import { memo, useCallback, useMemo } from "react";
 
 import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+
 import { RGB_COLORS } from "../constants";
 
 import { getButtonImage } from "./buttonImageCache";

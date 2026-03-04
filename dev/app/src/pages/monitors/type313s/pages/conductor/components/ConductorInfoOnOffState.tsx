@@ -1,6 +1,7 @@
 import { memo } from "react";
 
 import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { COLORS } from "../../../constants";
 
 const ON_COLOR = COLORS.YELLOW;

@@ -2,6 +2,7 @@ import { memo, useCallback } from "react";
 
 import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasRoundedRect from "@web-mon-jrc/canvas-renderer/objects/CanvasRoundedRect";
+
 import { useAppSelector } from "../../../../../store/hooks";
 import {
 	trainNumberSelector,

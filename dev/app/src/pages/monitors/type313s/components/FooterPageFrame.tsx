@@ -3,6 +3,7 @@ import { memo } from "react";
 
 import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import {
 	DISPLAY_HEIGHT,
 	DISPLAY_WIDTH,

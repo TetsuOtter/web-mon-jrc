@@ -21,7 +21,6 @@ export default memo(function IndexPage() {
 					<li>
 						<Link to={ROUTES.TYPE313V.path}>Type 313V</Link>
 					</li>
-	
 				</ul>
 			</nav>
 		</div>

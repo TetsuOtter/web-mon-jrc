@@ -7,6 +7,7 @@ import {
 } from "@web-mon-jrc/canvas-renderer";
 import CanvasDotPattern from "@web-mon-jrc/canvas-renderer/objects/CanvasDotPattern";
 import CanvasQuadrilateral from "@web-mon-jrc/canvas-renderer/objects/CanvasQuadrilateral";
+
 import { useAppSelector } from "../../../../store/hooks";
 import {
 	trainNumberSelector,

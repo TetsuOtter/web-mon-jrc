@@ -2,6 +2,7 @@ import { memo, useCallback } from "react";
 
 import { CanvasImage, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+
 import { COLORS, DISPLAY_WIDTH } from "../../../constants";
 
 import type {

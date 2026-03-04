@@ -1,6 +1,7 @@
 import { memo } from "react";
 
 import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
+
 import { useAppSelectorWithParams } from "../../../../../../store/hooks";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
 import { COLORS } from "../../../constants";

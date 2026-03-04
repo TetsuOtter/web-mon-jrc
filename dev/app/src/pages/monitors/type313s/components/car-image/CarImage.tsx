@@ -2,6 +2,7 @@ import { memo, useCallback, useMemo } from "react";
 
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+
 import { toWide } from "../../../../../utils/toWide";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
 

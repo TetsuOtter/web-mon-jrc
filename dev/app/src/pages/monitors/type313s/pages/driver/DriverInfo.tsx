@@ -2,6 +2,7 @@ import { memo } from "react";
 
 import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
+
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
