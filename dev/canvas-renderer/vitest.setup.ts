@@ -58,6 +58,7 @@ Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
 		return null;
 	}),
 	writable: true,
+	configurable: true,
 });
 
 // OffscreenCanvas のモック（テキスト描画などで使用）
