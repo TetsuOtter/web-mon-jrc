@@ -59,11 +59,14 @@ function BlinkingItem({
 				strokeWidth={2}
 			/>
 			<CanvasText
-				relX={relX + width / 2}
-				relY={relY + height / 2 - 8}
+				relX={relX}
+				relY={relY}
+				maxWidthPx={width}
+				maxHeightPx={height}
 				text={label}
 				fillColor="#333333"
 				align="center"
+				verticalAlign="center"
 				lineHeight={1.4}
 			/>
 		</>
