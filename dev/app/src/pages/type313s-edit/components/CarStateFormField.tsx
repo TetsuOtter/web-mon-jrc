@@ -99,8 +99,9 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 				/>
 			);
 
-		default:
+		default: {
 			const _exhaustiveCheck: never = field;
 			return _exhaustiveCheck;
+		}
 	}
 });
