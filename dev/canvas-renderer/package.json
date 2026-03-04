@@ -3,7 +3,36 @@
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./objects": {
+			"types": "./dist/objects/index.d.ts",
+			"default": "./dist/objects/index.js"
+		},
+		"./utils": {
+			"types": "./dist/utils/index.d.ts",
+			"default": "./dist/utils/index.js"
+		},
+		"./contexts": {
+			"types": "./dist/contexts/index.d.ts",
+			"default": "./dist/contexts/index.js"
+		},
+		"./types": {
+			"types": "./dist/types/index.d.ts",
+			"default": "./dist/types/index.js"
+		},
+		"./*": {
+			"types": "./dist/*.d.ts",
+			"default": "./dist/*.js"
+		}
+	},
 	"scripts": {
+		"build": "tsc",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
