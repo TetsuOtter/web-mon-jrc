@@ -1,10 +1,9 @@
 import { memo } from "react";
 
-import { CanvasText } from "@web-mon-jrc/canvas-renderer";
-
-import Button, { SHADOW_WIDTH } from "../../components/Button";
+import { SHADOW_WIDTH } from "../../components/Button";
+import TextButton from "../../components/TextButton";
 import WithoutFooterPageFrame from "../../components/WithoutFooterPageFrame";
-import { RGB_COLORS } from "../../constants";
+import { COLORS } from "../../constants";
 import { ICONS } from "../../icons";
 import { PAGE_MODES, PAGE_TYPES } from "../pageTypes";
 
@@ -94,22 +93,16 @@ export default memo(function Menu() {
 				mode={PAGE_MODES.CORRECTION}
 			/>
 
-			<Button
+			<TextButton
+				text="画面消去"
 				relX={SLEEP_BUTTON_X}
 				relY={SLEEP_BUTTON_Y}
 				width={SLEEP_BUTTON_WIDTH}
 				height={SLEEP_BUTTON_HEIGHT}
-				fillColor={RGB_COLORS.YELLOW}
+				fillColor={COLORS.YELLOW}
 				shadowWidth={SHADOW_WIDTH.SMALL}
-				isShadowColored>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text="画面消去"
-				/>
-			</Button>
+				isShadowColored
+			/>
 		</WithoutFooterPageFrame>
 	);
 });

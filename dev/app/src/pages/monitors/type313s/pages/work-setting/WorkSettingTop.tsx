@@ -8,10 +8,11 @@ import {
 	trainNumberSelector,
 	trainTypeSelector,
 } from "../../../../../store/monitors/type313s/type313sSelector";
-import Button, { SHADOW_WIDTH } from "../../components/Button";
+import { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
 import RoundedButton from "../../components/RoundedButton";
+import TextButton from "../../components/TextButton";
 import { COLORS, FONT_SIZE_1X, RGB_COLORS } from "../../constants";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
@@ -152,42 +153,30 @@ export default memo(function WorkSettingTop() {
 				height={TRAIN_NUMBER_AREA_HEIGHT}
 				radius={TRAIN_NUMBER_AREA_HEIGHT / 2}
 				fillColor={COLORS.GRAY}>
-				<Button
+				<TextButton
+					text="列車番号"
 					relX={TRAIN_NUMBER_BUTTON_LEFT}
 					relY={TRAIN_NUMBER_BUTTON_TOP}
 					width={BUTTON_WIDTH}
 					height={BUTTON_HEIGHT}
 					shadowWidth={SHADOW_WIDTH.SMALL}
-					onClick={handleTrainNumberClick}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text="列車番号"
-						fillColor={COLORS.WHITE}
-						scaleY={2}
-					/>
-				</Button>
-				<Button
+					onClick={handleTrainNumberClick}
+					scaleY={2}
+				/>
+				<TextButton
+					text={trainNumber ?? ""}
 					relX={TRAIN_NUMBER_DISPLAY_LEFT}
 					relY={TRAIN_NUMBER_BUTTON_TOP}
 					width={TRAIN_NUMBER_DISPLAY_WIDTH}
 					height={BUTTON_HEIGHT}
-					fillColor={RGB_COLORS.BLACK}>
-					<CanvasText
-						relX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
-						relY={0}
-						maxWidthPx={
-							TRAIN_NUMBER_DISPLAY_WIDTH -
-							(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
-						}
-						align="right"
-						verticalAlign="center"
-						text={trainNumber ?? ""}
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
+					fillColor={COLORS.BLACK}
+					textRelX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
+					textMaxWidthPx={
+						TRAIN_NUMBER_DISPLAY_WIDTH -
+						(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
+					}
+					textHorizontalAlign="right"
+				/>
 			</CanvasRoundedRect>
 
 			<CanvasRoundedRect
@@ -214,42 +203,30 @@ export default memo(function WorkSettingTop() {
 					/>
 				</CanvasRect>
 
-				<Button
+				<TextButton
+					text="一　括"
 					relX={TRAIN_TYPE_BUTTON_LEFT}
 					relY={TRAIN_TYPE_BUTTON_TOP}
 					width={BUTTON_WIDTH}
 					height={BUTTON_HEIGHT}
 					shadowWidth={SHADOW_WIDTH.SMALL}
-					onClick={handleBulkTypeClick}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text="一　括"
-						fillColor={COLORS.WHITE}
-						scaleY={2}
-					/>
-				</Button>
-				<Button
+					onClick={handleBulkTypeClick}
+					scaleY={2}
+				/>
+				<TextButton
+					text={trainType ?? ""}
 					relX={TRAIN_TYPE_DISPLAY_LEFT}
 					relY={TRAIN_TYPE_BUTTON_TOP}
 					width={TYPE_DIRECTION_DISPLAY_WIDTH}
 					height={BUTTON_HEIGHT}
-					fillColor={RGB_COLORS.BLACK}>
-					<CanvasText
-						relX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
-						relY={0}
-						maxWidthPx={
-							TYPE_DIRECTION_DISPLAY_WIDTH -
-							(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
-						}
-						align="left"
-						verticalAlign="center"
-						text={trainType ?? ""}
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
+					fillColor={COLORS.BLACK}
+					textRelX={INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X}
+					textMaxWidthPx={
+						TYPE_DIRECTION_DISPLAY_WIDTH -
+						(INNER_BUTTON_TEXT_X + INNER_BUTTON_PADDING_X) * 2
+					}
+					textHorizontalAlign="left"
+				/>
 			</CanvasRoundedRect>
 
 			<CanvasRoundedRect
@@ -293,22 +270,15 @@ export default memo(function WorkSettingTop() {
 			</CanvasRoundedRect>
 
 			{/* Submit Button (起動) */}
-			<Button
+			<TextButton
+				text="起　動"
 				relX={SUBMIT_BUTTON_LEFT}
 				relY={SUBMIT_BUTTON_TOP}
 				width={SUBMIT_BUTTON_WIDTH}
 				height={SUBMIT_BUTTON_HEIGHT}
 				shadowWidth={SHADOW_WIDTH.EXTRA_SMALL}
-				onClick={handleStartupClick}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text="起　動"
-					fillColor={COLORS.WHITE}
-				/>
-			</Button>
+				onClick={handleStartupClick}
+			/>
 
 			<CanvasText
 				relX={CHANGE_DIR_ANNOUNCE_LABEL_X}

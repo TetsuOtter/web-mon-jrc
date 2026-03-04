@@ -4,9 +4,10 @@ import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
 
 import { useAppDispatch } from "../../../../../store/hooks";
 import { setTrainType } from "../../../../../store/monitors/type313s/type313sSlice";
-import Button, { SHADOW_WIDTH } from "../../components/Button";
+import { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
-import { COLORS, DISPLAY_WIDTH, RGB_COLORS } from "../../constants";
+import TextButton from "../../components/TextButton";
+import { COLORS, DISPLAY_WIDTH } from "../../constants";
 import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
@@ -95,39 +96,27 @@ export default memo(function WorkSettingType() {
 						scaleY={2}
 						fillColor={COLORS.WHITE}
 					/>
-					<Button
+					<TextButton
+						text={selectedTypeDisplayText}
 						relX={CURRENT_TYPE_BOX_X}
 						relY={CURRENT_TYPE_BOX_Y}
 						width={CURRENT_TYPE_BOX_WIDTH}
 						height={CURRENT_TYPE_BOX_HEIGHT}
-						fillColor={RGB_COLORS.BLACK}>
-						<CanvasText
-							relX={CURRENT_TYPE_DISPLAY_TEXT_X}
-							relY={0}
-							align="left"
-							verticalAlign="center"
-							text={selectedTypeDisplayText}
-							scaleY={2}
-							fillColor={COLORS.WHITE}
-						/>
-					</Button>
+						fillColor={COLORS.BLACK}
+						textRelX={CURRENT_TYPE_DISPLAY_TEXT_X}
+						textHorizontalAlign="left"
+						scaleY={2}
+					/>
 				</CanvasRect>
-				<Button
+				<TextButton
+					text="確　認"
 					relX={CONFIRM_BUTTON_X}
 					relY={CONFIRM_BUTTON_Y}
 					width={CONFIRM_BUTTON_WIDTH}
 					height={CONFIRM_BUTTON_HEIGHT}
-					shadowWidth={SHADOW_WIDTH.EXTRA_SMALL}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text="確　認"
-						fillColor={COLORS.WHITE}
-						onClick={onClickConfirm}
-					/>
-				</Button>
+					shadowWidth={SHADOW_WIDTH.EXTRA_SMALL}
+					onClick={onClickConfirm}
+				/>
 			</CanvasRect>
 			<SelectionGrid
 				pageIndex={pagerProps.currentPageIndex}

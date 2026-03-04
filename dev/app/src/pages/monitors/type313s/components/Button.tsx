@@ -18,9 +18,9 @@ export const SHADOW_WIDTH = {
 	SMALL: 2,
 	DEFAULT: 3,
 } as const satisfies Record<string, number>;
-type ShadowWidth = (typeof SHADOW_WIDTH)[keyof typeof SHADOW_WIDTH];
+export type ShadowWidth = (typeof SHADOW_WIDTH)[keyof typeof SHADOW_WIDTH];
 
-type ButtonProps = {
+export type ButtonProps = {
 	readonly relX: number;
 	readonly relY: number;
 	readonly width: number;

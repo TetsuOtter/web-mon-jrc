@@ -14,14 +14,10 @@ import {
 	setDestination as setDestinationToStore,
 } from "../../../../../store/monitors/type313s/type313sSlice";
 import { toWide } from "../../../../../utils/toWide";
-import Button, { SHADOW_WIDTH } from "../../components/Button";
+import { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
-import {
-	COLORS,
-	DISPLAY_WIDTH,
-	FONT_SIZE_1X,
-	RGB_COLORS,
-} from "../../constants";
+import TextButton from "../../components/TextButton";
+import { COLORS, DISPLAY_WIDTH, FONT_SIZE_1X } from "../../constants";
 import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
 import { useWorkSettingPageMode } from "../../hooks/usePageMode";
 import { ICONS } from "../../icons";
@@ -187,22 +183,15 @@ export default memo(function WorkSettingTrainNumber() {
 					scaleX={2}
 					fillColor={COLORS.WHITE}
 				/>
-				<Button
+				<TextButton
+					text={trainType}
 					relX={TYPE_DISPLAY_X}
 					relY={EACH_DISPLAY_TOP}
 					width={EACH_DISPLAY_WIDTH}
 					height={EACH_DISPLAY_HEIGHT}
-					fillColor={RGB_COLORS.BLACK}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text={trainType}
-						scaleY={2}
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
+					fillColor={COLORS.BLACK}
+					scaleY={2}
+				/>
 
 				<CanvasText
 					relX={DESTINATION_DISPLAY_X}
@@ -213,22 +202,15 @@ export default memo(function WorkSettingTrainNumber() {
 					scaleX={2}
 					fillColor={COLORS.WHITE}
 				/>
-				<Button
+				<TextButton
+					text={destination}
 					relX={DESTINATION_DISPLAY_X}
 					relY={EACH_DISPLAY_TOP}
 					width={EACH_DISPLAY_WIDTH}
 					height={EACH_DISPLAY_HEIGHT}
-					fillColor={RGB_COLORS.BLACK}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text={destination}
-						scaleY={2}
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
+					fillColor={COLORS.BLACK}
+					scaleY={2}
+				/>
 
 				<CanvasText
 					relX={TRAIN_NUMBER_DISPLAY_X}
@@ -239,22 +221,15 @@ export default memo(function WorkSettingTrainNumber() {
 					scaleX={2}
 					fillColor={COLORS.WHITE}
 				/>
-				<Button
+				<TextButton
+					text={trainNumberStr}
 					relX={TRAIN_NUMBER_DISPLAY_X}
 					relY={EACH_DISPLAY_TOP}
 					width={EACH_DISPLAY_WIDTH}
 					height={EACH_DISPLAY_HEIGHT}
-					fillColor={RGB_COLORS.BLACK}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text={trainNumberStr}
-						scaleY={2}
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
+					fillColor={COLORS.BLACK}
+					scaleY={2}
+				/>
 			</CanvasRect>
 
 			<CanvasRoundedRect
@@ -276,23 +251,17 @@ export default memo(function WorkSettingTrainNumber() {
 						/>
 					))
 				).flat()}
-				<Button
+				<TextButton
+					text="セット"
 					relX={SET_BUTTON_X}
 					relY={SET_BUTTON_Y}
 					width={SET_BUTTON_WIDTH}
 					height={SET_BUTTON_HEIGHT}
 					shadowWidth={SHADOW_WIDTH.SMALL}
-					onClick={onClickSet}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text="セット"
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
-				<Button
+					onClick={onClickSet}
+				/>
+				<TextButton
+					text="確　認"
 					relX={CONFIRM_BUTTON_X}
 					relY={CONFIRM_BUTTON_Y}
 					width={CONFIRM_BUTTON_WIDTH}
@@ -300,16 +269,8 @@ export default memo(function WorkSettingTrainNumber() {
 					shadowWidth={SHADOW_WIDTH.SMALL}
 					onClick={
 						mode === PAGE_MODES.DRIVER ? backNavigate : navigateToWorkSettingTop
-					}>
-					<CanvasText
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-						text="確　認"
-						fillColor={COLORS.WHITE}
-					/>
-				</Button>
+					}
+				/>
 			</CanvasRoundedRect>
 			<CanvasText
 				relX={STOP_STA_TEXT_X}

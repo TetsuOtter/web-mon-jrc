@@ -1,9 +1,8 @@
 import { memo, useCallback, useMemo } from "react";
 
-import { CanvasText } from "@web-mon-jrc/canvas-renderer";
-
 import { toWide } from "../../../../../../utils/toWide";
-import Button, { SHADOW_WIDTH } from "../../../components/Button";
+import { SHADOW_WIDTH } from "../../../components/Button";
+import TextButton from "../../../components/TextButton";
 import { COLORS } from "../../../constants";
 
 const HEIGHT = 52;
@@ -39,26 +38,18 @@ export default memo<TenKeyButtonProps>(function TenKeyButton({
 		return null;
 	}
 	return (
-		<Button
+		<TextButton
+			text={text}
 			relX={LEFT + col * WIDTH}
 			relY={TOP + row * HEIGHT}
 			width={type === TEN_KEY_TYPE.CLEAR ? WIDTH * 2 : WIDTH}
 			height={HEIGHT}
 			shadowWidth={SHADOW_WIDTH.SMALL}
-			onClick={type != TEN_KEY_TYPE.EMPTY ? handleClick : undefined}>
-			{type != TEN_KEY_TYPE.EMPTY && (
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text={text}
-					fillColor={type === TEN_KEY_TYPE.CLEAR ? COLORS.RED : COLORS.WHITE}
-					scaleX={2}
-					scaleY={2}
-				/>
-			)}
-		</Button>
+			onClick={type != TEN_KEY_TYPE.EMPTY ? handleClick : undefined}
+			textFillColor={type === TEN_KEY_TYPE.CLEAR ? COLORS.RED : COLORS.WHITE}
+			scaleX={2}
+			scaleY={2}
+		/>
 	);
 });
 

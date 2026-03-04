@@ -1,10 +1,10 @@
 import { memo } from "react";
 
-import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 
-import Button, { SHADOW_WIDTH } from "../../../components/Button";
-import { COLORS, RGB_COLORS } from "../../../constants";
+import { SHADOW_WIDTH } from "../../../components/Button";
+import TextButton from "../../../components/TextButton";
+import { COLORS } from "../../../constants";
 
 const BUTTON_WIDTH = 100;
 const BUTTON_HEIGHT = 52;
@@ -36,40 +36,27 @@ export default memo<DirectionRowProps>(function DirectionRowBase({
 			}
 			height={BUTTON_HEIGHT}>
 			{/* Direction Button */}
-			<Button
+			<TextButton
+				text={buttonText}
 				relX={0}
 				relY={0}
 				width={BUTTON_WIDTH}
 				height={BUTTON_HEIGHT}
 				shadowWidth={SHADOW_WIDTH.SMALL}
-				onClick={onButtonClick}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="center"
-					verticalAlign="center"
-					text={buttonText}
-					fillColor={COLORS.WHITE}
-					scaleY={2}
-				/>
-			</Button>
+				onClick={onButtonClick}
+				scaleY={2}
+			/>
 
 			{/* Direction Display Area */}
-			<Button
+			<TextButton
+				text={displayText}
 				relX={DIRECTION_DISPLAY_LEFT - DIRECTION_BUTTON_LEFT}
 				relY={0}
 				width={TYPE_DIRECTION_DISPLAY_WIDTH}
 				height={BUTTON_HEIGHT}
-				fillColor={RGB_COLORS.BLACK}>
-				<CanvasText
-					relX={0}
-					relY={0}
-					align="left"
-					verticalAlign="center"
-					text={displayText}
-					fillColor={COLORS.WHITE}
-				/>
-			</Button>
+				fillColor={COLORS.BLACK}
+				textHorizontalAlign="left"
+			/>
 		</CanvasObjectGroup>
 	);
 });

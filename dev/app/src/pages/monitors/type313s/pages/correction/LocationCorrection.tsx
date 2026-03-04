@@ -2,9 +2,10 @@ import { memo, useCallback, useState } from "react";
 
 import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
 
-import Button, { SHADOW_WIDTH } from "../../components/Button";
+import { SHADOW_WIDTH } from "../../components/Button";
 import FooterPageFrame from "../../components/FooterPageFrame";
 import LocationLabel from "../../components/LocationLabel";
+import TextButton from "../../components/TextButton";
 import TrainFormationImage from "../../components/car-image/TrainFormationImage";
 import { COLORS } from "../../constants";
 import { useFooterAreaWithPagerProps } from "../../footer/FooterAreaWithPagerPropsHook";
@@ -87,22 +88,15 @@ export default memo(function DriverLocationCorrection() {
 					relY={0}
 					verticalAlign="center"
 				/>
-				<Button
+				<TextButton
+					text="確　認"
 					relX={CONFIRM_BUTTON_X}
 					relY={CONFIRM_BUTTON_Y}
 					width={CONFIRM_BUTTON_WIDTH}
 					height={CONFIRM_BUTTON_HEIGHT}
 					onClick={onClickConfirm}
-					shadowWidth={SHADOW_WIDTH.SMALL}>
-					<CanvasText
-						text="確　認"
-						fillColor={COLORS.WHITE}
-						relX={0}
-						relY={0}
-						align="center"
-						verticalAlign="center"
-					/>
-				</Button>
+					shadowWidth={SHADOW_WIDTH.SMALL}
+				/>
 			</CanvasRect>
 		</FooterPageFrame>
 	);
