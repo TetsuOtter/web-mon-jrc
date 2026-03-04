@@ -72,13 +72,12 @@ const CanvasChildIndexContext = createContext<number>(0);
 
 export function useCanvasObjectContext() {
 	const context = useContext(CanvasObjectContext);
-	if (!import.meta.env.PROD && !context) {
+	if (context === null) {
 		throw new Error(
 			"useCanvasObjectContext must be used within a CanvasObjectContext.Provider"
 		);
 	}
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	return context!;
+	return context;
 }
 
 /**
