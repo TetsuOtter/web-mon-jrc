@@ -25,10 +25,16 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: "dev/app/yarn.lock"
+          cache-dependency-path: |
+            dev/app/yarn.lock
+            dev/canvas-renderer/yarn.lock
 
       - name: Setup Yarn
         run: corepack enable
+
+      - name: Install canvas-renderer dependencies
+        working-directory: ./dev/canvas-renderer
+        run: yarn install --frozen-lockfile
 
       - name: Install frontend dependencies
         working-directory: ./dev/app

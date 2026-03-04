@@ -27,7 +27,13 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: dev/app/yarn.lock
+          cache-dependency-path: |
+            dev/app/yarn.lock
+            dev/canvas-renderer/yarn.lock
+
+      - name: Install canvas-renderer dependencies
+        working-directory: dev/canvas-renderer
+        run: yarn install
 
       - name: Install dependencies
         working-directory: dev/app
