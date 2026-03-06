@@ -9,8 +9,7 @@
 		"preview": "vite preview",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"lint:fix": "eslint . --ext ts,tsx --fix",
-		"format": "prettier . --write",
-		"fix": "yarn lint:fix && yarn format"
+		"fix": "yarn lint:fix"
 	},
 	"dependencies": {
 		"@web-mon-jrc/canvas-renderer": "link:../canvas-renderer",
