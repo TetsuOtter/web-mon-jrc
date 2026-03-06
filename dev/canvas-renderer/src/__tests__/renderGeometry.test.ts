@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	intersectsRects,
-	mergeRenderAreas,
-} from "../utils/renderGeometry";
+import { intersectsRects, mergeRenderAreas } from "../utils/renderGeometry";
 import type { Rect } from "../utils/renderGeometry";
 
 describe("intersectsRects", () => {

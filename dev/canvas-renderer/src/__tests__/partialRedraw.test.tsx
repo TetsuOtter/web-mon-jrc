@@ -66,7 +66,8 @@ describe("CanvasRenderer - 部分再描画", () => {
 		ctxMock = createCtxMock();
 		vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation(
 			function (contextId: string) {
-				if (contextId === "2d") return ctxMock as unknown as CanvasRenderingContext2D;
+				if (contextId === "2d")
+					return ctxMock as unknown as CanvasRenderingContext2D;
 				return null;
 			}
 		);
@@ -81,7 +82,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={100}>
+				<CanvasRenderer
+					width={200}
+					height={100}>
 					<CanvasObjectBase
 						onRender={onRender}
 						relX={0}
@@ -106,7 +109,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 		// 部分領域のみが変化するオブジェクト
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={100}>
+				<CanvasRenderer
+					width={200}
+					height={100}>
 					<CanvasObjectBase
 						onRender={onRender}
 						relX={10}
@@ -147,7 +152,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={200}>
+				<CanvasRenderer
+					width={200}
+					height={200}>
 					<CanvasObjectBase
 						onRender={onRenderInArea}
 						relX={0}
@@ -190,7 +197,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={100}>
+				<CanvasRenderer
+					width={200}
+					height={100}>
 					<CanvasObjectBase
 						onRender={onRender}
 						relX={0}
@@ -205,11 +214,26 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		// save, beginPath, rect, clip の順序を確認
 		const calls = [
-			...ctxMock.save.mock.invocationCallOrder.map((o: number) => ({ order: o, name: "save" })),
-			...ctxMock.beginPath.mock.invocationCallOrder.map((o: number) => ({ order: o, name: "beginPath" })),
-			...ctxMock.rect.mock.invocationCallOrder.map((o: number) => ({ order: o, name: "rect" })),
-			...ctxMock.clip.mock.invocationCallOrder.map((o: number) => ({ order: o, name: "clip" })),
-			...ctxMock.restore.mock.invocationCallOrder.map((o: number) => ({ order: o, name: "restore" })),
+			...ctxMock.save.mock.invocationCallOrder.map((o: number) => ({
+				order: o,
+				name: "save",
+			})),
+			...ctxMock.beginPath.mock.invocationCallOrder.map((o: number) => ({
+				order: o,
+				name: "beginPath",
+			})),
+			...ctxMock.rect.mock.invocationCallOrder.map((o: number) => ({
+				order: o,
+				name: "rect",
+			})),
+			...ctxMock.clip.mock.invocationCallOrder.map((o: number) => ({
+				order: o,
+				name: "clip",
+			})),
+			...ctxMock.restore.mock.invocationCallOrder.map((o: number) => ({
+				order: o,
+				name: "restore",
+			})),
 		].sort((a, b) => a.order - b.order);
 
 		const callOrder = calls.map((c) => c.name);
@@ -240,7 +264,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={200}>
+				<CanvasRenderer
+					width={200}
+					height={200}>
 					<CanvasObjectBase
 						onRender={onRender}
 						relX={0}
@@ -277,7 +303,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={200}>
+				<CanvasRenderer
+					width={200}
+					height={200}>
 					<CanvasObjectBase
 						onRender={onRenderFirst}
 						relX={0}
@@ -318,7 +346,9 @@ describe("CanvasRenderer - 部分再描画", () => {
 		// fill なしの場合のclearRect呼び出し数を記録
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={100}>
+				<CanvasRenderer
+					width={200}
+					height={100}>
 					<CanvasObjectBase
 						onRender={onRender}
 						relX={0}
@@ -339,7 +369,10 @@ describe("CanvasRenderer - 部分再描画", () => {
 
 		await act(async () => {
 			render(
-				<CanvasRenderer width={200} height={100} fill="black">
+				<CanvasRenderer
+					width={200}
+					height={100}
+					fill="black">
 					<CanvasObjectBase
 						onRender={onRender}
 						relX={0}
@@ -353,10 +386,14 @@ describe("CanvasRenderer - 部分再描画", () => {
 		});
 
 		// fill ありの場合、fillRect の呼び出し回数は fill なしより増える
-		expect(ctxMock.fillRect.mock.calls.length).toBeGreaterThan(fillRectCountWithoutFill);
+		expect(ctxMock.fillRect.mock.calls.length).toBeGreaterThan(
+			fillRectCountWithoutFill
+		);
 		// fill ありの場合、描画リクエストに対する fillRect が (0, 0, 200, 100) で呼ばれる
 		expect(ctxMock.fillRect).toHaveBeenCalledWith(0, 0, 200, 100);
 		// fill ありの場合、clearRect の呼び出し回数は fill なし以下（DPRスケーリング分のみ）
-		expect(ctxMock.clearRect.mock.calls.length).toBeLessThanOrEqual(clearRectCountWithoutFill);
+		expect(ctxMock.clearRect.mock.calls.length).toBeLessThanOrEqual(
+			clearRectCountWithoutFill
+		);
 	});
 });
