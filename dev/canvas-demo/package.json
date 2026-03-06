@@ -13,6 +13,7 @@
 		"fix": "yarn lint:fix && yarn format"
 	},
 	"dependencies": {
+		"@web-mon-jrc/canvas-renderer": "link:../canvas-renderer",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0"
 	},
