@@ -1,11 +1,12 @@
-import path from "path";
-import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
 export default defineConfig(({ mode: _mode }) => ({
 	base: process.env.VITE_BASE || "/",
 	plugins: [react()],
+	resolve: {
+		dedupe: ["react", "react-dom"],
+	},
 	optimizeDeps: {
 		exclude: ["@web-mon-jrc/canvas-renderer"],
 		include: ["react", "react-dom"],
