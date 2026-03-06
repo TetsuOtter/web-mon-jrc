@@ -6,7 +6,5 @@
 	"bracketSameLine": true,
 	"singleAttributePerLine": true,
 	"arrowParens": "always",
-	"endOfLine": "lf",
-	"objectCurlySpacing": false,
-	"arrayBracketSpacing": false
+	"endOfLine": "lf"
 }
