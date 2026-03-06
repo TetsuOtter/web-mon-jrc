@@ -6,6 +6,10 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig(({ mode: _mode }) => ({
 	base: process.env.VITE_BASE || "/",
 	plugins: [react()],
+	optimizeDeps: {
+		exclude: ["@web-mon-jrc/canvas-renderer"],
+		include: ["react", "react-dom"],
+	},
 	server: {
 		allowedHosts: ["localhost", "127.0.0.1"],
 		port: 5173,
