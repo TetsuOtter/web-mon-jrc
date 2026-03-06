@@ -1,0 +1,3 @@
+{
+	"extends": "../app/.prettierrc.json"
+}
