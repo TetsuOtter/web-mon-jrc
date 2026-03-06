@@ -5,7 +5,7 @@ export default defineConfig(({ mode: _mode }) => ({
 	base: process.env.VITE_BASE || "/",
 	plugins: [react()],
 	resolve: {
-		dedupe: ["react", "react-dom"],
+		dedupe: ["react"],
 	},
 	optimizeDeps: {
 		exclude: ["@web-mon-jrc/canvas-renderer"],
