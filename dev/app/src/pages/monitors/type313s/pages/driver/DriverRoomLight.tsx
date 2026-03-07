@@ -14,7 +14,8 @@ export default memo(function DriverRoomLight() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

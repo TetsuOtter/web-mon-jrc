@@ -11,5 +11,5 @@ if (!root) {
 createRoot(root).render(
 	<StrictMode>
 		<CanvasDemo />
-	</StrictMode>
+	</StrictMode>,
 );

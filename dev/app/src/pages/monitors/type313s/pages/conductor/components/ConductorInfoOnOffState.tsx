@@ -26,7 +26,8 @@ export default memo<ConductorInfoOnOffStateProps>(
 				relY={relY}
 				width={WIDTH}
 				height={HEIGHT}
-				fillColor={isOn ? ON_COLOR : OFF_COLOR}>
+				fillColor={isOn ? ON_COLOR : OFF_COLOR}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -39,5 +40,5 @@ export default memo<ConductorInfoOnOffStateProps>(
 				/>
 			</CanvasRect>
 		);
-	}
+	},
 );

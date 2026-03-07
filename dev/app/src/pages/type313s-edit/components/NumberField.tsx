@@ -24,7 +24,7 @@ export default memo<NumberFormFieldProps>(function NumberField({
 				: parseFloat(inputValue) || 0;
 			dispatch(config.actionCreator(parsedValue));
 		},
-		[config, dispatch]
+		[config, dispatch],
 	);
 
 	return (

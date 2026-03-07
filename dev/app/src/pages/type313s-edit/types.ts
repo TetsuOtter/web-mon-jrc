@@ -47,7 +47,7 @@ export type CarStateBasicField =
 			getValue: (car: Type313sCarState) => number | null;
 			setValue: (
 				car: Type313sCarState,
-				value: number | null
+				value: number | null,
 			) => Type313sCarState;
 	  }
 	| {
@@ -57,7 +57,7 @@ export type CarStateBasicField =
 			getValue: (car: Type313sCarState) => string | null;
 			setValue: (
 				car: Type313sCarState,
-				value: string | null
+				value: string | null,
 			) => Type313sCarState;
 	  }
 	| {
@@ -68,7 +68,7 @@ export type CarStateBasicField =
 			toSelectValue: (car: Type313sCarState) => string;
 			fromSelectValue: (
 				car: Type313sCarState,
-				value: string
+				value: string,
 			) => Type313sCarState;
 	  };
 

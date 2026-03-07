@@ -33,7 +33,7 @@ function isClickInRoundedCorner(
 	clickY: number,
 	centerX: number,
 	centerY: number,
-	radius: number
+	radius: number,
 ): boolean {
 	const dx = clickX - centerX;
 	const dy = clickY - centerY;
@@ -59,7 +59,7 @@ function drawRoundedCorner(
 	minDx: number,
 	maxDx: number,
 	minDy: number,
-	maxDy: number
+	maxDy: number,
 ): void {
 	for (let dy = minDy; dy < maxDy; dy++) {
 		for (let dx = minDx; dx <= maxDx; dx++) {
@@ -122,7 +122,7 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						-r + 0.5,
 						0.5,
 						-r + 0.5,
-						0.5
+						0.5,
 					);
 
 					// 右上
@@ -136,7 +136,7 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						-0.5,
 						r - 0.5,
 						-r + 0.5,
-						0.5
+						0.5,
 					);
 
 					// 左下
@@ -150,7 +150,7 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						-r + 0.5,
 						0.5,
 						-0.5,
-						r + 0.5
+						r + 0.5,
 					);
 
 					// 右下
@@ -164,13 +164,13 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						-0.5,
 						r - 0.5,
 						-0.5,
-						r + 0.5
+						r + 0.5,
 					);
 				}
 
 				ctx.restore();
 			},
-			[fillColor, width, height, radius]
+			[fillColor, width, height, radius],
 		);
 
 		const isClickDetector: ClickDetector = useCallback(
@@ -209,13 +209,13 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 						clickY,
 						width - r,
 						height - r,
-						r
+						r,
 					);
 				}
 
 				return false;
 			},
-			[width, height, radius]
+			[width, height, radius],
 		);
 
 		return (
@@ -227,9 +227,10 @@ export default memo<PropsWithChildren<CanvasRoundedRectProps>>(
 				relY={relY}
 				width={width}
 				height={height}
-				isFilled={!!fillColor}>
+				isFilled={!!fillColor}
+			>
 				{children}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );

@@ -36,12 +36,14 @@ export default memo<BrightnessControlButtonProps>(
 				width={WIDTH}
 				height={HEIGHT}
 				shadowWidth={SHADOW_WIDTH.SMALL}
-				onClick={onClick}>
+				onClick={onClick}
+			>
 				<CanvasObjectGroup
 					relX={0}
 					relY={0}
 					width={WIDTH}
-					height={HEIGHT}>
+					height={HEIGHT}
+				>
 					<CanvasText
 						relX={4}
 						relY={TEXT_TOP}
@@ -59,5 +61,5 @@ export default memo<BrightnessControlButtonProps>(
 				</CanvasObjectGroup>
 			</Button>
 		);
-	}
+	},
 );

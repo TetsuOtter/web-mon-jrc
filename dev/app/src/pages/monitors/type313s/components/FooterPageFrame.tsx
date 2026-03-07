@@ -49,7 +49,8 @@ export default memo<PropsWithChildren<FooterPageFrameProps>>(
 				relX={0}
 				relY={0}
 				width={parentObjectContext.metadata.width}
-				height={parentObjectContext.metadata.height}>
+				height={parentObjectContext.metadata.height}
+			>
 				<HeaderArea
 					icon={pageIcon ?? ICON_MAP_BY_MODE[mode]}
 					pageName={pageName ?? PAGE_NAME_MAP[pageType]}
@@ -58,12 +59,14 @@ export default memo<PropsWithChildren<FooterPageFrameProps>>(
 					relX={0}
 					relY={HEADER_HEIGHT}
 					width={DISPLAY_WIDTH}
-					height={DISPLAY_HEIGHT - HEADER_HEIGHT}>
+					height={DISPLAY_HEIGHT - HEADER_HEIGHT}
+				>
 					<CanvasObjectGroup
 						relX={0}
 						relY={0}
 						width={DISPLAY_WIDTH}
-						height={DISPLAY_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT}>
+						height={DISPLAY_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT}
+					>
 						{children}
 					</CanvasObjectGroup>
 					{pagerProps ? (
@@ -80,5 +83,5 @@ export default memo<PropsWithChildren<FooterPageFrameProps>>(
 				</CanvasObjectGroup>
 			</CanvasObjectGroup>
 		);
-	}
+	},
 );

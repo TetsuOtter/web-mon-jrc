@@ -43,7 +43,7 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 					metadata.relX,
 					metadata.relY,
 					metadata.width,
-					metadata.height
+					metadata.height,
 				);
 
 				// 枠線を描画
@@ -53,7 +53,7 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 					metadata.relX,
 					metadata.relY,
 					metadata.width,
-					metadata.height
+					metadata.height,
 				);
 
 				// ラベルを描画
@@ -64,10 +64,10 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 				ctx.fillText(
 					label + " (" + count + ")",
 					metadata.relX + metadata.width / 2,
-					metadata.relY + metadata.height / 2
+					metadata.relY + metadata.height / 2,
 				);
 			},
-			[color, count, label]
+			[color, count, label],
 		);
 
 		const handleClick: ClickEventHandler = useCallback(
@@ -81,7 +81,7 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 				}
 				return true;
 			},
-			[onClick]
+			[onClick],
 		);
 
 		return (
@@ -92,9 +92,10 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 				relY={relY}
 				width={width}
 				height={height}
-				isFilled>
+				isFilled
+			>
 				{children}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );

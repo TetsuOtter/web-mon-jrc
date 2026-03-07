@@ -54,5 +54,5 @@ export default memo<FooterAreaProps & FooterAreaWithPagerProps>(
 				leftButtons={leftButtons}
 			/>
 		);
-	}
+	},
 );

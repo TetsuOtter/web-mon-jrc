@@ -78,7 +78,7 @@ export default memo<CanvasLineProps>(function CanvasLine({
 
 			ctx.restore();
 		},
-		[color, width, relX1, relY1, relX2, relY2]
+		[color, width, relX1, relY1, relX2, relY2],
 	);
 
 	const minX = Math.min(Math.round(relX1), Math.round(relX2));
@@ -128,7 +128,7 @@ export default memo<CanvasLineProps>(function CanvasLine({
 			const py = clickY - nearestY;
 			return px * px + py * py <= w * w;
 		},
-		[width, maxX, minX, maxY, minY, relX1, relY1, relX2, relY2]
+		[width, maxX, minX, maxY, minY, relX1, relY1, relX2, relY2],
 	);
 
 	return (

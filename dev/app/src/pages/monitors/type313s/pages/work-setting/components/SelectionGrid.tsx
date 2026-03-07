@@ -40,7 +40,8 @@ export default memo<SelectionGridProps>(function SelectionGrid({
 			relX={0}
 			relY={offsetY}
 			width={AREA_WIDTH}
-			height={AREA_HEIGHT}>
+			height={AREA_HEIGHT}
+		>
 			{Array.from({ length: ROW_COUNT }).map((_, idx) => (
 				<CanvasLine
 					// eslint-disable-next-line react/no-array-index-key
@@ -80,7 +81,7 @@ export default memo<SelectionGridProps>(function SelectionGrid({
 								onClickCell={onClickCell}
 							/>
 						);
-					})
+					}),
 				)
 				.flat()}
 		</CanvasObjectGroup>
@@ -112,7 +113,8 @@ const CellWrapper = memo<CellWrapperProps>(function CellWrapper({
 			relY={rowIdx * ROW_HEIGHT}
 			width={COLUMN_WIDTH}
 			height={ROW_HEIGHT}
-			onClick={handleClick}>
+			onClick={handleClick}
+		>
 			<CellComponent index={pagedCellIndex} />
 			<CanvasText
 				relX={CELL_INDEX_OFFSET_X}

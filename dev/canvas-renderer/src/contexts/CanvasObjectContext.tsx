@@ -17,17 +17,17 @@ import type { RenderArea } from "./RenderRequestContext";
 export type CanvasRenderFunction = (
 	ctx: CanvasRenderingContext2D,
 	metadata: CanvasObjectMetadata,
-	renderArea: RenderArea[]
+	renderArea: RenderArea[],
 ) => void | Promise<void>;
 
 export type ClickEventHandler = (
 	relX: number,
-	relY: number
+	relY: number,
 ) => boolean | Promise<boolean>;
 
 export type ClickDetector = (
 	relX: number,
-	relY: number
+	relY: number,
 ) => boolean | Promise<boolean>;
 
 /**
@@ -74,7 +74,7 @@ export function useCanvasObjectContext() {
 	const context = useContext(CanvasObjectContext);
 	if (context === null) {
 		throw new Error(
-			"useCanvasObjectContext must be used within a CanvasObjectContext.Provider"
+			"useCanvasObjectContext must be used within a CanvasObjectContext.Provider",
 		);
 	}
 	return context;
@@ -97,7 +97,7 @@ type CanvasObjectContextProviderProps = {
  * これにより、各子要素は親内での位置情報を知ることができる
  */
 function injectChildIndexToChildren(
-	children: PropsWithChildren<unknown>["children"]
+	children: PropsWithChildren<unknown>["children"],
 ): ReactElement[] {
 	const wrappedChildren: ReactElement[] = [];
 	let childIndex = 0;
@@ -107,9 +107,10 @@ function injectChildIndexToChildren(
 			wrappedChildren.push(
 				<CanvasChildIndexContext.Provider
 					key={child.key ?? childIndex}
-					value={childIndex}>
+					value={childIndex}
+				>
 					{child}
-				</CanvasChildIndexContext.Provider>
+				</CanvasChildIndexContext.Provider>,
 			);
 			childIndex++;
 		}
@@ -144,13 +145,13 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 		// childrenを処理してchildIndexをinjection
 		const wrappedChildren = useMemo(
 			() => injectChildIndexToChildren(children),
-			[children]
+			[children],
 		);
 
 		const onMount: CanvasObjectContextType["onMount"] = useCallback(
 			(obj, childIndex) => {
 				const index = registeredObjectListRef.current.findIndex(
-					(item) => item.objectId === obj.objectId
+					(item) => item.objectId === obj.objectId,
 				);
 				if (index === -1) {
 					registeredObjectListRef.current.push(obj);
@@ -168,12 +169,12 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				objectIndexMapRef,
 				requestRender,
 				sortObjectList,
-			]
+			],
 		);
 		const onUnmount: CanvasObjectContextType["onUnmount"] = useCallback(
 			(obj) => {
 				const index = registeredObjectListRef.current.findIndex(
-					(item) => item.objectId === obj.objectId
+					(item) => item.objectId === obj.objectId,
 				);
 				if (-1 < index) {
 					registeredObjectListRef.current.splice(index, 1);
@@ -183,7 +184,7 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				delete objectIndexMapRef.current[obj.objectId];
 				requestRender(obj.metadata);
 			},
-			[registeredObjectListRef, objectIndexMapRef, requestRender]
+			[registeredObjectListRef, objectIndexMapRef, requestRender],
 		);
 		const contextValue = useMemo(
 			(): CanvasObjectContextType => ({
@@ -191,7 +192,7 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				onUnmount,
 				metadata,
 			}),
-			[onMount, onUnmount, metadata]
+			[onMount, onUnmount, metadata],
 		);
 
 		return (
@@ -199,5 +200,5 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				{wrappedChildren}
 			</CanvasObjectContext.Provider>
 		);
-	}
+	},
 );

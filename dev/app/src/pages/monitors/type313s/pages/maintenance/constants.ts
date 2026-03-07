@@ -143,7 +143,7 @@ export const FOOTER_MENU_AIR_COND = [
 
 export function getMenuListForMaintenanceMode(
 	label: string,
-	navigateTo: PageType
+	navigateTo: PageType,
 ): FooterButtonInfo[] {
 	return [
 		{

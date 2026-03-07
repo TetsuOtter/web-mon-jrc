@@ -39,7 +39,8 @@ export default memo<CellProps>(function TypeCell({ index }) {
 			relX={0}
 			relY={0}
 			width={width}
-			height={height}>
+			height={height}
+		>
 			<CanvasText
 				relX={FIRST_LINE_X}
 				relY={FIRST_LINE_Y}

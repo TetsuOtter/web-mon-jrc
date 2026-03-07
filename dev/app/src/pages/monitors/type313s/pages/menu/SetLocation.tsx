@@ -13,7 +13,8 @@ export default memo(function SetLocation() {
 	return (
 		<FooterPageFrame
 			mode={PAGE_MODES.MAINTENANCE}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

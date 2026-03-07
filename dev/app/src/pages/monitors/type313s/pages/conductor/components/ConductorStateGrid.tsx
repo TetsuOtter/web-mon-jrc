@@ -27,7 +27,7 @@ export default memo<ConductorStateGridProps>(function ConductorStateGrid({
 	const carCount = useAppSelector(carCountSelector);
 	const height = useMemo(
 		() => rowDefinitionList.reduce((sum, def) => sum + def.rowHeight, 0),
-		[rowDefinitionList]
+		[rowDefinitionList],
 	);
 	const width = TRAIN_FORMATION_LEFT + CAR_IMAGE_WIDTH * carCount;
 
@@ -40,7 +40,11 @@ export default memo<ConductorStateGridProps>(function ConductorStateGrid({
 			for (let carIndex = 0; carIndex < carCount; carIndex++) {
 				const cellX = TRAIN_FORMATION_LEFT + CAR_IMAGE_WIDTH * carIndex;
 				nodeList.push(
-					rowDef.renderCell(cellX, currentY + (rowDef.marginTop ?? 0), carIndex)
+					rowDef.renderCell(
+						cellX,
+						currentY + (rowDef.marginTop ?? 0),
+						carIndex,
+					),
 				);
 			}
 
@@ -54,7 +58,8 @@ export default memo<ConductorStateGridProps>(function ConductorStateGrid({
 			relX={0}
 			relY={BASE_Y + offsetY}
 			width={width}
-			height={height}>
+			height={height}
+		>
 			{nodeList}
 		</CanvasObjectGroup>
 	);

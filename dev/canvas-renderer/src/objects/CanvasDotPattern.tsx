@@ -72,7 +72,7 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 
 				ctx.restore();
 			},
-			[image, scaleX, scaleY, color, imageHeight]
+			[image, scaleX, scaleY, color, imageHeight],
 		);
 
 		const isClickDetector: ClickDetector = useCallback(
@@ -82,7 +82,7 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 					clickX >= 0 && clickX <= width && clickY >= 0 && clickY <= height
 				);
 			},
-			[width, height]
+			[width, height],
 		);
 
 		return (
@@ -94,9 +94,10 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 				relY={y}
 				width={width}
 				height={height}
-				isFilled>
+				isFilled
+			>
 				{children}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );

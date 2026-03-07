@@ -16,7 +16,7 @@ type CarStateStringFieldProps = {
 	readonly getValue: (carState: Type313sCarState) => string;
 	readonly setValue: (
 		carState: Type313sCarState,
-		nextValue: string
+		nextValue: string,
 	) => Type313sCarState;
 	readonly placeholder?: string;
 	readonly className?: string;
@@ -32,7 +32,7 @@ export default memo<CarStateStringFieldProps>(function CarStateStringField({
 	className,
 }) {
 	const carStateList = useAppSelector(
-		(state) => state.monitors.type313s.carStateList
+		(state) => state.monitors.type313s.carStateList,
 	);
 
 	const config = useMemo<StringFormFieldConfig>(
@@ -48,11 +48,11 @@ export default memo<CarStateStringFieldProps>(function CarStateStringField({
 			actionCreator: (nextValue: string) =>
 				setCarStateList(
 					carStateList.map((carState, index) =>
-						index === carIndex ? setValue(carState, nextValue) : carState
-					)
+						index === carIndex ? setValue(carState, nextValue) : carState,
+					),
 				) as unknown as PayloadAction<string>,
 		}),
-		[carIndex, carStateList, fieldKey, getValue, label, placeholder, setValue]
+		[carIndex, carStateList, fieldKey, getValue, label, placeholder, setValue],
 	);
 
 	return (

@@ -13,7 +13,8 @@ export default memo<Props>(function CarCompositionDiagram({ carState }) {
 		<svg
 			className={styles.diagram}
 			viewBox="0 0 100 120"
-			xmlns="http://www.w3.org/2000/svg">
+			xmlns="http://www.w3.org/2000/svg"
+		>
 			{/* 車体 */}
 			<rect
 				x="15"
@@ -34,7 +35,8 @@ export default memo<Props>(function CarCompositionDiagram({ carState }) {
 				className={styles.carTypeText}
 				fontSize="10"
 				fontWeight="bold"
-				fill="#333">
+				fill="#333"
+			>
 				{carState.carType}
 			</text>
 

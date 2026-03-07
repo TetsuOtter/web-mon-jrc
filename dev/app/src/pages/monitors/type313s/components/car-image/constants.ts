@@ -46,7 +46,7 @@ function generateLeftCab(): number[][] {
 	for (let row = 0; row < CAB_BORDER_ROW_COUNT; row++) {
 		const rowData: number[] = new Array(CAB_WIDTH).fill(0);
 		const startCol = Math.floor(
-			CAB_BORDER_WIDTH * (CAB_BORDER_ROW_COUNT - row - 1)
+			CAB_BORDER_WIDTH * (CAB_BORDER_ROW_COUNT - row - 1),
 		);
 		const endCol = Math.floor(CAB_BORDER_WIDTH * (CAB_BORDER_ROW_COUNT - row));
 

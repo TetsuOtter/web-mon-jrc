@@ -30,7 +30,7 @@ export function useStoredImage(imagePath: string): ImageAndCanvas | null {
 				createSubscriberManager(imagePath);
 			return subscriberManager(callback);
 		},
-		[imagePath]
+		[imagePath],
 	);
 	const getSnapshot = useCallback(() => {
 		if (!imagePath) {

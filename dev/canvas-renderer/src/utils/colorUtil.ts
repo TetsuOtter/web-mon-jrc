@@ -38,7 +38,7 @@ export function rgbToHex(color: RgbColor): string {
 function setToData(
 	this: RgbColor,
 	data: Uint8ClampedArray,
-	offset: number
+	offset: number,
 ): void {
 	data[offset] = this.r;
 	data[offset + 1] = this.g;

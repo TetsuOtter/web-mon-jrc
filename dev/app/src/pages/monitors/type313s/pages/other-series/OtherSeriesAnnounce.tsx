@@ -13,7 +13,8 @@ export default memo(function OtherSeriesAnnounce() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

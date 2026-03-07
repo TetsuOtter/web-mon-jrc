@@ -51,13 +51,15 @@ export default memo<MenuButtonProps>(function MenuButton({
 			relX={FIRST_COL_X + COL_GAP * col}
 			relY={FIRST_ROW_Y + ROW_GAP * row}
 			width={BUTTON_WIDTH}
-			height={AREA_HEIGHT}>
+			height={AREA_HEIGHT}
+		>
 			<Button
 				relX={0}
 				relY={0}
 				width={BUTTON_WIDTH}
 				height={BUTTON_HEIGHT}
-				onClick={handleClick}>
+				onClick={handleClick}
+			>
 				<CanvasDotPattern
 					image={icon}
 					x={ICON_X}

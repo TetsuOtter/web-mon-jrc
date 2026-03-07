@@ -15,7 +15,7 @@ type CarStateFormFieldProps = {
 	readonly carState: Type313sCarState;
 	readonly updateCarState: (
 		index: number,
-		updater: (car: Type313sCarState) => Type313sCarState
+		updater: (car: Type313sCarState) => Type313sCarState,
 	) => void;
 	readonly className?: string;
 };
@@ -91,7 +91,7 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 					value={field.toSelectValue(carState)}
 					onChange={(carIndex, value) =>
 						updateCarState(carIndex, (current) =>
-							field.fromSelectValue(current, value)
+							field.fromSelectValue(current, value),
 						)
 					}
 					options={field.options}

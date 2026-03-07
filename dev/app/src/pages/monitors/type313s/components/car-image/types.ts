@@ -8,7 +8,7 @@ export type BaseCarImageInfo = {
 
 export const isBaseCarImageEqual = (
 	a: BaseCarImageInfo,
-	b: BaseCarImageInfo
+	b: BaseCarImageInfo,
 ): boolean =>
 	a.isLeftCab === b.isLeftCab &&
 	a.isRightCab === b.isRightCab &&
@@ -28,5 +28,5 @@ export type CarImageBogieInfo = {
 
 export const isCarImageBogieInfoEqual = (
 	a: CarImageBogieInfo,
-	b: CarImageBogieInfo
+	b: CarImageBogieInfo,
 ): boolean => a.left === b.left && a.right === b.right;

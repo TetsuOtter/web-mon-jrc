@@ -53,7 +53,8 @@ export default memo(function OccupancyRate() {
 	return (
 		<FooterPageFrame
 			mode={PAGE_MODES.OCCUPANCY_RATE}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<LocationLabel />
 
 			<TrainFormationImage />

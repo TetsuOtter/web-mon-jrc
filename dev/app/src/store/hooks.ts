@@ -18,7 +18,7 @@ export function useAppSelectorWithParams<
 	const selectorWithParams = useCallback(
 		(state: RootState) => selector(state, ...param),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[selector, ...param]
+		[selector, ...param],
 	);
 	return useAppSelector(selectorWithParams);
 }
@@ -33,7 +33,7 @@ export function useAppSelectorWithParamsAndEqualityFn<
 	const selectorWithParams = useCallback(
 		(state: RootState) => selector(state, ...param),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[selector, ...param]
+		[selector, ...param],
 	);
 	return useAppSelector(selectorWithParams, equalityFn);
 }

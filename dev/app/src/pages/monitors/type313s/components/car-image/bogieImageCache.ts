@@ -14,7 +14,7 @@ import type { BogieState, CarImageBogieInfo } from "./types";
 const BogieImageCache = new Map<string, OffscreenCanvas>();
 
 const isMotoredOrWorking = (
-	state: BogieState
+	state: BogieState,
 ): state is Extract<BogieState, "MOTORED" | "WORKING"> =>
 	state === BOGIE_STATE.MOTORED || state === BOGIE_STATE.WORKING;
 
@@ -56,12 +56,12 @@ export function getBogieImage(info: CarImageBogieInfo): OffscreenCanvas {
 		drawBogieImage(
 			data,
 			WIDTH - BOGIE_AREA_WIDTH + BOGIE_PADDING_LR,
-			isWorking
+			isWorking,
 		);
 		drawBogieImage(
 			data,
 			WIDTH - BOGIE_AREA_WIDTH * 2 + BOGIE_PADDING_LR,
-			isWorking
+			isWorking,
 		);
 	}
 
@@ -77,7 +77,7 @@ export function getBogieImage(info: CarImageBogieInfo): OffscreenCanvas {
 function drawBogieImage(
 	data: Uint8ClampedArray,
 	col: number,
-	isWorking: boolean
+	isWorking: boolean,
 ) {
 	for (let bogieRow = 0; bogieRow < BOGIE_PATTERN.length; bogieRow++) {
 		const imgRow = HEIGHT - BOGIE_H_W + bogieRow;

@@ -26,7 +26,7 @@ export type FormationNum = (typeof FORMATION_NUM)[keyof typeof FORMATION_NUM];
 
 function buildMergedQueryString(
 	currentSearchParams: URLSearchParams,
-	newParams: NavigationQueryParams
+	newParams: NavigationQueryParams,
 ): string {
 	const mergedParams = new URLSearchParams(currentSearchParams);
 
@@ -60,7 +60,7 @@ export function usePageNavigation() {
 			const queryString = buildMergedQueryString(searchParams, params ?? {});
 			navigate(`/monitors/type313s/${pageType}${queryString}`);
 		},
-		[navigate, searchParams, currentPageType, pushHistory]
+		[navigate, searchParams, currentPageType, pushHistory],
 	);
 
 	return navigateToPage;
@@ -68,7 +68,7 @@ export function usePageNavigation() {
 
 export function usePageNavigationTo(
 	pageType: PageType,
-	params?: NavigationQueryParams
+	params?: NavigationQueryParams,
 ) {
 	const navigate = usePageNavigation();
 

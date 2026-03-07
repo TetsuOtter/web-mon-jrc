@@ -25,7 +25,8 @@ export default memo<PropsWithChildren<WithoutFooterPageFrameProps>>(
 				relX={0}
 				relY={0}
 				width={parentObjectContext.metadata.width}
-				height={parentObjectContext.metadata.height}>
+				height={parentObjectContext.metadata.height}
+			>
 				<HeaderArea
 					icon={ICON_MAP_BY_MODE[mode]}
 					pageName={PAGE_NAME_MAP[pageType]}
@@ -34,10 +35,11 @@ export default memo<PropsWithChildren<WithoutFooterPageFrameProps>>(
 					relX={0}
 					relY={HEADER_HEIGHT}
 					width={DISPLAY_WIDTH}
-					height={DISPLAY_HEIGHT - HEADER_HEIGHT}>
+					height={DISPLAY_HEIGHT - HEADER_HEIGHT}
+				>
 					{children}
 				</CanvasObjectGroup>
 			</CanvasObjectGroup>
 		);
-	}
+	},
 );

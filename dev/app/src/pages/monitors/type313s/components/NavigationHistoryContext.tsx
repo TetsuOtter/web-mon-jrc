@@ -16,7 +16,7 @@ type NavigationHistoryContextValue = {
 	pushHistory: (
 		currentPage: PageType,
 		nextPage: PageType,
-		queryParams?: Record<string, string>
+		queryParams?: Record<string, string>,
 	) => void;
 	clearHistory: () => void;
 };
@@ -56,7 +56,7 @@ export default memo<PropsWithChildren>(function NavigationHistoryProvider({
 				historyRef.current = [];
 			},
 		}),
-		[]
+		[],
 	);
 
 	return (
@@ -70,7 +70,7 @@ export function useNavigationHistory(): NavigationHistoryContextValue {
 	const context = useContext(NavigationHistoryContext);
 	if (!context) {
 		throw new Error(
-			"useNavigationHistory must be used within NavigationHistoryProvider"
+			"useNavigationHistory must be used within NavigationHistoryProvider",
 		);
 	}
 	return context;

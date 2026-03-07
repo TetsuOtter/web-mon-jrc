@@ -9,7 +9,7 @@ export function useCurrentPageType() {
 	const currentPageType = useContext(currentPageContext);
 	if (import.meta.env.DEV && currentPageType === null) {
 		throw new Error(
-			"useCurrentPageType must be used within a CurrentPageContextProvider"
+			"useCurrentPageType must be used within a CurrentPageContextProvider",
 		);
 	}
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -23,5 +23,5 @@ export default memo<PropsWithChildren<{ page: PageType }>>(
 				{children}
 			</currentPageContext.Provider>
 		);
-	}
+	},
 );

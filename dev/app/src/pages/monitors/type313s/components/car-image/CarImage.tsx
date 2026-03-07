@@ -81,7 +81,7 @@ export default memo<CarImageProps>(function CarImage({
 								absX + startCol,
 								absY + CAB_Y + row,
 								CAB_WIDTH - startCol - CAB_BORDER,
-								1
+								1,
 							);
 						}
 					}
@@ -96,7 +96,7 @@ export default memo<CarImageProps>(function CarImage({
 								absX + RIGHT_CAB_CLIFF_COL + CAB_BORDER,
 								absY + CAB_Y + row,
 								endCol - CAB_BORDER,
-								1
+								1,
 							);
 						}
 					}
@@ -105,7 +105,7 @@ export default memo<CarImageProps>(function CarImage({
 					absX + CAB_BORDER,
 					absY + ROOF_Y + CAB_BORDER,
 					WIDTH - CAB_BORDER * 2,
-					ROOF_HEIGHT - 1
+					ROOF_HEIGHT - 1,
 				);
 			}
 			if (bodyBackgroundColor) {
@@ -114,7 +114,7 @@ export default memo<CarImageProps>(function CarImage({
 					absX + CAB_BORDER,
 					absY + SEPARATOR_Y + CAB_INNER,
 					WIDTH - CAB_BORDER * 2,
-					FLOOR_Y - SEPARATOR_Y - CAB_INNER - CAB_BORDER
+					FLOOR_Y - SEPARATOR_Y - CAB_INNER - CAB_BORDER,
 				);
 			}
 		},
@@ -125,14 +125,14 @@ export default memo<CarImageProps>(function CarImage({
 			bodyBackgroundColor,
 			baseInfo.isLeftCab,
 			baseInfo.isRightCab,
-		]
+		],
 	);
 
 	const isClickDetector: ClickDetector = useCallback(
 		(clickX: number, clickY: number) => {
 			return clickX >= 0 && clickX < WIDTH && clickY >= 0 && clickY < HEIGHT;
 		},
-		[]
+		[],
 	);
 	const carNumberStr = useMemo(() => {
 		if (10 <= carNumber) {
@@ -151,7 +151,8 @@ export default memo<CarImageProps>(function CarImage({
 			relY={relY}
 			width={WIDTH}
 			height={HEIGHT + CAR_NUMBER_HEIGHT}
-			isFilled>
+			isFilled
+		>
 			{carType != null && (
 				<CanvasText
 					key="carType"

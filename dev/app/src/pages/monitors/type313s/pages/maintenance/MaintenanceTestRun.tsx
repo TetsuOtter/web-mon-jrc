@@ -13,7 +13,8 @@ export default memo(function MaintenanceTestRun() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU_TEST_RUN}>
+			footerItems={FOOTER_MENU_TEST_RUN}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

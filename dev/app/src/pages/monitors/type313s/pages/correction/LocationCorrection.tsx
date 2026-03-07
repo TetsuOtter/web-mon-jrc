@@ -39,7 +39,7 @@ export default memo(function DriverLocationCorrection() {
 	const mode = useCorrectionPageMode();
 	const [carImageStationIndex, setCarImageStationIndex] = useState<number>(0);
 	const pagerProps = useFooterAreaWithPagerProps(
-		Math.floor(STA_NAME_LIST.length / CELL_PER_PAGE)
+		Math.floor(STA_NAME_LIST.length / CELL_PER_PAGE),
 	);
 	const onClickConfirm = useCallback(() => {
 		console.log("確認", {
@@ -50,7 +50,8 @@ export default memo(function DriverLocationCorrection() {
 		<FooterPageFrame
 			mode={mode}
 			footerItems={FOOTER_MENU}
-			pagerProps={pagerProps}>
+			pagerProps={pagerProps}
+		>
 			<LocationLabel />
 			<TrainFormationImage />
 			<ConductorStateGrid rowDefinitionList={GRID_DEFINITION} />
@@ -78,7 +79,8 @@ export default memo(function DriverLocationCorrection() {
 				width={CONFIRM_RECT_WIDTH}
 				height={CONFIRM_RECT_HEIGHT}
 				strokeColor={COLORS.WHITE}
-				strokeWidth={1}>
+				strokeWidth={1}
+			>
 				<CanvasText
 					text={
 						"駅名にタッチして下さい。\nよろしければ「確認」を押して下さい。"

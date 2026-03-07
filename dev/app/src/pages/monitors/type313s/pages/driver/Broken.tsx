@@ -13,7 +13,8 @@ export default memo(function Broken() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU_WHEN_BROKEN}>
+			footerItems={FOOTER_MENU_WHEN_BROKEN}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

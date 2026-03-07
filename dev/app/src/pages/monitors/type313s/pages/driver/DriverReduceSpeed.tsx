@@ -45,14 +45,16 @@ export default memo(function DriverReduceSpeed() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={REDUCE_SPEED_FOOTER_MENU}>
+			footerItems={REDUCE_SPEED_FOOTER_MENU}
+		>
 			<CanvasRoundedRect
 				relX={TABLE_LEFT}
 				relY={TABLE_TOP}
 				width={TABLE_WIDTH}
 				height={TABLE_HEIGHT}
 				radius={TABLE_RADIUS}
-				fillColor={TABLE_BG_COLOR}>
+				fillColor={TABLE_BG_COLOR}
+			>
 				<CanvasText
 					key="header-sta"
 					relX={STA_NAME_COL_X}

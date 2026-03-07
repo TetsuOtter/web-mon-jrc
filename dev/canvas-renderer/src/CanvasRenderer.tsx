@@ -54,7 +54,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 				height,
 				isFilled: true,
 			}),
-			[width, height]
+			[width, height],
 		);
 
 		const requestRender: RenderRequestContextType = useCallback((area) => {
@@ -147,7 +147,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 					setCtx(null);
 				}
 			},
-			[]
+			[],
 		);
 
 		const handleCanvasClick = useCallback(
@@ -218,7 +218,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 					}
 				}
 			},
-			[height, width]
+			[height, width],
 		);
 
 		const style = useMemo(
@@ -227,7 +227,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 				height: `${height * scale}px`,
 				...styleProps,
 			}),
-			[styleProps, width, height, scale]
+			[styleProps, width, height, scale],
 		);
 
 		return (
@@ -241,10 +241,11 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 				/>
 				<CanvasObjectContext
 					registeredObjectListRef={registeredObjectListRef}
-					metadata={canvasMetadata}>
+					metadata={canvasMetadata}
+				>
 					{children}
 				</CanvasObjectContext>
 			</RenderRequesterContext.Provider>
 		);
-	}
+	},
 );

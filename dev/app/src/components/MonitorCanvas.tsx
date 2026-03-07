@@ -62,12 +62,13 @@ export default memo<PropsWithChildren<MonitorCanvasProps>>(
 					width={width}
 					height={height}
 					style={canvasStyle}
-					fill="black">
+					fill="black"
+				>
 					{children}
 				</CanvasRenderer>
 			</div>
 		);
-	}
+	},
 );
 
 const CONTAINER_STYLE = {

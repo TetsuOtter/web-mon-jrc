@@ -52,7 +52,7 @@ function getTofuLine(
 	row: number,
 	col: number,
 	height: number,
-	width: number
+	width: number,
 ): "1" | "0" {
 	const isFirstOrLastRow = row === 0 || row === height - 1;
 	const isFirstOrLastCol = col === 0 || col === width - 1;

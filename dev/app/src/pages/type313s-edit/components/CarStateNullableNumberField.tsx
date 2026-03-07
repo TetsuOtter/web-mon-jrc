@@ -12,7 +12,7 @@ type CarStateNullableNumberFieldProps = {
 	readonly getValue: (carState: Type313sCarState) => number | null;
 	readonly setValue: (
 		carState: Type313sCarState,
-		nextValue: number | null
+		nextValue: number | null,
 	) => Type313sCarState;
 	readonly step?: string;
 	readonly className?: string;
@@ -39,7 +39,7 @@ export default memo<CarStateNullableNumberFieldProps>(
 	}) {
 		const dispatch = useAppDispatch();
 		const carStateList = useAppSelector(
-			(state) => state.monitors.type313s.carStateList
+			(state) => state.monitors.type313s.carStateList,
 		);
 		const value = useAppSelector((state) => {
 			const targetCarState = state.monitors.type313s.carStateList[carIndex];
@@ -51,9 +51,9 @@ export default memo<CarStateNullableNumberFieldProps>(
 			dispatch(
 				setCarStateList(
 					carStateList.map((carState, index) =>
-						index === carIndex ? setValue(carState, nextValue) : carState
-					)
-				)
+						index === carIndex ? setValue(carState, nextValue) : carState,
+					),
+				),
 			);
 		};
 
@@ -69,5 +69,5 @@ export default memo<CarStateNullableNumberFieldProps>(
 				/>
 			</div>
 		);
-	}
+	},
 );

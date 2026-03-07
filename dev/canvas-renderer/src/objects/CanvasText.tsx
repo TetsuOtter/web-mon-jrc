@@ -31,7 +31,7 @@ export type CanvasTextProps = {
 	readonly onClick?: ClickEventHandler;
 	readonly onLineInfoChanged?: (
 		lineCount: number,
-		visibleLineCount: number
+		visibleLineCount: number,
 	) => void;
 };
 
@@ -155,7 +155,7 @@ export default memo<CanvasTextProps>(function CanvasText({
 						metadata.absX + line.x,
 						metadata.absY + line.y,
 						line.width,
-						line.height
+						line.height,
 					);
 					ctx.restore();
 				}
@@ -163,7 +163,7 @@ export default memo<CanvasTextProps>(function CanvasText({
 				console.error("Error rendering text:", error);
 			}
 		},
-		[drawContentPromise]
+		[drawContentPromise],
 	);
 
 	return (
@@ -190,7 +190,7 @@ type UseCharBitmapsHookParams = {
  */
 async function getGlyphFromFonts(
 	char: string,
-	fontSpec: AvailableFont | readonly AvailableFont[]
+	fontSpec: AvailableFont | readonly AvailableFont[],
 ): Promise<ReturnType<Awaited<ReturnType<typeof loadFont>>["glyph"]> | null> {
 	const fonts = Array.isArray(fontSpec) ? fontSpec : [fontSpec];
 
@@ -219,7 +219,7 @@ async function getGlyphFromFonts(
  */
 function glyphToGlyphData(
 	glyph: NonNullable<ReturnType<Awaited<ReturnType<typeof loadFont>>["glyph"]>>,
-	fontSize: number
+	fontSize: number,
 ): GlyphData {
 	const bitmap = glyph.draw(1); // BBX サイズのビットマップ
 	const advanceWidth = glyph.meta.dwx0 ?? glyph.meta.bbw;
@@ -476,7 +476,7 @@ function useDrawContentPromise({
 
 function wrapLineByWidth(
 	charGlyphs: GlyphData[],
-	maxWidthPx: number
+	maxWidthPx: number,
 ): WrappedLineInfo[] {
 	const wrappedLines: WrappedLineInfo[] = [];
 	let currentGlyphs: GlyphData[] = [];
@@ -535,7 +535,7 @@ function calculateXPosition(
 	baseX: number,
 	lineWidth: number,
 	maxWidth: number,
-	align: "left" | "center" | "right"
+	align: "left" | "center" | "right",
 ): number {
 	if (maxWidth === 0) {
 		return baseX;
@@ -556,7 +556,7 @@ function calculateYPosition(
 	currentY: number,
 	totalHeight: number,
 	maxHeight: number | undefined,
-	verticalAlign: "top" | "center" | "bottom"
+	verticalAlign: "top" | "center" | "bottom",
 ): number {
 	const availableHeight = maxHeight ?? totalHeight;
 

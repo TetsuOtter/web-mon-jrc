@@ -9,7 +9,7 @@ export type RenderArea = {
 export type RenderRequestContextType = (area: RenderArea) => void;
 
 export const RenderRequesterContext = createContext<RenderRequestContextType>(
-	() => {}
+	() => {},
 );
 
 export function useRequestRenderFunction() {

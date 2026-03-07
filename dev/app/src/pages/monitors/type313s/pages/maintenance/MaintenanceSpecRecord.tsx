@@ -14,7 +14,8 @@ export default memo(function MaintenanceSpecRecord() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}
@@ -29,5 +30,5 @@ export default memo(function MaintenanceSpecRecord() {
 
 const FOOTER_MENU = getMenuListForMaintenanceMode(
 	"性能記録",
-	PAGE_TYPES.MAINTENANCE_SPEC_RECORD
+	PAGE_TYPES.MAINTENANCE_SPEC_RECORD,
 );

@@ -8,7 +8,8 @@ export default memo(function Type313vPage() {
 	return (
 		<MonitorCanvas
 			width={640}
-			height={480}>
+			height={480}
+		>
 			<CanvasText
 				relX={0}
 				relY={240 - 16}

@@ -50,7 +50,7 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 				height,
 				isFilled: false,
 			}),
-			[relX, parentAbsX, relY, parentAbsY, width, height]
+			[relX, parentAbsX, relY, parentAbsY, width, height],
 		);
 
 		const registeredObjectListRef = useRef<CanvasRenderFunctionObject[]>([]);
@@ -90,7 +90,7 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 				}
 				return isChildClicked;
 			},
-			[onClick]
+			[onClick],
 		);
 
 		const objectId = useId();
@@ -107,7 +107,7 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 				isClickDetector,
 				metadata,
 			}),
-			[objectId, onClickHandler, isClickDetector, metadata]
+			[objectId, onClickHandler, isClickDetector, metadata],
 		);
 
 		useEffect(() => {
@@ -121,9 +121,10 @@ export default memo<PropsWithChildren<CanvasObjectGroupProps>>(
 		return (
 			<CanvasObjectContext
 				registeredObjectListRef={registeredObjectListRef}
-				metadata={metadata}>
+				metadata={metadata}
+			>
 				{children}
 			</CanvasObjectContext>
 		);
-	}
+	},
 );

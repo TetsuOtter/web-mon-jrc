@@ -81,14 +81,14 @@ export default memo<TableProps>(function Table(props) {
 							absX + cellDef.x,
 							absY + rowDef.y,
 							cellDef.width,
-							rowDef.height
+							rowDef.height,
 						);
 					}
 				}
 			}
 			ctx.restore();
 		},
-		[baseImage, rowDefinitionList, rowList]
+		[baseImage, rowDefinitionList, rowList],
 	);
 
 	const cells = useMemo(
@@ -131,7 +131,7 @@ export default memo<TableProps>(function Table(props) {
 				})
 				.flat()
 				.filter((cell) => cell != null),
-		[cellPaddingXList, rowDefinitionList, rowList]
+		[cellPaddingXList, rowDefinitionList, rowList],
 	);
 
 	return (
@@ -141,7 +141,8 @@ export default memo<TableProps>(function Table(props) {
 			relY={relY}
 			width={totalWidth}
 			height={totalHeight}
-			isFilled={false}>
+			isFilled={false}
+		>
 			{cells}
 		</CanvasObjectBase>
 	);
@@ -199,7 +200,7 @@ function useTableBase(props: TableBaseProps): TableBaseReturn {
 				cellHeightList,
 				cellWidthList,
 				horizontalLineDefinitionList,
-				verticalLineDefinitionList
+				verticalLineDefinitionList,
 			),
 			baseImage: canvas,
 		};
@@ -212,7 +213,7 @@ type LineDefinition = {
 };
 function getTotalWidthAndLinesDefinition(
 	cellSizeList: number[],
-	borderThickness: number | number[]
+	borderThickness: number | number[],
 ): { totalSize: number; lineDefinitionList: LineDefinition[] } {
 	const borderThicknessList = Array.isArray(borderThickness)
 		? borderThickness
@@ -250,7 +251,7 @@ function getRowDefinitionList(
 	cellHeightList: number[],
 	cellWidthList: number[],
 	horizontalLineDefinitionList: LineDefinition[],
-	verticalLineDefinitionList: LineDefinition[]
+	verticalLineDefinitionList: LineDefinition[],
 ): RowDefinition[] {
 	const rowDefinitionList: RowDefinition[] = [];
 	let currentY = 0;

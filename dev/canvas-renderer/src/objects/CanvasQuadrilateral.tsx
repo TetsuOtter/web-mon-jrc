@@ -60,25 +60,25 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 			Math.round(xL1),
 			Math.round(xL2),
 			Math.round(xR1),
-			Math.round(xR2)
+			Math.round(xR2),
 		);
 		const maxX = Math.max(
 			Math.round(xL1),
 			Math.round(xL2),
 			Math.round(xR1),
-			Math.round(xR2)
+			Math.round(xR2),
 		);
 		const minY = Math.min(
 			Math.round(yL1),
 			Math.round(yL2),
 			Math.round(yR1),
-			Math.round(yR2)
+			Math.round(yR2),
 		);
 		const maxY = Math.max(
 			Math.round(yL1),
 			Math.round(yL2),
 			Math.round(yR1),
-			Math.round(yR2)
+			Math.round(yR2),
 		);
 		const onRender: CanvasRenderFunction = useCallback(
 			async (ctx, metadata) => {
@@ -142,7 +142,7 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 				lineWidth,
 				fillColor,
 				actualStrokeColor,
-			]
+			],
 		);
 
 		const isClickDetector: ClickDetector = useCallback(
@@ -188,7 +188,7 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 						x4,
 						y4,
 						x2,
-						y2
+						y2,
 					);
 				}
 
@@ -215,7 +215,7 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 				xR2,
 				yR2,
 				fillColor,
-			]
+			],
 		);
 
 		return (
@@ -227,11 +227,12 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 				relY={minY}
 				width={maxX - minX}
 				height={maxY - minY}
-				isFilled={false}>
+				isFilled={false}
+			>
 				{children}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );
 
 /**
@@ -244,7 +245,7 @@ function drawLine(
 	ix2: number,
 	iy2: number,
 	color: string,
-	w: number
+	w: number,
 ) {
 	ctx.fillStyle = color;
 
@@ -285,7 +286,7 @@ function isPointNearLine(
 	y1: number,
 	x2: number,
 	y2: number,
-	w: number
+	w: number,
 ): boolean {
 	const dx = x2 - x1;
 	const dy = y2 - y1;
@@ -319,7 +320,7 @@ function isPointInQuadrilateral(
 	x3: number,
 	y3: number,
 	x4: number,
-	y4: number
+	y4: number,
 ): boolean {
 	const vertices: [number, number][] = [
 		[x1, y1],

@@ -35,7 +35,7 @@ export default memo<PropsWithChildren<RoundedButtonProps>>(
 	}) {
 		const buttonImageData = useMemo(
 			() => getRoundedButtonImage(width, height, fillColor),
-			[width, height, fillColor]
+			[width, height, fillColor],
 		);
 
 		const handleClick: ClickEventHandler = useCallback(() => {
@@ -59,7 +59,7 @@ export default memo<PropsWithChildren<RoundedButtonProps>>(
 
 				ctx.restore();
 			},
-			[buttonImageData]
+			[buttonImageData],
 		);
 
 		return (
@@ -70,9 +70,10 @@ export default memo<PropsWithChildren<RoundedButtonProps>>(
 				relY={relY}
 				width={width}
 				height={height}
-				isFilled>
+				isFilled
+			>
 				{children}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );

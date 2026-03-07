@@ -111,11 +111,11 @@ export default memo(function WorkSettingTop() {
 	const navigate = usePageNavigation();
 
 	const handleTrainNumberClick = usePageNavigationTo(
-		PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER
+		PAGE_TYPES.WORK_SETTING_TRAIN_NUMBER,
 	);
 	const handleBulkTypeClick = usePageNavigationTo(PAGE_TYPES.WORK_SETTING_TYPE);
 	const handleBulkDirectionClick = usePageNavigationTo(
-		PAGE_TYPES.WORK_SETTING_DESTINATION
+		PAGE_TYPES.WORK_SETTING_DESTINATION,
 	);
 
 	const handleDirectionRowClick = useCallback(
@@ -127,7 +127,7 @@ export default memo(function WorkSettingTop() {
 				});
 			}
 		},
-		[navigate]
+		[navigate],
 	);
 
 	const handleStartupClick = useCallback(() => {
@@ -143,7 +143,8 @@ export default memo(function WorkSettingTop() {
 			mode={mode}
 			pageIcon={ICONS.WORK_SETTING_1}
 			pageName={PAGE_NAME_MAP[mode]}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<LocationLabel />
 
 			<CanvasRoundedRect
@@ -152,7 +153,8 @@ export default memo(function WorkSettingTop() {
 				width={TRAIN_NUMBER_AREA_WIDTH}
 				height={TRAIN_NUMBER_AREA_HEIGHT}
 				radius={TRAIN_NUMBER_AREA_HEIGHT / 2}
-				fillColor={COLORS.GRAY}>
+				fillColor={COLORS.GRAY}
+			>
 				<TextButton
 					text="列車番号"
 					relX={TRAIN_NUMBER_BUTTON_LEFT}
@@ -185,13 +187,15 @@ export default memo(function WorkSettingTop() {
 				width={TRAIN_TYPE_AREA_WIDTH}
 				height={TRAIN_TYPE_AREA_HEIGHT}
 				radius={TRAIN_TYPE_CORNER_RADIUS}
-				fillColor={COLORS.GRAY}>
+				fillColor={COLORS.GRAY}
+			>
 				<CanvasRect
 					relX={TRAIN_TYPE_TITLE_LEFT}
 					relY={TRAIN_TYPE_TITLE_TOP}
 					width={TITLE_WIDTH}
 					height={TITLE_HEIGHT}
-					fillColor={COLORS.BLACK}>
+					fillColor={COLORS.BLACK}
+				>
 					<CanvasText
 						relX={0}
 						relY={0}
@@ -235,13 +239,15 @@ export default memo(function WorkSettingTop() {
 				width={DIRECTION_AREA_WIDTH}
 				height={DIRECTION_AREA_HEIGHT}
 				radius={DIRECTION_CORNER_RADIUS}
-				fillColor={COLORS.GRAY}>
+				fillColor={COLORS.GRAY}
+			>
 				<CanvasRect
 					relX={DIRECTION_TITLE_LEFT}
 					relY={DIRECTION_TITLE_TOP}
 					width={TITLE_WIDTH}
 					height={TITLE_HEIGHT}
-					fillColor={COLORS.BLACK}>
+					fillColor={COLORS.BLACK}
+				>
 					<CanvasText
 						relX={0}
 						relY={0}
@@ -290,7 +296,8 @@ export default memo(function WorkSettingTop() {
 				relX={CHANGE_DIR_ANNOUNCE_ON_BUTTON_X}
 				relY={CHANGE_DIR_ANNOUNCE_BUTTON_Y}
 				width={CHANGE_DIR_ANNOUNCE_BUTTON_WIDTH}
-				fillColor={RGB_COLORS.BLACK}>
+				fillColor={RGB_COLORS.BLACK}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -304,7 +311,8 @@ export default memo(function WorkSettingTop() {
 				relX={CHANGE_DIR_ANNOUNCE_OFF_BUTTON_X}
 				relY={CHANGE_DIR_ANNOUNCE_BUTTON_Y}
 				width={CHANGE_DIR_ANNOUNCE_BUTTON_WIDTH}
-				fillColor={RGB_COLORS.YELLOW}>
+				fillColor={RGB_COLORS.YELLOW}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}

@@ -15,7 +15,8 @@ export default memo(function ConductorAirCondSub() {
 		<FooterPageFrame
 			mode={mode}
 			footerItems={FOOTER_MENU_AC_RIGHT}
-			leftFooterItems={FOOTER_MENU_AC_LEFT}>
+			leftFooterItems={FOOTER_MENU_AC_LEFT}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

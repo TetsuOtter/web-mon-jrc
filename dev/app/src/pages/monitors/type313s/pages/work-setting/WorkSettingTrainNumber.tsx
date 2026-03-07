@@ -103,19 +103,19 @@ export default memo(function WorkSettingTrainNumber() {
 	const dispatch = useAppDispatch();
 	const mode = useWorkSettingPageMode();
 	const navigateToWorkSettingTop = usePageNavigationTo(
-		PAGE_TYPES.WORK_SETTING_TOP
+		PAGE_TYPES.WORK_SETTING_TOP,
 	);
 	const backNavigate = usePageBackNavigation();
 
 	const [trainType, setTrainType] = useState("");
 	const [destination, setDestination] = useState("");
 	const [trainNumber, setTrainNumber] = useState<TrainNumberObject>(
-		TRAIN_NUMBER_OBJECT_INITIAL
+		TRAIN_NUMBER_OBJECT_INITIAL,
 	);
 	const [stopSta, setStopSta] = useState("");
 	const maxPageIndex = useMemo(
 		() => Math.ceil(stopSta.length / STOP_STA_TEXT_CHAR_PER_PAGE) - 1,
-		[stopSta.length]
+		[stopSta.length],
 	);
 	const pagerProps = useFooterAreaWithPagerProps(maxPageIndex);
 	const onClickTenKey = useCallback((type: TenKeyType) => {
@@ -147,7 +147,7 @@ export default memo(function WorkSettingTrainNumber() {
 	}, [dispatch, trainNumber]);
 	const trainNumberStr = useMemo(
 		() => getTrainNumberStr(trainNumber, true),
-		[trainNumber]
+		[trainNumber],
 	);
 
 	return (
@@ -158,7 +158,8 @@ export default memo(function WorkSettingTrainNumber() {
 			footerItems={
 				mode === PAGE_MODES.CONDUCTOR ? FOOTER_MENU_FOR_CONDUCTOR : FOOTER_MENU
 			}
-			pagerProps={pagerProps}>
+			pagerProps={pagerProps}
+		>
 			<CanvasLine
 				relX1={0}
 				relY1={TOP_AREA_HR_Y}
@@ -173,7 +174,8 @@ export default memo(function WorkSettingTrainNumber() {
 				height={DISPLAY_RECT_HEIGHT}
 				fillColor={COLORS.BLACK}
 				strokeColor={COLORS.WHITE}
-				strokeWidth={1}>
+				strokeWidth={1}
+			>
 				<CanvasText
 					relX={TYPE_DISPLAY_X}
 					relY={EACH_DISPLAY_LABEL_TOP}
@@ -238,7 +240,8 @@ export default memo(function WorkSettingTrainNumber() {
 				width={TEN_KEY_AREA_WIDTH}
 				height={TEN_KEY_AREA_HEIGHT}
 				radius={TEN_KEY_CORNER_RADIUS}
-				fillColor={COLORS.GRAY}>
+				fillColor={COLORS.GRAY}
+			>
 				{TEN_KEY_LAYOUT.map((row, rowIndex) =>
 					row.map((type, colIndex) => (
 						<TenKeyButton
@@ -249,7 +252,7 @@ export default memo(function WorkSettingTrainNumber() {
 							type={type}
 							onClick={onClickTenKey}
 						/>
-					))
+					)),
 				).flat()}
 				<TextButton
 					text="セット"
@@ -302,7 +305,7 @@ export default memo(function WorkSettingTrainNumber() {
 
 function getTrainNumberStr(
 	trainNumber: TrainNumberObject,
-	showSuffixPlaceholder: boolean
+	showSuffixPlaceholder: boolean,
 ): string {
 	const prefixStr = (() => {
 		switch (trainNumber.prefix) {

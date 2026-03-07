@@ -60,7 +60,8 @@ export default memo<TextButtonProps>(function TextButton({
 			fillColor={fillColorRgb}
 			shadowWidth={shadowWidth}
 			isShadowColored={isShadowColored}
-			onClick={onClick}>
+			onClick={onClick}
+		>
 			{text && (
 				<CanvasText
 					text={text}

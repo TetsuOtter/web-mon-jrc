@@ -14,7 +14,7 @@ export const EMPTY = getLine(
 	EMPTY_CHAR8,
 	EMPTY_CHAR8,
 	EMPTY_CHAR8,
-	EMPTY_CHAR8
+	EMPTY_CHAR8,
 );
 
 export type IconLineStrictType = string & {
@@ -29,7 +29,7 @@ export function getLine(
 	c2: Bit8,
 	c3: Bit8,
 	c4: Bit8,
-	c5: Bit8
+	c5: Bit8,
 ): IconLineStrictType {
 	return `${c1 as string}${c2 as string}${c3 as string}${c4 as string}${c5 as string}` as IconLineStrictType;
 }

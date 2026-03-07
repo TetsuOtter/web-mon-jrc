@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import type { FooterAreaWithPagerProps } from "./FooterAreaWithPager";
 
 export function useFooterAreaWithPagerProps(
-	maxPageIndex: number
+	maxPageIndex: number,
 ): FooterAreaWithPagerProps {
 	const [pageIndex, setPageIndex] = useState(0);
 	return useMemo(
@@ -12,6 +12,6 @@ export function useFooterAreaWithPagerProps(
 			maxPageIndex,
 			setPageIndex,
 		}),
-		[pageIndex, maxPageIndex]
+		[pageIndex, maxPageIndex],
 	);
 }

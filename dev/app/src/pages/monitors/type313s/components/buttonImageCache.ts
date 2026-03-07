@@ -9,7 +9,7 @@ function colorToKey(
 	height: number,
 	shadowWidth: number,
 	fillColor: RgbColor,
-	isShadowColored: boolean
+	isShadowColored: boolean,
 ): string {
 	const colorStr = `${fillColor.r},${fillColor.g},${fillColor.b}`;
 	return `${width}x${height}x${shadowWidth}x${colorStr}x${isShadowColored}`;
@@ -23,14 +23,14 @@ export function getButtonImage(
 	height: number,
 	shadowWidth: number,
 	fillColor: RgbColor,
-	isShadowColored: boolean = false
+	isShadowColored: boolean = false,
 ): OffscreenCanvas {
 	const key = colorToKey(
 		width,
 		height,
 		shadowWidth,
 		fillColor,
-		isShadowColored
+		isShadowColored,
 	);
 
 	const cachedImage = buttonImageCache.get(key);
@@ -56,7 +56,7 @@ export function getButtonImage(
 		row: number,
 		startCol: number,
 		endCol: number,
-		rgbColor: RgbColor
+		rgbColor: RgbColor,
 	) {
 		for (let col = startCol; col < endCol; col++) {
 			setPixel(col, row, rgbColor);

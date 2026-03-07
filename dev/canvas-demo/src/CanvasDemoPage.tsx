@@ -39,7 +39,8 @@ export default memo(function CanvasDemo() {
 							display: "flex",
 							justifyContent: "space-between",
 							alignItems: "center",
-						}}>
+						}}
+					>
 						<div>
 							<p>
 								クリック対象: <strong>{clickedObject}</strong>
@@ -63,14 +64,16 @@ export default memo(function CanvasDemo() {
 								color: "#fff",
 								border: "none",
 								borderRadius: "4px",
-							}}>
+							}}
+						>
 							閉じる
 						</button>
 					</div>
 				)}
 				<CanvasRenderer
 					width={600}
-					height={300}>
+					height={300}
+				>
 					{/* 背景（クリック判定：空白の領域をクリック時にリセット） */}
 					<CanvasRect
 						relX={0}
@@ -97,7 +100,8 @@ export default memo(function CanvasDemo() {
 							setClickedPoint({ x, y });
 							setClickedObject("赤い四角形");
 							return true;
-						}}>
+						}}
+					>
 						{/* クリック可能なテキスト */}
 						<CanvasText
 							relX={30}
@@ -193,7 +197,8 @@ export default memo(function CanvasDemo() {
 			<div style={{ marginBottom: "30px" }}>
 				<CanvasRenderer
 					width={800}
-					height={400}>
+					height={400}
+				>
 					{/* 背景グリッド */}
 					{/* eslint-disable react/no-array-index-key */}
 					{Array.from({ length: 41 }).map((_, i) => (
@@ -337,7 +342,8 @@ export default memo(function CanvasDemo() {
 				</p>
 				<CanvasRenderer
 					width={400}
-					height={300}>
+					height={300}
+				>
 					{/* 細い直線（1px） */}
 					<CanvasLine
 						relX1={10}
@@ -414,7 +420,8 @@ export default memo(function CanvasDemo() {
 							color: "#fff",
 							border: "none",
 							borderRadius: "4px",
-						}}>
+						}}
+					>
 						順序を入れ替える (0 ↔ 1)
 					</button>
 					<button
@@ -432,7 +439,8 @@ export default memo(function CanvasDemo() {
 							color: "#fff",
 							border: "none",
 							borderRadius: "4px",
-						}}>
+						}}
+					>
 						順序を入れ替える (1 ↔ 2)
 					</button>
 					<button
@@ -445,7 +453,8 @@ export default memo(function CanvasDemo() {
 							color: "#fff",
 							border: "none",
 							borderRadius: "4px",
-						}}>
+						}}
+					>
 						リセット
 					</button>
 				</div>
@@ -455,7 +464,8 @@ export default memo(function CanvasDemo() {
 						padding: "10px",
 						backgroundColor: "#f0f0f0",
 						borderRadius: "4px",
-					}}>
+					}}
+				>
 					<p>
 						<strong>現在の描画順序:</strong> {orderDemoOrder.join(" → ")}
 					</p>
@@ -467,7 +477,8 @@ export default memo(function CanvasDemo() {
 				</div>
 				<CanvasRenderer
 					width={600}
-					height={300}>
+					height={300}
+				>
 					{/* 背景 */}
 					<CanvasRect
 						relX={0}
@@ -547,7 +558,8 @@ export default memo(function CanvasDemo() {
 							padding: "10px",
 							backgroundColor: "#e8f5e9",
 							borderRadius: "4px",
-						}}>
+						}}
+					>
 						<p>
 							クリック対象: <strong>{orderDemoClickedObject}</strong>
 						</p>
@@ -561,7 +573,8 @@ export default memo(function CanvasDemo() {
 								color: "#fff",
 								border: "none",
 								borderRadius: "4px",
-							}}>
+							}}
+						>
 							閉じる
 						</button>
 					</div>
@@ -578,7 +591,8 @@ export default memo(function CanvasDemo() {
 				<CanvasRenderer
 					width={600}
 					height={220}
-					fill="#f8f9fa">
+					fill="#f8f9fa"
+				>
 					{/* 静的オブジェクト（点滅図形が再描画されても影響を受けない） */}
 					<CanvasText
 						relX={10}

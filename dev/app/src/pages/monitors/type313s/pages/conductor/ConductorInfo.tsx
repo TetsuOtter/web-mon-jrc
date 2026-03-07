@@ -68,7 +68,8 @@ export default memo(function ConductorInfo() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<LocationLabel />
 
 			<TrainFormationImage />
@@ -247,7 +248,7 @@ const announceStateSelector = createCarStateByCarIndexSelector<AnnounceState>(
 		if (carState.isAnnounceOn === true) return "ON";
 		if (carState.isAnnounceOn === false) return "OFF";
 		return "UNKNOWN";
-	}
+	},
 );
 
 const AIR_CONDITIONER_STATE_LABEL_STYLE = {
@@ -314,16 +315,16 @@ const FAN_STATE_LABEL_STYLE = {
 	},
 } as const satisfies Record<FanState | "UNKNOWN", LabelStyle>;
 const fanStateSelector = createCarStateByCarIndexSelector<FanState | "UNKNOWN">(
-	(carState) => carState.fanState ?? "UNKNOWN"
+	(carState) => carState.fanState ?? "UNKNOWN",
 );
 
 const roomTemperatureTextSelector = createCarStateByCarIndexSelector<
 	string | undefined
 >((carState) =>
-	carState.temperature != null ? carState.temperature.toFixed(1) : undefined
+	carState.temperature != null ? carState.temperature.toFixed(1) : undefined,
 );
 const roomHumidityTextSelector = createCarStateByCarIndexSelector<
 	string | undefined
 >((carState) =>
-	carState.humidity != null ? carState.humidity.toFixed(0) : undefined
+	carState.humidity != null ? carState.humidity.toFixed(0) : undefined,
 );

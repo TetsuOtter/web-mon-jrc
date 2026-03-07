@@ -12,7 +12,7 @@ type CarStateNullableStringFieldProps = {
 	readonly getValue: (carState: Type313sCarState) => string | null;
 	readonly setValue: (
 		carState: Type313sCarState,
-		nextValue: string | null
+		nextValue: string | null,
 	) => Type313sCarState;
 	readonly placeholder?: string;
 	readonly className?: string;
@@ -30,7 +30,7 @@ export default memo<CarStateNullableStringFieldProps>(
 	}) {
 		const dispatch = useAppDispatch();
 		const carStateList = useAppSelector(
-			(state) => state.monitors.type313s.carStateList
+			(state) => state.monitors.type313s.carStateList,
 		);
 		const value = useAppSelector((state) => {
 			const targetCarState = state.monitors.type313s.carStateList[carIndex];
@@ -42,9 +42,9 @@ export default memo<CarStateNullableStringFieldProps>(
 			dispatch(
 				setCarStateList(
 					carStateList.map((carState, index) =>
-						index === carIndex ? setValue(carState, nextValue) : carState
-					)
-				)
+						index === carIndex ? setValue(carState, nextValue) : carState,
+					),
+				),
 			);
 		};
 
@@ -60,5 +60,5 @@ export default memo<CarStateNullableStringFieldProps>(
 				/>
 			</div>
 		);
-	}
+	},
 );

@@ -28,7 +28,8 @@ export default memo(function DriverInfo() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<LocationLabel />
 
 			<TrainFormationImage />
@@ -44,7 +45,8 @@ export default memo(function DriverInfo() {
 				relX={0}
 				relY={LOWER_BOX_Y}
 				width={DISPLAY_WIDTH}
-				height={LOWER_BOX_HEIGHT}>
+				height={LOWER_BOX_HEIGHT}
+			>
 				<CanvasLine
 					relX1={0}
 					relY1={0}

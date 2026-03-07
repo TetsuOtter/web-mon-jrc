@@ -6,13 +6,13 @@ import type { AppSelector } from "../../types";
 export type CarStateByCarIndexSelector<T> = AppSelector<T, [carIndex: number]>;
 
 export const trainNumberSelector: AppSelector<Type313sState["trainNumber"]> = (
-	state
+	state,
 ) => type313sSelector(state).trainNumber;
 export const trainTypeSelector: AppSelector<Type313sState["trainType"]> = (
-	state
+	state,
 ) => type313sSelector(state).trainType;
 export const destinationSelector: AppSelector<Type313sState["destination"]> = (
-	state
+	state,
 ) => type313sSelector(state).destination;
 export const currentLocationSelector: AppSelector<
 	Type313sState["currentLocation"]
@@ -28,7 +28,7 @@ export const carCountSelector: AppSelector<number> = (state) =>
 	type313sSelector(state).carStateList.length;
 
 export function createCarStateByCarIndexSelector<T>(
-	sel: (carState: Type313sCarState) => T
+	sel: (carState: Type313sCarState) => T,
 ): CarStateByCarIndexSelector<T> {
 	return (state, carIndex) =>
 		sel(type313sSelector(state).carStateList[carIndex]);
@@ -36,9 +36,9 @@ export function createCarStateByCarIndexSelector<T>(
 
 // 車掌状態（編成全体）
 export const conductorIsRoomLightOnSelector: AppSelector<boolean | null> = (
-	state
+	state,
 ) => type313sSelector(state).conductorState.isRoomLightOn;
 
 export const conductorIsGuidanceOnSelector: AppSelector<boolean | null> = (
-	state
+	state,
 ) => type313sSelector(state).conductorState.isGuidanceOn;

@@ -88,7 +88,7 @@ export default memo<PropsWithChildren<CanvasImageProps>>(function CanvasImage({
 
 			ctx.restore();
 		},
-		[imageData]
+		[imageData],
 	);
 
 	return (
@@ -99,7 +99,8 @@ export default memo<PropsWithChildren<CanvasImageProps>>(function CanvasImage({
 			relY={relY}
 			width={imageWidth}
 			height={imageHeight}
-			isFilled>
+			isFilled
+		>
 			{children}
 		</CanvasObjectBase>
 	);

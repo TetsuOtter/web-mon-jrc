@@ -14,7 +14,8 @@ export default memo(function MaintenanceAirCondState() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU_AIR_COND}>
+			footerItems={FOOTER_MENU_AIR_COND}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

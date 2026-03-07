@@ -27,7 +27,7 @@ import type {
 
 // Utility functions
 export function nullableBooleanToSelectValue(
-	value: boolean | null
+	value: boolean | null,
 ): "true" | "false" | "null" {
 	if (value === null) {
 		return "null";
@@ -47,7 +47,7 @@ export function booleanToSelectValue(value: boolean): "true" | "false" {
 }
 
 export function nullableBooleanOrUndefinedToSelectValue(
-	value: boolean | null | undefined
+	value: boolean | null | undefined,
 ): "undefined" | "true" | "false" | "null" {
 	if (value === undefined) {
 		return "undefined";
@@ -59,7 +59,7 @@ export function nullableBooleanOrUndefinedToSelectValue(
 }
 
 export function selectValueToNullableBooleanOrUndefined(
-	value: string
+	value: string,
 ): boolean | null | undefined {
 	if (value === "undefined") {
 		return undefined;
@@ -72,11 +72,11 @@ export function selectValueToNullableBooleanOrUndefined(
 
 // Options constants
 export const AIR_CONDITIONER_STATE_OPTIONS = Object.values(
-	AIR_CONDITIONER_STATE
+	AIR_CONDITIONER_STATE,
 );
 export const FAN_STATE_OPTIONS = Object.values(FAN_STATE);
 export const AIR_CONDITIONER_ADJUSTMENT_MODE_OPTIONS = Object.values(
-	AIR_CONDITIONER_ADJUSTMENT_MODE
+	AIR_CONDITIONER_ADJUSTMENT_MODE,
 );
 export const CAB_SES_STATE_OPTIONS = Object.values(CAB_SES_STATE);
 export const VVVF2_STATE_OPTIONS = Object.values(VVVF2_STATE);
@@ -1082,7 +1082,7 @@ export const BOGIE_COMMON_FIELDS: readonly BogieCommonField[] = [
 ] as const;
 
 export const createBogieSideFields = (
-	side: "left" | "right"
+	side: "left" | "right",
 ): readonly BogieSideField[] => {
 	const prefix = side === "left" ? "left" : "right";
 	const sideKey = side;

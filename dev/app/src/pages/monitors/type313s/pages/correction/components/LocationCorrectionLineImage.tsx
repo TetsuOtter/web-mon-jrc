@@ -64,14 +64,14 @@ export default memo<LocationCorrectionLineImageProps>(
 					ix,
 					lineAbsY + LINE_HEIGHT - STROKE_THICKNESS,
 					iw,
-					STROKE_THICKNESS
+					STROKE_THICKNESS,
 				);
 				ctx.fillRect(ix, lineAbsY, STROKE_THICKNESS, LINE_HEIGHT);
 				ctx.fillRect(
 					ix + iw - STROKE_THICKNESS,
 					lineAbsY,
 					STROKE_THICKNESS,
-					LINE_HEIGHT
+					LINE_HEIGHT,
 				);
 
 				Array.from({ length: CELL_COUNT }).forEach((_, i) => {
@@ -87,7 +87,7 @@ export default memo<LocationCorrectionLineImageProps>(
 						absX + CELL_WIDTH - STROKE_THICKNESS,
 						absY,
 						STROKE_THICKNESS,
-						CELL_HEIGHT + STROKE_THICKNESS
+						CELL_HEIGHT + STROKE_THICKNESS,
 					);
 				});
 
@@ -126,18 +126,18 @@ export default memo<LocationCorrectionLineImageProps>(
 						ix + sx,
 						lineAbsY + 1,
 						LINE_STRIPE_WIDTH,
-						LINE_STRIPE_HEIGHT
-					)
+						LINE_STRIPE_HEIGHT,
+					),
 				);
 
 				ctx.restore();
 			},
-			[row]
+			[row],
 		);
 
 		const colCount = Math.min(
 			CELL_COUNT,
-			stationNameList.length - stationNameStartIndex
+			stationNameList.length - stationNameStartIndex,
 		);
 		const handleClick: ClickEventHandler = useCallback(
 			(relX, relY) => {
@@ -154,7 +154,7 @@ export default memo<LocationCorrectionLineImageProps>(
 				}
 				return false;
 			},
-			[colCount, onClick, stationNameStartIndex]
+			[colCount, onClick, stationNameStartIndex],
 		);
 
 		const carImageCol = carImageStationIndex - stationNameStartIndex;
@@ -168,7 +168,8 @@ export default memo<LocationCorrectionLineImageProps>(
 				width={WIDTH}
 				height={HEIGHT}
 				onClick={handleClick}
-				isFilled>
+				isFilled
+			>
 				{isCarImageVisible && (
 					<CanvasImage
 						imagePath={`${import.meta.env.BASE_URL}type313s/location_correction_car.png`}
@@ -194,5 +195,5 @@ export default memo<LocationCorrectionLineImageProps>(
 				))}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );

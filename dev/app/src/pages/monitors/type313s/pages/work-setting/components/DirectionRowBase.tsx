@@ -34,7 +34,8 @@ export default memo<DirectionRowProps>(function DirectionRowBase({
 			width={
 				BUTTON_WIDTH + BUTTON_DISPLAY_PADDING + TYPE_DIRECTION_DISPLAY_WIDTH
 			}
-			height={BUTTON_HEIGHT}>
+			height={BUTTON_HEIGHT}
+		>
 			{/* Direction Button */}
 			<TextButton
 				text={buttonText}

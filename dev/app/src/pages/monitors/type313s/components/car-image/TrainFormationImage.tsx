@@ -39,7 +39,8 @@ export default memo(function TrainFormationImage() {
 			relX={LEFT}
 			relY={TOP}
 			width={CAR_IMAGE_WIDTH * carCount}
-			height={CAR_IMAGE_HEIGHT}>
+			height={CAR_IMAGE_HEIGHT}
+		>
 			{Array.from({ length: carCount }, (_, index) => (
 				<CarImageByCarIndex
 					key={index}
@@ -58,16 +59,16 @@ const CarImageByCarIndex: FC<CarImageByCarIndexProps> = ({ carIndex }) => {
 	const baseInfo = useAppSelectorWithParamsAndEqualityFn(
 		baseInfoSelector,
 		isBaseCarImageEqual,
-		carIndex
+		carIndex,
 	);
 	const bogieInfo = useAppSelectorWithParamsAndEqualityFn(
 		bogieInfoSelector,
 		isCarImageBogieInfoEqual,
-		carIndex
+		carIndex,
 	);
 	const roofBackgroundColor = useAppSelectorWithParams(
 		roofBackgroundColorSelector,
-		carIndex
+		carIndex,
 	);
 	const carType = useAppSelectorWithParams(carTypeSelector, carIndex);
 	const carNumber = useAppSelectorWithParams(carNumberSelector, carIndex);
@@ -90,7 +91,7 @@ const baseInfoSelector = createCarStateByCarIndexSelector<BaseCarImageInfo>(
 		isRightCab: carState.cabState?.side === "right",
 		hasLeftPantograph: carState.hasLeftPantograph ?? false,
 		hasRightPantograph: carState.hasRightPantograph ?? false,
-	})
+	}),
 );
 const bogieInfoSelector = createCarStateByCarIndexSelector<CarImageBogieInfo>(
 	(carState) => ({
@@ -102,7 +103,7 @@ const bogieInfoSelector = createCarStateByCarIndexSelector<CarImageBogieInfo>(
 			carState.bogieState?.right != null
 				? BOGIE_STATE.MOTORED
 				: BOGIE_STATE.NONE,
-	})
+	}),
 );
 const roofBackgroundColorSelector = createCarStateByCarIndexSelector<
 	ColorValue | undefined
@@ -113,8 +114,8 @@ const roofBackgroundColorSelector = createCarStateByCarIndexSelector<
 	return undefined;
 });
 const carTypeSelector = createCarStateByCarIndexSelector(
-	(carState) => carState.carType
+	(carState) => carState.carType,
 );
 const carNumberSelector = createCarStateByCarIndexSelector(
-	(carState) => carState.carNumber
+	(carState) => carState.carNumber,
 );

@@ -46,7 +46,8 @@ const CarStateLabel = <T extends string | number | symbol>({
 			height={RECT_HEIGHT}
 			strokeColor={COLORS.WHITE}
 			strokeWidth={1}
-			fillColor={labelStyle.fillColor}>
+			fillColor={labelStyle.fillColor}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

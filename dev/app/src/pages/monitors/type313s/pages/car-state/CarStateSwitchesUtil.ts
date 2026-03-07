@@ -17,15 +17,15 @@ import type { ColorValue } from "../../constants";
 const TABLE_ROW_COUNT = 18;
 
 type ValueFromStateSelector<T> = (
-	carState: Type313sCarState
+	carState: Type313sCarState,
 ) => T | null | undefined;
 type ToCellListForRowSelector = (
-	carStateList: Type313sCarState[]
+	carStateList: Type313sCarState[],
 ) => CellListForRow;
 
 type CellCreator<T> = (value: T | null | undefined) => CellInfo;
 function createCellInfoCreator<T>(
-	cellInfoCreator: (value: T) => CellInfo
+	cellInfoCreator: (value: T) => CellInfo,
 ): CellCreator<T> {
 	return (value) => {
 		if (value === null) {
@@ -67,7 +67,7 @@ function createYWCellCreator(trueLabel: string, falseLabel: string) {
 function createNormalOrNotCellCreator(
 	normalLabel: string,
 	normalTextColor: ColorValue,
-	normalBackgroundColor: ColorValue
+	normalBackgroundColor: ColorValue,
 ) {
 	return createCellInfoCreator<boolean>((v) => {
 		if (v) {
@@ -145,7 +145,7 @@ const createIsTestSWOnCell = createCellInfoCreator<boolean>((v) => {
 function createSelectorWithLabel<T>(
 	label: string,
 	sel: ValueFromStateSelector<T>,
-	cellCreator: CellCreator<T>
+	cellCreator: CellCreator<T>,
 ): ToCellListForRowSelector {
 	return (carStateList) => [
 		{
@@ -157,67 +157,67 @@ function createSelectorWithLabel<T>(
 }
 export function createOnOffCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<boolean>
+	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(label, sel, createYWCellCreator("入", "切"));
 }
 export function createWorkingOrNotCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<boolean>
+	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(
 		label,
 		sel,
-		createYWCellCreator("動作", "停止")
+		createYWCellCreator("動作", "停止"),
 	);
 }
 export function createNormalOrNotYRCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<boolean>
+	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(
 		label,
 		sel,
-		createYWCellCreator("正常", "異常")
+		createYWCellCreator("正常", "異常"),
 	);
 }
 
 export function createNormalOrNotWhiteCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<boolean>
+	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(
 		label,
 		sel,
-		createNormalOrNotCellCreator("平常", COLORS.BLACK, COLORS.BLACK)
+		createNormalOrNotCellCreator("平常", COLORS.BLACK, COLORS.BLACK),
 	);
 }
 export function createNormalOrNotYellowCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<boolean>
+	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(
 		label,
 		sel,
-		createNormalOrNotCellCreator("正常", COLORS.BLACK, COLORS.YELLOW)
+		createNormalOrNotCellCreator("正常", COLORS.BLACK, COLORS.YELLOW),
 	);
 }
 
 export function createCabSesCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<CabSesState>
+	sel: ValueFromStateSelector<CabSesState>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(label, sel, createCabSesCell);
 }
 export function createVVVF2CellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<VVVF2State>
+	sel: ValueFromStateSelector<VVVF2State>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(label, sel, createVVVF2Cell);
 }
 export function createIsTestSWOnCellListSelector(
 	label: string,
-	sel: ValueFromStateSelector<boolean>
+	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(label, sel, createIsTestSWOnCell);
 }
@@ -229,7 +229,7 @@ export function createSwitchesRowListSelector(
 		const carStateList = carStateListSelector(state);
 		return Array.from(
 			{ length: TABLE_ROW_COUNT },
-			(_, rowIndex) => selectorList[rowIndex]?.(carStateList) ?? []
+			(_, rowIndex) => selectorList[rowIndex]?.(carStateList) ?? [],
 		);
 	};
 }

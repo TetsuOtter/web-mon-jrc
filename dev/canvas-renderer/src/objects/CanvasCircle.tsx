@@ -83,7 +83,7 @@ export default memo<PropsWithChildren<CanvasCircleProps>>(
 
 				ctx.restore();
 			},
-			[fillColor, strokeColor, strokeWidth, radius]
+			[fillColor, strokeColor, strokeWidth, radius],
 		);
 
 		const isClickDetector: ClickDetector = useCallback(
@@ -94,7 +94,7 @@ export default memo<PropsWithChildren<CanvasCircleProps>>(
 				const dy = clickY - ir;
 				return dx * dx + dy * dy <= ir * ir;
 			},
-			[radius]
+			[radius],
 		);
 
 		const ir = Math.max(0, radius);
@@ -108,9 +108,10 @@ export default memo<PropsWithChildren<CanvasCircleProps>>(
 				relY={relY - ir}
 				width={ir * 2}
 				height={ir * 2}
-				isFilled={!!fillColor}>
+				isFilled={!!fillColor}
+			>
 				{children}
 			</CanvasObjectBase>
 		);
-	}
+	},
 );

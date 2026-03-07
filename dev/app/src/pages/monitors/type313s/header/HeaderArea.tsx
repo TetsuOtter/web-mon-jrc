@@ -68,7 +68,7 @@ const LINE_WIDTH = 1;
 export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
 	const timeMinutes = useSyncExternalStore(
 		subscribeRealMinutes,
-		getRealMinutes
+		getRealMinutes,
 	);
 	const bidsTimeMs = useAppSelector(timeMsSelector);
 	const timeLabel = useMemo(() => {
@@ -91,7 +91,8 @@ export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
 			height={HEADER_HEIGHT}
 			strokeColor="white"
 			strokeWidth={1}
-			fillColor={COLORS.BLUE}>
+			fillColor={COLORS.BLUE}
+		>
 			<CanvasDotPattern
 				image={icon}
 				x={PAGE_ICON_LEFT}

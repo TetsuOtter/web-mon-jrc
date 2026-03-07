@@ -59,5 +59,5 @@ const doorStateSelector = createCarStateByCarIndexSelector<DoorState>(
 		if (carState.isDoorClosed === true) return "CLOSED";
 		if (carState.isDoorClosed === false) return "OPEN";
 		return "UNKNOWN";
-	}
+	},
 );

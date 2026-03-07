@@ -50,7 +50,7 @@ export default memo(function WorkSettingType() {
 	const dispatch = useAppDispatch();
 	const mode = useWorkSettingPageMode();
 	const pagerProps = useFooterAreaWithPagerProps(
-		Math.ceil(TYPE_ELEM_LIST.length / GRID_CELL_COUNT) - 1
+		Math.ceil(TYPE_ELEM_LIST.length / GRID_CELL_COUNT) - 1,
 	);
 	const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>();
 	const selectedTypeDisplayText = useMemo(() => {
@@ -76,19 +76,22 @@ export default memo(function WorkSettingType() {
 			pageIcon={ICONS.WORK_SETTING_1}
 			pageName={PAGE_NAME_MAP[mode]}
 			footerItems={FOOTER_MENU}
-			pagerProps={pagerProps}>
+			pagerProps={pagerProps}
+		>
 			<CanvasRect
 				relX={0}
 				relY={0}
 				width={DISPLAY_WIDTH}
 				height={TOP_BG_HEIGHT}
-				fillColor={COLORS.GRAY}>
+				fillColor={COLORS.GRAY}
+			>
 				<CanvasRect
 					relX={CURRENT_TYPE_AREA_BG_X}
 					relY={CURRENT_TYPE_AREA_BG_Y}
 					width={CURRENT_TYPE_AREA_BG_WIDTH}
 					height={CURRENT_TYPE_AREA_BG_HEIGHT}
-					fillColor={COLORS.CYAN}>
+					fillColor={COLORS.CYAN}
+				>
 					<CanvasText
 						relX={CURRENT_TYPE_LABEL_X}
 						relY={CURRENT_TYPE_LABEL_Y}

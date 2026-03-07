@@ -13,7 +13,8 @@ export default memo(function MaintenanceDiDo() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU_DIDO}>
+			footerItems={FOOTER_MENU_DIDO}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

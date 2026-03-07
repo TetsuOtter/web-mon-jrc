@@ -88,7 +88,8 @@ export default memo<FooterSWProps>(function FooterSW({
 			lineWidth={1}
 			onClick={
 				onClick || navigateTo || useBackNavigation ? handleClick : undefined
-			}>
+			}
+		>
 			<CanvasText
 				relX={0}
 				relY={TEXT_TOP}

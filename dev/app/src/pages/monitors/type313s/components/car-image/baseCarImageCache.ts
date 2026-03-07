@@ -51,7 +51,7 @@ export function getBaseCarImage(info: BaseCarImageInfo): OffscreenCanvas {
 		drawCabBorder(
 			data,
 			info.isLeftCab ? LEFT_CAB_PATTERN : RIGHT_CAB_PATTERN,
-			info.isLeftCab ? 0 : RIGHT_CAB_CLIFF_COL
+			info.isLeftCab ? 0 : RIGHT_CAB_CLIFF_COL,
 		);
 	}
 
@@ -86,7 +86,7 @@ export function getBaseCarImage(info: BaseCarImageInfo): OffscreenCanvas {
 function drawCabBorder(
 	data: Uint8ClampedArray,
 	cabPattern: number[][],
-	startCol: number
+	startCol: number,
 ) {
 	for (let cabRow = 0; cabRow < cabPattern.length; cabRow++) {
 		const imgRow = CAB_Y + cabRow;

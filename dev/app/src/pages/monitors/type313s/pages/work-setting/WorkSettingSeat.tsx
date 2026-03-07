@@ -13,7 +13,8 @@ export default memo(function WorkSettingSeat() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU_FOR_CONDUCTOR}>
+			footerItems={FOOTER_MENU_FOR_CONDUCTOR}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

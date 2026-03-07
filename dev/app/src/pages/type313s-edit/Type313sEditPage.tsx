@@ -82,27 +82,27 @@ export default memo(function Type313sEditPage() {
 	const dispatch = useAppDispatch();
 	const carDetailsRefs = useRef<(HTMLDetailsElement | null)[]>([]);
 	const conductorState = useAppSelector(
-		(state) => state.monitors.type313s.conductorState
+		(state) => state.monitors.type313s.conductorState,
 	);
 	const carStateList = useAppSelector(
-		(state) => state.monitors.type313s.carStateList
+		(state) => state.monitors.type313s.carStateList,
 	);
 
 	const updateConductorState = useCallback(
 		(key: keyof Type313sConductorState, value: boolean | null) => {
 			dispatch(setConductorState({ ...conductorState, [key]: value }));
 		},
-		[conductorState, dispatch]
+		[conductorState, dispatch],
 	);
 
 	const updateCarState = useCallback(
 		(index: number, updater: (car: Type313sCarState) => Type313sCarState) => {
 			const nextCarStateList = carStateList.map((carState, carIndex) =>
-				carIndex === index ? updater(carState) : carState
+				carIndex === index ? updater(carState) : carState,
 			);
 			dispatch(setCarStateList(nextCarStateList));
 		},
-		[carStateList, dispatch]
+		[carStateList, dispatch],
 	);
 
 	const handleAddCar = useCallback(() => {
@@ -111,13 +111,13 @@ export default memo(function Type313sEditPage() {
 		}
 		const maxCarNumber = carStateList.reduce(
 			(maxValue, carState) => Math.max(maxValue, carState.carNumber),
-			0
+			0,
 		);
 		dispatch(
 			setCarStateList([
 				...carStateList,
 				createDefaultCarState(maxCarNumber + 1),
-			])
+			]),
 		);
 	}, [carStateList, dispatch]);
 
@@ -129,11 +129,11 @@ export default memo(function Type313sEditPage() {
 
 			dispatch(
 				setCarStateList(
-					carStateList.filter((_, carIndex) => carIndex !== index)
-				)
+					carStateList.filter((_, carIndex) => carIndex !== index),
+				),
 			);
 		},
-		[carStateList, dispatch]
+		[carStateList, dispatch],
 	);
 
 	const handleResetState = useCallback(() => {
@@ -172,12 +172,14 @@ export default memo(function Type313sEditPage() {
 						type="button"
 						onClick={handleResetState}
 						className={styles.deleteButton}
-						style={{ marginRight: "auto" }}>
+						style={{ marginRight: "auto" }}
+					>
 						↻ リセット
 					</button>
 					<Link
 						to="/"
-						className={styles.homeLink}>
+						className={styles.homeLink}
+					>
 						← トップへ戻る
 					</Link>
 				</div>
@@ -198,19 +200,20 @@ export default memo(function Type313sEditPage() {
 				<section className={styles.section}>
 					<details
 						open
-						className={styles.collapseSection}>
+						className={styles.collapseSection}
+					>
 						<summary className={styles.sectionSummary}>車掌状態</summary>
 						<div className={styles.fieldGrid}>
 							<SelectField
 								id="conductor-isRoomLightOn"
 								label="室内灯"
 								value={nullableBooleanToSelectValue(
-									conductorState.isRoomLightOn
+									conductorState.isRoomLightOn,
 								)}
 								onChange={(value) =>
 									updateConductorState(
 										"isRoomLightOn",
-										selectValueToNullableBoolean(value)
+										selectValueToNullableBoolean(value),
 									)
 								}
 								options={NULLABLE_BOOLEAN_OPTIONS}
@@ -221,12 +224,12 @@ export default memo(function Type313sEditPage() {
 								id="conductor-isGuidanceOn"
 								label="案内放送"
 								value={nullableBooleanToSelectValue(
-									conductorState.isGuidanceOn
+									conductorState.isGuidanceOn,
 								)}
 								onChange={(value) =>
 									updateConductorState(
 										"isGuidanceOn",
-										selectValueToNullableBoolean(value)
+										selectValueToNullableBoolean(value),
 									)
 								}
 								options={NULLABLE_BOOLEAN_OPTIONS}
@@ -239,7 +242,8 @@ export default memo(function Type313sEditPage() {
 				<section className={styles.section}>
 					<details
 						open
-						className={styles.collapseSection}>
+						className={styles.collapseSection}
+					>
 						<summary className={styles.sectionSummaryWithAction}>
 							<span>車両状態</span>
 							<button
@@ -250,7 +254,8 @@ export default memo(function Type313sEditPage() {
 									handleAddCar();
 								}}
 								disabled={carStateList.length >= 12}
-								className={styles.actionButton}>
+								className={styles.actionButton}
+							>
 								+ 車両追加
 							</button>
 						</summary>
@@ -271,7 +276,8 @@ export default memo(function Type313sEditPage() {
 												handleCompositionItemClick(index);
 											}
 										}}
-										style={{ cursor: "pointer" }}>
+										style={{ cursor: "pointer" }}
+									>
 										<CarCompositionDiagram carState={carState} />
 										<div className={styles.carInfo}>
 											<div className={styles.carId}>{carState.carNumber}</div>
@@ -291,7 +297,8 @@ export default memo(function Type313sEditPage() {
 											carDetailsRefs.current[index] = el;
 										}
 									}}
-									className={styles.subSection}>
+									className={styles.subSection}
+								>
 									<summary className={styles.subTitleRow}>
 										<span className={styles.subTitle}>
 											{carState.carNumber}号車 ({carState.carType})
@@ -304,7 +311,8 @@ export default memo(function Type313sEditPage() {
 												handleRemoveCar(index);
 											}}
 											disabled={carStateList.length <= 1}
-											className={styles.deleteButton}>
+											className={styles.deleteButton}
+										>
 											削除
 										</button>
 									</summary>

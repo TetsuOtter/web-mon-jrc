@@ -16,7 +16,7 @@ type CarStateNumberFieldProps = {
 	readonly getValue: (carState: Type313sCarState) => number;
 	readonly setValue: (
 		carState: Type313sCarState,
-		nextValue: number
+		nextValue: number,
 	) => Type313sCarState;
 	readonly step?: string;
 	readonly parser?: (value: string) => number;
@@ -34,7 +34,7 @@ export default memo<CarStateNumberFieldProps>(function CarStateNumberField({
 	className,
 }) {
 	const carStateList = useAppSelector(
-		(state) => state.monitors.type313s.carStateList
+		(state) => state.monitors.type313s.carStateList,
 	);
 
 	const config = useMemo<NumberFormFieldConfig>(
@@ -51,11 +51,11 @@ export default memo<CarStateNumberFieldProps>(function CarStateNumberField({
 			actionCreator: (nextValue: number) =>
 				setCarStateList(
 					carStateList.map((carState, index) =>
-						index === carIndex ? setValue(carState, nextValue) : carState
-					)
+						index === carIndex ? setValue(carState, nextValue) : carState,
+					),
 				) as unknown as PayloadAction<number>,
 		}),
-		[carIndex, carStateList, fieldKey, getValue, label, parser, setValue, step]
+		[carIndex, carStateList, fieldKey, getValue, label, parser, setValue, step],
 	);
 
 	return (

@@ -55,7 +55,8 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 			relY={relY}
 			width={fillWidth ?? FONT_SIZE_1X * text.length}
 			height={FONT_SIZE_1X}
-			fillColor={fillColor}>
+			fillColor={fillColor}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

@@ -10,7 +10,7 @@ const roundedButtonImageCache = new Map<string, OffscreenCanvas>();
 function colorToKey(
 	width: number,
 	height: number,
-	fillColor: RgbColor
+	fillColor: RgbColor,
 ): string {
 	const colorStr = `${fillColor.r},${fillColor.g},${fillColor.b}`;
 	return `rounded_${width}x${height}x${colorStr}`;
@@ -46,12 +46,12 @@ function getLine(
 	white1: number,
 	aqua: number,
 	white2: number,
-	fill: number
+	fill: number,
 ): string {
 	const total = transparent + white1 + aqua + white2 + fill;
 	if (total !== 14) {
 		throw new Error(
-			`getLine: The total of segments must be 14, but got ${total}`
+			`getLine: The total of segments must be 14, but got ${total}`,
 		);
 	}
 	return (
@@ -68,11 +68,11 @@ const BYTES_PER_PIXEL = 4;
 export function getRoundedButtonImage(
 	width: number,
 	height: number,
-	fillColor: RgbColor
+	fillColor: RgbColor,
 ): OffscreenCanvas {
 	if (height < QUADRANT_SIZE * 2 || width < QUADRANT_SIZE * 2) {
 		throw new Error(
-			`RoundedButton: height/width must be at least ${QUADRANT_SIZE * 2}, but got ${height}`
+			`RoundedButton: height/width must be at least ${QUADRANT_SIZE * 2}, but got ${height}`,
 		);
 	}
 
@@ -95,7 +95,7 @@ export function getRoundedButtonImage(
 	function drawQuadrant(
 		quadrant: readonly string[],
 		offsetX: number,
-		offsetY: number
+		offsetY: number,
 	) {
 		quadrant.forEach((line, rowIdx) => {
 			const finalRow = offsetY + rowIdx;

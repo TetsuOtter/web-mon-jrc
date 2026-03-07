@@ -61,7 +61,7 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 
 			ctx.restore();
 		},
-		[fillColor, strokeColor, strokeWidth]
+		[fillColor, strokeColor, strokeWidth],
 	);
 
 	return (
@@ -72,7 +72,8 @@ export default memo<PropsWithChildren<CanvasRectProps>>(function CanvasRect({
 			relY={relY}
 			width={width}
 			height={height}
-			isFilled={!!fillColor}>
+			isFilled={!!fillColor}
+		>
 			{children}
 		</CanvasObjectBase>
 	);

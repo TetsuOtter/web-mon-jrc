@@ -46,7 +46,8 @@ const Type313sPageImpl = memo<Type313sPageImplProps>(function Type313sPageImpl({
 	return (
 		<MonitorCanvas
 			width={DISPLAY_WIDTH}
-			height={DISPLAY_HEIGHT}>
+			height={DISPLAY_HEIGHT}
+		>
 			<PageComponent />
 		</MonitorCanvas>
 	);

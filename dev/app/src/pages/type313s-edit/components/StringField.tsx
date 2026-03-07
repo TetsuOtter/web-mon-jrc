@@ -20,7 +20,7 @@ export default memo<StringFormFieldProps>(function StringField({
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			dispatch(config.actionCreator(e.target.value));
 		},
-		[config, dispatch]
+		[config, dispatch],
 	);
 
 	return (

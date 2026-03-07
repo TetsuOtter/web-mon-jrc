@@ -81,7 +81,8 @@ export default memo<ReduceSpeedRowProps>(function ReduceSpeedRow({
 			relX={0}
 			relY={FIRST_ROW_Y + rowIndex * (ROW_HEIGHT + SPACING_Y)}
 			height={ROW_HEIGHT}
-			width={ROW_WIDTH}>
+			width={ROW_WIDTH}
+		>
 			<CanvasRect
 				relX={STA_NAME_COL_X}
 				relY={0}

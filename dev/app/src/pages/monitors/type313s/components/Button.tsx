@@ -45,7 +45,7 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 	const buttonImageData = useMemo(
 		() =>
 			getButtonImage(width, height, shadowWidth, fillColor, isShadowColored),
-		[width, height, shadowWidth, fillColor, isShadowColored]
+		[width, height, shadowWidth, fillColor, isShadowColored],
 	);
 
 	const handleClick: ClickEventHandler = useCallback(() => {
@@ -73,7 +73,7 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 
 			ctx.restore();
 		},
-		[buttonImageData]
+		[buttonImageData],
 	);
 
 	return (
@@ -84,7 +84,8 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 			relY={relY}
 			width={width}
 			height={height}
-			isFilled>
+			isFilled
+		>
 			{children}
 		</CanvasObjectBase>
 	);

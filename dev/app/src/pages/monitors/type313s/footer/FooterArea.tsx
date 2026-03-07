@@ -53,7 +53,8 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 			relX={0}
 			relY={parentObjectContext.metadata.height - FOOTER_HEIGHT}
 			width={parentObjectContext.metadata.width}
-			height={FOOTER_HEIGHT}>
+			height={FOOTER_HEIGHT}
+		>
 			<CanvasLine
 				relX1={0}
 				relY1={0}

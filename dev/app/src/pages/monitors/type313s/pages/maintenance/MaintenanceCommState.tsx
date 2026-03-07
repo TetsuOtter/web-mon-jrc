@@ -15,7 +15,8 @@ export default memo(function MaintenanceCommState() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}
@@ -30,5 +31,5 @@ export default memo(function MaintenanceCommState() {
 
 const FOOTER_MENU = getMenuListForMaintenanceMode(
 	"伝送状態",
-	PAGE_TYPES.MAINTENANCE_COMM_STATE
+	PAGE_TYPES.MAINTENANCE_COMM_STATE,
 );

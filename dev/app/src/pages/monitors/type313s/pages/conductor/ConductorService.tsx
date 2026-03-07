@@ -63,7 +63,8 @@ export default memo(function ConductorService() {
 	return (
 		<FooterPageFrame
 			mode={mode}
-			footerItems={FOOTER_MENU}>
+			footerItems={FOOTER_MENU}
+		>
 			<LocationLabel />
 
 			<TrainFormationImage />
@@ -77,7 +78,8 @@ export default memo(function ConductorService() {
 				relX={TRAIN_FORMATION_LEFT - 80}
 				relY={CONDUCTOR_GRID_BASE_Y + 6}
 				width={72}
-				fillColor={RGB_COLORS.AQUA}>
+				fillColor={RGB_COLORS.AQUA}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -121,7 +123,8 @@ export default memo(function ConductorService() {
 				relX={TRAIN_FORMATION_LEFT - 80}
 				relY={ROOM_LIGHT_CAR_SELECT_LABEL_Y + 2}
 				width={72}
-				fillColor={RGB_COLORS.AQUA}>
+				fillColor={RGB_COLORS.AQUA}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -144,7 +147,8 @@ export default memo(function ConductorService() {
 				relX={ROOM_LIGHT_MODE_ON_X}
 				relY={ROOM_LIGHT_MODE_SELECT_LABEL_Y + 2}
 				width={72}
-				fillColor={RGB_COLORS.YELLOW}>
+				fillColor={RGB_COLORS.YELLOW}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -158,7 +162,8 @@ export default memo(function ConductorService() {
 				relX={ROOM_LIGHT_MODE_OFF_X}
 				relY={ROOM_LIGHT_MODE_SELECT_LABEL_Y + 2}
 				width={72}
-				fillColor={RGB_COLORS.BLACK}>
+				fillColor={RGB_COLORS.BLACK}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -182,7 +187,8 @@ export default memo(function ConductorService() {
 				relX={NAVI_BUTTON_X}
 				relY={NAVI_BUTTON_Y}
 				width={72}
-				fillColor={RGB_COLORS.YELLOW}>
+				fillColor={RGB_COLORS.YELLOW}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -197,7 +203,8 @@ export default memo(function ConductorService() {
 				relX={CONFIRM_BUTTON_X}
 				relY={CONFIRM_BUTTON_Y}
 				width={104}
-				fillColor={RGB_COLORS.AQUA}>
+				fillColor={RGB_COLORS.AQUA}
+			>
 				<CanvasText
 					relX={0}
 					relY={0}
@@ -288,7 +295,7 @@ const announceStateSelector = createCarStateByCarIndexSelector<AnnounceState>(
 		if (carState.isAnnounceOn === true) return "ON";
 		if (carState.isAnnounceOn === false) return "OFF";
 		return "UNKNOWN";
-	}
+	},
 );
 type RoomLightState = "ON" | "OFF" | "UNKNOWN";
 const ROOM_LIGHT_STATE_LABEL_STYLE = {
@@ -316,5 +323,5 @@ const roomLightStateSelector = createCarStateByCarIndexSelector<RoomLightState>(
 		if (carState.isRoomLightOn === true) return "ON";
 		if (carState.isRoomLightOn === false) return "OFF";
 		return "UNKNOWN";
-	}
+	},
 );

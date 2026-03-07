@@ -8,7 +8,7 @@ export function usePageMode<
 	TAvailable extends PageMode,
 >(
 	defaultMode: TDefault,
-	availableModeList?: readonly (TDefault | TAvailable)[]
+	availableModeList?: readonly (TDefault | TAvailable)[],
 ): TDefault | TAvailable {
 	const [searchParams] = useSearchParams();
 	return useMemo(() => {

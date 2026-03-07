@@ -40,7 +40,8 @@ export default memo(function LocationLabel() {
 			relX={X}
 			relY={Y}
 			width={WIDTH}
-			height={HEIGHT}>
+			height={HEIGHT}
+		>
 			<CanvasText
 				relX={0}
 				relY={0}

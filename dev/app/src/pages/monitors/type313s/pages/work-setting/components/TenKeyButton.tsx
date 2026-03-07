@@ -32,7 +32,7 @@ export default memo<TenKeyButtonProps>(function TenKeyButton({
 	}, [onClick, type]);
 	const text = useMemo(
 		() => toWide(TYPE_LABEL[type ?? TEN_KEY_TYPE.EMPTY]),
-		[type]
+		[type],
 	);
 	if (type == null) {
 		return null;

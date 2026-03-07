@@ -48,6 +48,6 @@ if (rootElement == null) {
 					<RouterProvider router={router} />
 				</Suspense>
 			</Provider>
-		</StrictMode>
+		</StrictMode>,
 	);
 }

@@ -43,14 +43,15 @@ export default memo(function CarStateSwitches() {
 	const tableDefinition = useTableDefinition(carCount);
 	const tableRowList = useAppSelector(
 		ROWS_SELECTOR_LIST[pagerProps.currentPageIndex],
-		areRowListsEqual
+		areRowListsEqual,
 	);
 
 	return (
 		<FooterPageFrame
 			mode={mode}
 			footerItems={FOOTER_MENU}
-			pagerProps={pagerProps}>
+			pagerProps={pagerProps}
+		>
 			<LocationLabel />
 
 			<TrainFormationImage />
@@ -75,25 +76,25 @@ function useTableDefinition(carCount: number) {
 		() => ({
 			cellHeightList: Array.from({ length: TABLE_ROW_COUNT }, () => ROW_HEIGHT),
 			cellWidthList: [LABEL_COL_WIDTH].concat(
-				Array.from({ length: carCount }, () => CAR_COL_WIDTH)
+				Array.from({ length: carCount }, () => CAR_COL_WIDTH),
 			),
 		}),
-		[carCount]
+		[carCount],
 	);
 }
 
 const rowsForPage1Selector = createSwitchesRowListSelector(
 	createOnOffCellListSelector(
 		toWide("MS"),
-		(carState) => carState.carStates.isMSOn
+		(carState) => carState.carStates.isMSOn,
 	),
 	createOnOffCellListSelector(
 		toWide("HB"),
-		(carState) => carState.bogieState?.isHBOn
+		(carState) => carState.bogieState?.isHBOn,
 	),
 	createOnOffCellListSelector(
 		toWide("LB1"),
-		(carState) => carState.bogieState?.isLB1On
+		(carState) => carState.bogieState?.isLB1On,
 	),
 	createOnOffCellListSelector(toWide("LB2"), (carState) => {
 		if (carState.bogieState?.left != null) {
@@ -148,8 +149,8 @@ const rowsForPage1Selector = createSwitchesRowListSelector(
 	}),
 	createNormalOrNotWhiteCellListSelector(
 		toWide("CCOS"),
-		(carState) => carState.bogieState?.isCCOSNormal
-	)
+		(carState) => carState.bogieState?.isCCOSNormal,
+	),
 );
 
 // const SWITCH_TYPES_2 = [
@@ -170,52 +171,52 @@ const rowsForPage1Selector = createSwitchesRowListSelector(
 const rowsForPage2Selector = createSwitchesRowListSelector(
 	createOnOffCellListSelector(
 		toWide("SIV"),
-		(carState) => carState.carStates.sivLineState?.isSIVOn
+		(carState) => carState.carStates.sivLineState?.isSIVOn,
 	),
 	createWorkingOrNotCellListSelector(
 		toWide("CP"),
-		(carState) => carState.carStates.isCPOn
+		(carState) => carState.carStates.isCPOn,
 	),
 	createNormalOrNotYellowCellListSelector(
 		"元溜圧力",
-		(carState) => carState.carStates.isMRPressureNormal
+		(carState) => carState.carStates.isMRPressureNormal,
 	),
 	createCabSesCellListSelector(
 		toWide("CabSes"),
-		(carState) => carState.cabState?.cabSesState
+		(carState) => carState.cabState?.cabSesState,
 	),
 	createVVVF2CellListSelector(
 		toWide("VVVF2"),
-		(carState) => carState.bogieState?.vvvf2State
+		(carState) => carState.bogieState?.vvvf2State,
 	),
 	createOnOffCellListSelector(
 		`${toWide("CgK(")}SIV${toWide(")")}`,
-		(carState) => carState.carStates.sivLineState?.isCgKForSIVOn
+		(carState) => carState.carStates.sivLineState?.isCgKForSIVOn,
 	),
 	createOnOffCellListSelector(
 		`${toWide("CgK(")}VVVF2${toWide(")")}`,
-		(carState) => carState.bogieState?.isCgKForVVVF2On
+		(carState) => carState.bogieState?.isCgKForVVVF2On,
 	),
 	createIsTestSWOnCellListSelector(
 		toWide("車上試験SW"),
-		(carState) => carState.carStates.isTestSWOn
+		(carState) => carState.carStates.isTestSWOn,
 	),
 	createOnOffCellListSelector(
 		toWide("BH非常"),
-		(carState) => carState.cabState?.isBHEBOn
+		(carState) => carState.cabState?.isBHEBOn,
 	),
 	createOnOffCellListSelector(
 		"車掌非常",
-		(carState) => carState.cabState?.isConductorEBOn
+		(carState) => carState.cabState?.isConductorEBOn,
 	),
 	createOnOffCellListSelector(
 		toWide("耐雪B"),
-		(carState) => carState.carStates?.isSnowBrakeOn
+		(carState) => carState.carStates?.isSnowBrakeOn,
 	),
 	createOnOffCellListSelector(
 		toWide("直予備B"),
-		(carState) => carState.cabState?.isSpareStraightBrakeOn
-	)
+		(carState) => carState.cabState?.isSpareStraightBrakeOn,
+	),
 );
 
 const ROWS_SELECTOR_LIST = [rowsForPage1Selector, rowsForPage2Selector];
