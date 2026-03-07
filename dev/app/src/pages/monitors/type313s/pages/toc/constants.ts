@@ -125,12 +125,11 @@ export const CORRECTION_PAGE_GROUP: PageGroupInfo = {
 			pageType: PAGE_TYPES.CORRECTION_TIME,
 			params: CORRECTION_NAV_PARAMS,
 		},
-		// 乗車率体重はページ未実装
-		// {
-		// 	title: "乗車率体重",
-		// 	pageType: PAGE_TYPES.,
-		// 	params: CORRECTION_NAV_PARAMS,
-		// },
+		{
+			title: "乗車率体重",
+			pageType: PAGE_TYPES.CORRECTION_LOAD_WEIGHT,
+			params: CORRECTION_NAV_PARAMS,
+		},
 	],
 };
 

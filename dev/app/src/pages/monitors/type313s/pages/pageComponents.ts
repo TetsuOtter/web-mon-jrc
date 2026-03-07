@@ -12,6 +12,7 @@ import ConductorAirCondSub from "./conductor/ConductorAirCondSub";
 import ConductorAirCondVent from "./conductor/ConductorAirCondVent";
 import ConductorInfo from "./conductor/ConductorInfo";
 import ConductorService from "./conductor/ConductorService";
+import CorrectionLoadWeight from "./correction/CorrectionLoadWeight";
 import CorrectionMenu from "./correction/CorrectionMenu";
 import CorrectionTime from "./correction/CorrectionTime";
 import LocationCorrection from "./correction/LocationCorrection";
@@ -81,6 +82,7 @@ export const PAGE_COMPONENTS = {
 	// Correction pages
 	[PAGE_TYPES.CORRECTION_MENU]: CorrectionMenu,
 	[PAGE_TYPES.CORRECTION_TIME]: CorrectionTime,
+	[PAGE_TYPES.CORRECTION_LOAD_WEIGHT]: CorrectionLoadWeight,
 	[PAGE_TYPES.LOCATION_CORRECTION]: LocationCorrection,
 
 	// Car State pages

@@ -53,6 +53,7 @@ export const PAGE_NAME_MAP = {
 	// Correction pages
 	[PAGE_TYPES.CORRECTION_MENU]: "補　正",
 	[PAGE_TYPES.CORRECTION_TIME]: "時刻設定",
+	[PAGE_TYPES.CORRECTION_LOAD_WEIGHT]: "乗車率体重",
 	[PAGE_TYPES.LOCATION_CORRECTION]: "地点補正",
 	// Car State pages
 	[PAGE_TYPES.SWITCHES]: "車両状態",
