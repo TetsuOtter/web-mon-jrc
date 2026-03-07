@@ -168,10 +168,12 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				}
 				// リストを即座にソート
 				sortObjectList();
-				if (prevMetadata) {
+				if (prevMetadata && prevMetadata.width > 0 && prevMetadata.height > 0) {
 					requestRender(prevMetadata);
 				}
-				requestRender(obj.metadata);
+				if (obj.metadata.width > 0 && obj.metadata.height > 0) {
+					requestRender(obj.metadata);
+				}
 			},
 			[
 				registeredObjectListRef,

@@ -79,7 +79,11 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 
 			// ダーティ領域をマージして最小セットに
 			const mergedAreas = mergeRenderAreas(renderRequestedAreaList);
-			setRenderRequestedAreaList([]);
+			// レンダリング対象の領域をリストから除去する
+			// 子EffectがrequestRenderで追加した新しい領域を消さないよう、
+			// 直接[]にセットせず、関数型アップデートで先頭N個だけ削除する
+			const consumedCount = renderRequestedAreaList.length;
+			setRenderRequestedAreaList((prev) => prev.slice(consumedCount));
 
 			// 1. ダーティ領域のみクリア（背景色があれば塗りつぶし）
 			mergedAreas.forEach((area) => {
