@@ -10,7 +10,7 @@ import type { AppSelector } from "../../../../../../store/types";
 
 const PADDING_X = 2;
 const RECT_WIDTH = CAR_IMAGE_WIDTH - PADDING_X * 2;
-const RECT_HEIGHT = 21;
+export const RECT_HEIGHT = 21;
 
 export type LabelStyle = {
 	text: string;

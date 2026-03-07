@@ -33,3 +33,7 @@ export type ColorValue = (typeof COLORS)[ColorName];
 export const RGB_COLORS = Object.fromEntries(
 	Object.entries(COLORS).map(([name, hex]) => [name, hexToRgb(hex)]),
 ) as Record<ColorName, RgbColor>;
+
+export const COLORS_TO_RGB_MAP = Object.fromEntries(
+	Object.values(COLORS).map((hex) => [hex, hexToRgb(hex)]),
+) as Record<ColorValue, RgbColor>;

@@ -25,6 +25,8 @@ export type Type313sCarState = {
 	isDoorClosed: boolean | null;
 	isAnnounceOn: boolean | null;
 	airConditionerState: AirConditionerState | null;
+	airConditionerCtrlUnit: AirConditionerCtrlUnit | null;
+	airConditionerRunMode: AirConditionerRunMode | null;
 	fanState: FanState | null;
 	temperature: number | null;
 	humidity: number | null;
@@ -104,6 +106,17 @@ export const AIR_CONDITIONER_STATE = {
 } as const;
 export type AirConditionerState =
 	(typeof AIR_CONDITIONER_STATE)[keyof typeof AIR_CONDITIONER_STATE];
+export const AIR_CONDITIONER_CTRL_UNIT = {
+	CENTRAL: "CENTRAL",
+} as const;
+export type AirConditionerCtrlUnit =
+	(typeof AIR_CONDITIONER_CTRL_UNIT)[keyof typeof AIR_CONDITIONER_CTRL_UNIT];
+export const AIR_CONDITIONER_RUN_MODE = {
+	...AIR_CONDITIONER_STATE,
+	FULL_AUTO: "FULL_AUTO",
+} as const;
+export type AirConditionerRunMode =
+	(typeof AIR_CONDITIONER_RUN_MODE)[keyof typeof AIR_CONDITIONER_RUN_MODE];
 
 export const FAN_STATE = {
 	AUTO_HIGH: "AUTO_HIGH",

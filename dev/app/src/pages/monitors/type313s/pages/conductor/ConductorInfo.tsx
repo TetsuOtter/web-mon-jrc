@@ -20,13 +20,15 @@ import {
 import { useConductorPageMode } from "../../hooks/usePageMode";
 
 import {
+	AIR_CONDITIONER_STATE_LABEL_STYLE,
 	DOOR_STATE_GRID_ROW_DEFINITION,
 	GRID_2X_CONTENT_HEIGHT,
 	GRID_2X_CONTENT_Y,
 	GRID_LABEL_X,
+	HUMIDITY_GRID_ROW_DEFINITION,
+	TEMPERATURE_GRID_ROW_DEFINITION,
 } from "./ConductorGridRowDefinitions";
 import CarStateLabel from "./components/CarStateLabel";
-import CarStateStringLabel from "./components/CarStateStringLabel";
 import ConductorInfoOnOffState from "./components/ConductorInfoOnOffState";
 import ConductorStateGrid from "./components/ConductorStateGrid";
 import { FOOTER_MENU } from "./constants";
@@ -37,15 +39,6 @@ import type {
 	AirConditionerState,
 	FanState,
 } from "../../../../../store/monitors/type313s/type313sTypes";
-
-const ROOM_TEMP_PADDING_TOP = 2;
-const ROOM_HUMIDITY_PADDING_BOTTOM = 2;
-
-const GRID_1X_CONTENT_HEIGHT = FONT_SIZE_1X + 2;
-const GRID_1X_LABEL_Y = 2;
-const GRID_1X_CONTENT_Y = 3;
-
-const ROOM_TEMP_HUMIDITY_STATE_X = 10;
 
 const ROOM_LIGHT_LABEL_X = 4;
 const ROOM_LIGHT_LABEL_Y = 331;
@@ -180,49 +173,8 @@ const GRID_DEFINITION = [
 		),
 		rowHeight: GRID_2X_CONTENT_HEIGHT,
 	},
-	{
-		renderLabel: (relX, relY) => (
-			<CanvasText
-				relX={relX + GRID_LABEL_X}
-				relY={relY + GRID_1X_LABEL_Y}
-				text="室温(℃)"
-				fillColor={COLORS.YELLOW}
-				scaleX={2}
-			/>
-		),
-		renderCell: (relX, relY, carIndex) => (
-			<CarStateStringLabel
-				relX={relX + ROOM_TEMP_HUMIDITY_STATE_X}
-				relY={relY + GRID_1X_CONTENT_Y}
-				carIndex={carIndex}
-				textColor={COLORS.YELLOW}
-				textSelector={roomTemperatureTextSelector}
-			/>
-		),
-		rowHeight: GRID_1X_CONTENT_HEIGHT + ROOM_TEMP_PADDING_TOP,
-		marginTop: ROOM_TEMP_PADDING_TOP,
-	},
-	{
-		renderLabel: (relX, relY) => (
-			<CanvasText
-				relX={relX + GRID_LABEL_X}
-				relY={relY + GRID_1X_LABEL_Y}
-				text="湿度(％)"
-				fillColor={COLORS.AQUA}
-				scaleX={2}
-			/>
-		),
-		renderCell: (relX, relY, carIndex) => (
-			<CarStateStringLabel
-				relX={relX + ROOM_TEMP_HUMIDITY_STATE_X}
-				relY={relY + GRID_1X_CONTENT_Y}
-				carIndex={carIndex}
-				textColor={COLORS.AQUA}
-				textSelector={roomHumidityTextSelector}
-			/>
-		),
-		rowHeight: GRID_1X_CONTENT_HEIGHT + ROOM_HUMIDITY_PADDING_BOTTOM,
-	},
+	TEMPERATURE_GRID_ROW_DEFINITION,
+	HUMIDITY_GRID_ROW_DEFINITION,
 ] as const satisfies GridRowDefinition[];
 
 type AnnounceState = "ON" | "OFF" | "UNKNOWN";
@@ -251,28 +203,6 @@ const announceStateSelector = createCarStateByCarIndexSelector<AnnounceState>(
 	},
 );
 
-const AIR_CONDITIONER_STATE_LABEL_STYLE = {
-	AUTO_HEATING: {
-		text: "自暖",
-		fillColor: COLORS.MAGENTA,
-		textColor: COLORS.WHITE,
-	},
-	AUTO_COOLING: {
-		text: "自冷",
-		fillColor: COLORS.AQUA,
-		textColor: COLORS.BLACK,
-	},
-	OFF: {
-		text: "切",
-		fillColor: COLORS.BLACK,
-		textColor: COLORS.WHITE,
-	},
-	UNKNOWN: {
-		text: "-",
-		fillColor: COLORS.BLACK,
-		textColor: COLORS.WHITE,
-	},
-} as const satisfies Record<AirConditionerState | "UNKNOWN", LabelStyle>;
 const airConditionerStateSelector = createCarStateByCarIndexSelector<
 	AirConditionerState | "UNKNOWN"
 >((carState) => carState.airConditionerState ?? "UNKNOWN");
@@ -316,15 +246,4 @@ const FAN_STATE_LABEL_STYLE = {
 } as const satisfies Record<FanState | "UNKNOWN", LabelStyle>;
 const fanStateSelector = createCarStateByCarIndexSelector<FanState | "UNKNOWN">(
 	(carState) => carState.fanState ?? "UNKNOWN",
-);
-
-const roomTemperatureTextSelector = createCarStateByCarIndexSelector<
-	string | undefined
->((carState) =>
-	carState.temperature != null ? carState.temperature.toFixed(1) : undefined,
-);
-const roomHumidityTextSelector = createCarStateByCarIndexSelector<
-	string | undefined
->((carState) =>
-	carState.humidity != null ? carState.humidity.toFixed(0) : undefined,
 );

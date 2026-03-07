@@ -4,6 +4,8 @@ import {
 	AIR_CONDITIONER_ADJUSTMENT_MODE,
 	AIR_CONDITIONER_STATE,
 	FAN_STATE,
+	AIR_CONDITIONER_RUN_MODE,
+	AIR_CONDITIONER_CTRL_UNIT,
 } from "../../store/monitors/type313s/type313sTypes";
 
 import type {
@@ -15,6 +17,8 @@ import type {
 } from "./types";
 import type {
 	AirConditionerAdjustmentMode,
+	AirConditionerCtrlUnit,
+	AirConditionerRunMode,
 	AirConditionerState,
 	CabSesState,
 	FanState,
@@ -73,6 +77,12 @@ export function selectValueToNullableBooleanOrUndefined(
 // Options constants
 export const AIR_CONDITIONER_STATE_OPTIONS = Object.values(
 	AIR_CONDITIONER_STATE,
+);
+export const AIR_CONDITIONER_CTRL_UNIT_OPTIONS = Object.values(
+	AIR_CONDITIONER_CTRL_UNIT,
+);
+export const AIR_CONDITIONER_RUN_MODE_OPTIONS = Object.values(
+	AIR_CONDITIONER_RUN_MODE,
 );
 export const FAN_STATE_OPTIONS = Object.values(FAN_STATE);
 export const AIR_CONDITIONER_ADJUSTMENT_MODE_OPTIONS = Object.values(
@@ -165,6 +175,8 @@ export function createDefaultCarState(carNumber: number): Type313sCarState {
 		isDoorClosed: null,
 		isAnnounceOn: null,
 		airConditionerState: null,
+		airConditionerCtrlUnit: null,
+		airConditionerRunMode: null,
 		fanState: null,
 		temperature: null,
 		humidity: null,
@@ -264,6 +276,34 @@ export const CAR_BASIC_FIELDS: readonly CarStateBasicField[] = [
 		fromSelectValue: (car, value) => ({
 			...car,
 			airConditionerState: value ? (value as AirConditionerState) : null,
+		}),
+	},
+	{
+		type: "select",
+		fieldKey: "airConditionerCtrlUnit",
+		label: "空調制御単位",
+		options: [
+			{ value: "", label: "未設定" },
+			...AIR_CONDITIONER_CTRL_UNIT_OPTIONS.map((v) => ({ value: v, label: v })),
+		],
+		toSelectValue: (car) => car.airConditionerCtrlUnit ?? "",
+		fromSelectValue: (car, value) => ({
+			...car,
+			airConditionerCtrlUnit: value ? (value as AirConditionerCtrlUnit) : null,
+		}),
+	},
+	{
+		type: "select",
+		fieldKey: "airConditionerRunMode",
+		label: "空調モード",
+		options: [
+			{ value: "", label: "未設定" },
+			...AIR_CONDITIONER_RUN_MODE_OPTIONS.map((v) => ({ value: v, label: v })),
+		],
+		toSelectValue: (car) => car.airConditionerRunMode ?? "",
+		fromSelectValue: (car, value) => ({
+			...car,
+			airConditionerRunMode: value ? (value as AirConditionerRunMode) : null,
 		}),
 	},
 	{
