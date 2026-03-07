@@ -122,10 +122,14 @@ export default memo<PropsWithChildren<CanvasObjectBaseProps>>(
 			[objectId, onRender, onClickHandler, isClickDetector, metadata],
 		);
 
+		const prevMetadataRef = useRef<CanvasObjectMetadata | null>(null);
+
 		useEffect(() => {
 			if (!parentObjectContext) return;
-			parentObjectContext.onMount(render, childIndex);
+			const prevMetadata = prevMetadataRef.current;
+			parentObjectContext.onMount(render, childIndex, prevMetadata);
 			return () => {
+				prevMetadataRef.current = render.metadata;
 				parentObjectContext.onUnmount(render);
 			};
 		}, [parentObjectContext, render, childIndex]);

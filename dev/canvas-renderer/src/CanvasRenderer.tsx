@@ -37,6 +37,7 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 		renderRequestCount,
 	}) {
 		const registeredObjectListRef = useRef<CanvasRenderFunctionObject[]>([]);
+		const isRenderingRef = useRef(false);
 
 		const [renderRequestedAreaList, setRenderRequestedAreaList] = useState<
 			RenderArea[]
@@ -69,8 +70,16 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 				return;
 			}
 
+			// 前の非同期レンダリングが完了していない場合はスキップ（後で再実行される）
+			if (isRenderingRef.current) {
+				return;
+			}
+
+			isRenderingRef.current = true;
+
 			// ダーティ領域をマージして最小セットに
 			const mergedAreas = mergeRenderAreas(renderRequestedAreaList);
+			setRenderRequestedAreaList([]);
 
 			// 1. ダーティ領域のみクリア（背景色があれば塗りつぶし）
 			mergedAreas.forEach((area) => {
@@ -82,6 +91,16 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 				}
 			});
 
+			// 非同期描画が完了したらクリップを解除し、次のレンダリングを許可
+			const finishRender = () => {
+				ctx.restore();
+				isRenderingRef.current = false;
+				// レンダリング中に蓄積されたダーティ領域があれば再レンダリングをトリガー
+				setRenderRequestedAreaList((prev) =>
+					prev.length > 0 ? [...prev] : prev,
+				);
+			};
+
 			// 2. ダーティ領域のみを描画するようクリップを設定
 			ctx.save();
 			ctx.beginPath();
@@ -92,30 +111,31 @@ export default memo<PropsWithChildren<CanvasRendererProps>>(
 
 			// 3. ダーティ領域と交差するオブジェクトのみ描画（Z-order 保持）
 			const renderPromises: Promise<void>[] = [];
-			for (const obj of registeredObjectListRef.current) {
-				if (mergedAreas.some((area) => intersectsRects(obj.metadata, area))) {
-					const result = obj.onRender(ctx, obj.metadata, mergedAreas);
-					if (result instanceof Promise) {
-						renderPromises.push(result);
+			try {
+				for (const obj of registeredObjectListRef.current) {
+					if (mergedAreas.some((area) => intersectsRects(obj.metadata, area))) {
+						const result = obj.onRender(ctx, obj.metadata, mergedAreas);
+						if (result instanceof Promise) {
+							renderPromises.push(result);
+						}
 					}
 				}
+			} catch (error) {
+				console.error("Error during canvas render:", error);
+				finishRender();
+				return;
 			}
 
-			// 非同期描画が完了したらクリップを解除
 			if (renderPromises.length > 0) {
 				Promise.all(renderPromises)
-					.then(() => {
-						ctx.restore();
-					})
+					.then(finishRender)
 					.catch((error) => {
 						console.error("Error during canvas render:", error);
-						ctx.restore();
+						finishRender();
 					});
 			} else {
-				ctx.restore();
+				finishRender();
 			}
-
-			setRenderRequestedAreaList([]);
 		}, [ctx, height, renderRequestedAreaList, width, fill]);
 
 		useEffect(() => {

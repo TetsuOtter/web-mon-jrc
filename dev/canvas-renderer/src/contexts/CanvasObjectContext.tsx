@@ -53,7 +53,11 @@ export type CanvasRenderFunctionObject = {
 };
 
 export type CanvasObjectContextType = {
-	onMount: (obj: CanvasRenderFunctionObject, childIndex?: number) => void;
+	onMount: (
+		obj: CanvasRenderFunctionObject,
+		childIndex?: number,
+		prevMetadata?: CanvasObjectMetadata | null,
+	) => void;
 	onUnmount: (obj: CanvasRenderFunctionObject) => void;
 	metadata: CanvasObjectMetadata;
 };
@@ -149,12 +153,14 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 		);
 
 		const onMount: CanvasObjectContextType["onMount"] = useCallback(
-			(obj, childIndex) => {
+			(obj, childIndex, prevMetadata) => {
 				const index = registeredObjectListRef.current.findIndex(
 					(item) => item.objectId === obj.objectId,
 				);
 				if (index === -1) {
 					registeredObjectListRef.current.push(obj);
+				} else {
+					registeredObjectListRef.current[index] = obj;
 				}
 				// childIndexを記録
 				if (childIndex != null) {
@@ -162,6 +168,9 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				}
 				// リストを即座にソート
 				sortObjectList();
+				if (prevMetadata) {
+					requestRender(prevMetadata);
+				}
 				requestRender(obj.metadata);
 			},
 			[
@@ -182,9 +191,9 @@ export default memo<PropsWithChildren<CanvasObjectContextProviderProps>>(
 				// indexマップからも削除
 				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 				delete objectIndexMapRef.current[obj.objectId];
-				requestRender(obj.metadata);
+				// requestRender は呼ばない: onMount 側で prevMetadata を使って旧領域をクリアする
 			},
-			[registeredObjectListRef, objectIndexMapRef, requestRender],
+			[registeredObjectListRef, objectIndexMapRef],
 		);
 		const contextValue = useMemo(
 			(): CanvasObjectContextType => ({
