@@ -10,8 +10,8 @@ import type {
 } from "../contexts/CanvasObjectContext";
 
 type CanvasCircleProps = {
-	readonly relX: number;
-	readonly relY: number;
+	readonly centerRelX: number;
+	readonly centerRelY: number;
 	readonly radius: number;
 	readonly fillColor?: string;
 	readonly strokeColor?: string;
@@ -26,8 +26,8 @@ type CanvasCircleProps = {
  */
 export default memo<PropsWithChildren<CanvasCircleProps>>(
 	function CanvasCircle({
-		relX,
-		relY,
+		centerRelX,
+		centerRelY,
 		radius,
 		fillColor,
 		strokeColor,
@@ -104,8 +104,8 @@ export default memo<PropsWithChildren<CanvasCircleProps>>(
 				onRender={onRender}
 				onClick={onClick}
 				isClickDetector={isClickDetector}
-				relX={relX - ir}
-				relY={relY - ir}
+				relX={centerRelX - ir}
+				relY={centerRelY - ir}
 				width={ir * 2}
 				height={ir * 2}
 				isFilled={!!fillColor}
