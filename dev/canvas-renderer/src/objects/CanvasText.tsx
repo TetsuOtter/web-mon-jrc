@@ -451,11 +451,20 @@ function useDrawContentPromise({
 			y: calculateYPosition(line.y, visibleHeight, maxHeightPx, verticalAlign),
 		}));
 
+		// 垂直アライメントで行がシフトされた場合、高さを実際の描画範囲に合わせる
+		const adjustedHeight =
+			adjustedLines.length > 0
+				? Math.max(
+						visibleHeight,
+						...adjustedLines.map((line) => line.y + line.height),
+					)
+				: visibleHeight;
+
 		return {
 			x,
 			y,
 			width: maxWidth,
-			height: visibleHeight,
+			height: adjustedHeight,
 			lines: adjustedLines,
 		};
 	}, [
