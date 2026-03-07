@@ -15,6 +15,7 @@ export const RECT_HEIGHT = 21;
 export type LabelStyle = {
 	text: string;
 	scaleX?: number;
+	scaleY?: number;
 	fillColor: string;
 	textColor: string;
 };
@@ -43,7 +44,7 @@ const CarStateLabel = <T extends string | number | symbol>({
 			relX={relX + PADDING_X}
 			relY={relY}
 			width={RECT_WIDTH}
-			height={RECT_HEIGHT}
+			height={RECT_HEIGHT * (labelStyle.scaleY ?? 1)}
 			strokeColor={COLORS.WHITE}
 			strokeWidth={1}
 			fillColor={labelStyle.fillColor}
@@ -56,6 +57,7 @@ const CarStateLabel = <T extends string | number | symbol>({
 				verticalAlign="center"
 				fillColor={labelStyle.textColor}
 				scaleX={labelStyle.scaleX}
+				scaleY={labelStyle.scaleY}
 			/>
 		</CanvasRect>
 	);

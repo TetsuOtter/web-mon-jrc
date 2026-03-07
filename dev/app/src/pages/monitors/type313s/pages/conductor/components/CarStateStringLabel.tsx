@@ -18,6 +18,8 @@ export type CarStateStringLabelProps = {
 	readonly verticalAlign?: CanvasTextProps["verticalAlign"];
 	readonly textColor: string;
 	readonly textSelector: CarStateByCarIndexSelector<string | undefined>;
+	readonly scaleX?: number;
+	readonly scaleY?: number;
 };
 export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 	relX,
@@ -29,6 +31,8 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 	verticalAlign,
 	textColor,
 	textSelector,
+	scaleX,
+	scaleY,
 }) {
 	const text = useAppSelectorWithParams(textSelector, carIndex);
 	if (text == null) {
@@ -45,6 +49,8 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 				maxWidthPx={fillWidth}
 				verticalAlign={verticalAlign}
 				fillColor={textColor}
+				scaleX={scaleX}
+				scaleY={scaleY}
 			/>
 		);
 	}
@@ -64,6 +70,8 @@ export default memo<CarStateStringLabelProps>(function CarStateStringLabel({
 				align={align ?? "center"}
 				verticalAlign={verticalAlign ?? "center"}
 				fillColor={textColor}
+				scaleX={scaleX}
+				scaleY={scaleY}
 			/>
 		</CanvasRect>
 	);
