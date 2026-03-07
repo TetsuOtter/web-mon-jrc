@@ -31,12 +31,16 @@ jobs:
       - name: Setup Yarn
         run: corepack enable
 
+      - name: Build canvas-renderer
+        working-directory:  dev/canvas-renderer
+        run: yarn install --frozen-lockfile && yarn build
+
       - name: Run lint for all directories
         run: |
           #!/bin/bash
           set +e  # Continue on error
 
-          directories=("dev/app" "dev/canvas-renderer" "dev/canvas-demo")
+          directories=("dev/canvas-renderer" "dev/canvas-demo" "dev/app")
           failed_dirs=()
 
           for dir in "${directories[@]}"; do
