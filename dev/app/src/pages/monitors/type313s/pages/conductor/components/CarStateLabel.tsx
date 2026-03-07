@@ -18,6 +18,7 @@ export type LabelStyle = {
 	scaleY?: number;
 	fillColor: string;
 	textColor: string;
+	isHidden?: boolean;
 };
 export type CarStateLabelProps<T extends string | number | symbol> = {
 	readonly relX: number;
@@ -35,7 +36,7 @@ const CarStateLabel = <T extends string | number | symbol>({
 }: CarStateLabelProps<T>) => {
 	const state = useAppSelectorWithParams(stateSelector, carIndex);
 	const labelStyle = styleMap[state];
-	if (labelStyle == null) {
+	if (labelStyle == null || labelStyle.isHidden) {
 		return null;
 	}
 
