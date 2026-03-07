@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useEffect, useState } from "react";
+import { memo, useCallback, useMemo, useEffect } from "react";
 
 import {
 	useCanvasObjectContext,
@@ -109,32 +109,13 @@ export default memo<CanvasTextProps>(function CanvasText({
 		lineImagesPromise,
 	});
 
-	// メタデータを管理
-	const [metadata, setMetadata] = useState({
-		x: relX,
-		y: relY,
-		width: 0,
-		height: 0,
-		isFilled: true,
-	});
-
-	// onLineInfoChangedとメタデータを非同期で更新
+	// onLineInfoChangedを非同期で更新
 	useEffect(() => {
+		if (!onLineInfoChanged) return;
 		drawContentPromise.then((drawContent) => {
-			// メタデータを drawContent の実際の寸法で更新
-			setMetadata({
-				x: drawContent.x,
-				y: drawContent.y,
-				width: drawContent.width,
-				height: drawContent.height,
-				isFilled: true,
-			});
-
-			if (onLineInfoChanged) {
-				const lineCount = drawContent.lines.length; // 総行数
-				const visibleLineCount = drawContent.lines.length; // 表示可能な行数
-				onLineInfoChanged(lineCount, visibleLineCount);
-			}
+			const lineCount = drawContent.lines.length; // 総行数
+			const visibleLineCount = drawContent.lines.length; // 表示可能な行数
+			onLineInfoChanged(lineCount, visibleLineCount);
 		});
 	}, [drawContentPromise, onLineInfoChanged]);
 
@@ -170,11 +151,11 @@ export default memo<CanvasTextProps>(function CanvasText({
 		<CanvasObjectBase
 			onRender={onRender}
 			onClick={onClick}
-			relX={metadata.x}
-			relY={metadata.y}
-			width={metadata.width}
-			height={metadata.height}
-			isFilled={metadata.isFilled}
+			relX={relX}
+			relY={relY}
+			width={maxWidthPx}
+			height={maxHeightPx}
+			isFilled={false}
 		/>
 	);
 });
