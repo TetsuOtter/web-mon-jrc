@@ -40,7 +40,7 @@ jobs:
           #!/bin/bash
           set +e  # Continue on error
 
-          directories=("dev/canvas-renderer" "dev/canvas-demo" "dev/app")
+          directories=("dev/app" "dev/canvas-renderer" "dev/canvas-demo")
           failed_dirs=()
 
           for dir in "${directories[@]}"; do
