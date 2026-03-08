@@ -1,10 +1,6 @@
 import { memo, useState, useEffect } from "react";
 
-import {
-	useRequestRenderFunction,
-	CanvasRect,
-	CanvasText,
-} from "@web-mon-jrc/canvas-renderer";
+import { CanvasRect, CanvasText } from "@web-mon-jrc/canvas-renderer";
 
 type BlinkingItemProps = {
 	readonly relX: number;
@@ -31,15 +27,13 @@ export default memo(function BlinkingItem({
 	label,
 }: BlinkingItemProps) {
 	const [visible, setVisible] = useState(true);
-	const requestRender = useRequestRenderFunction();
 
 	useEffect(() => {
 		const id = setInterval(() => {
 			setVisible((v) => !v);
-			requestRender({ absX: relX, absY: relY, width, height });
 		}, intervalMs);
 		return () => clearInterval(id);
-	}, [requestRender, relX, relY, width, height, intervalMs]);
+	}, [relX, relY, width, height, intervalMs]);
 
 	if (!visible) return null;
 

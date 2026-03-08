@@ -1,10 +1,14 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 
-import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
-import CanvasText from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
+import {
+	usePixiObject,
+	clearContainer,
+} from "@web-mon-jrc/canvas-renderer/hooks";
+import { Graphics, Sprite, Texture } from "pixi.js";
 
-import type { CanvasRenderFunction } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
-import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
+import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects";
 
 export type CellInfo = {
 	text: string;
@@ -58,38 +62,38 @@ export default memo<TableProps>(function Table(props) {
 	const { relX, relY, rowList, cellPaddingXList } = props;
 	const { totalHeight, totalWidth, baseImage, rowDefinitionList } =
 		useTableBase(props);
-	const onRender: CanvasRenderFunction = useCallback(
-		(ctx, metadata) => {
-			const absX = Math.round(metadata.absX);
-			const absY = Math.round(metadata.absY);
+	const { container, graphicsContainer, metadata } = usePixiObject({
+		relX,
+		relY,
+		width: totalWidth,
+		height: totalHeight,
+	});
 
-			ctx.imageSmoothingEnabled = false;
-			ctx.drawImage(baseImage, absX, absY);
+	useEffect(() => {
+		if (graphicsContainer.destroyed) return;
+		clearContainer(graphicsContainer);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const sprite = new Sprite(Texture.from(baseImage as any));
+		graphicsContainer.addChild(sprite);
 
-			ctx.save();
-			for (let rowIndex = 0; rowIndex < rowList.length; rowIndex++) {
-				const cellList = rowList[rowIndex];
-				const rowDef = rowDefinitionList[rowIndex];
-				for (let colIndex = 0; colIndex < cellList.length; colIndex++) {
-					const cell = cellList[colIndex];
-					const cellDef = rowDef.cells[colIndex];
+		for (let rowIndex = 0; rowIndex < rowList.length; rowIndex++) {
+			const cellList = rowList[rowIndex];
+			const rowDef = rowDefinitionList[rowIndex];
+			for (let colIndex = 0; colIndex < cellList.length; colIndex++) {
+				const cell = cellList[colIndex];
+				const cellDef = rowDef.cells[colIndex];
 
-					// 背景色
-					if (cell.backgroundColor) {
-						ctx.fillStyle = cell.backgroundColor;
-						ctx.fillRect(
-							absX + cellDef.x,
-							absY + rowDef.y,
-							cellDef.width,
-							rowDef.height,
-						);
-					}
+				// 背景色
+				if (cell.backgroundColor) {
+					const g = new Graphics();
+					g.rect(cellDef.x, rowDef.y, cellDef.width, rowDef.height).fill(
+						cell.backgroundColor,
+					);
+					graphicsContainer.addChild(g);
 				}
 			}
-			ctx.restore();
-		},
-		[baseImage, rowDefinitionList, rowList],
-	);
+		}
+	}, [graphicsContainer, baseImage, rowDefinitionList, rowList]);
 
 	const cells = useMemo(
 		() =>
@@ -135,16 +139,12 @@ export default memo<TableProps>(function Table(props) {
 	);
 
 	return (
-		<CanvasObjectBase
-			onRender={onRender}
-			relX={relX}
-			relY={relY}
-			width={totalWidth}
-			height={totalHeight}
-			isFilled={false}
+		<CanvasObjectContext
+			pixiContainer={container}
+			metadata={metadata}
 		>
 			{cells}
-		</CanvasObjectBase>
+		</CanvasObjectContext>
 	);
 });
 

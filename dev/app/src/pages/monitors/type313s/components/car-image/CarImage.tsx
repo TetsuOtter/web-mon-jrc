@@ -1,7 +1,12 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo } from "react";
 
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
-import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
+import {
+	usePixiObject,
+	clearContainer,
+} from "@web-mon-jrc/canvas-renderer/hooks";
+import { Graphics, Sprite, Texture } from "pixi.js";
 
 import { toWide } from "../../../../../utils/toWide";
 import { COLORS, FONT_SIZE_1X } from "../../constants";
@@ -28,8 +33,7 @@ import type { CarImageBogieInfo, BaseCarImageInfo } from "./types";
 import type {
 	ClickEventHandler,
 	ClickDetector,
-	CanvasRenderFunction,
-} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+} from "@web-mon-jrc/canvas-renderer/contexts";
 
 const CAR_NUMBER_HEIGHT = FONT_SIZE_1X + 2;
 
@@ -61,72 +65,6 @@ export default memo<CarImageProps>(function CarImage({
 }) {
 	const baseImage = useMemo(() => getBaseCarImage(baseInfo), [baseInfo]);
 	const bogieImage = useMemo(() => getBogieImage(bogieInfo), [bogieInfo]);
-	const onRender: CanvasRenderFunction = useCallback<CanvasRenderFunction>(
-		async (ctx, metadata) => {
-			const absX = Math.round(metadata.absX);
-			const absY = Math.round(metadata.absY);
-
-			ctx.imageSmoothingEnabled = false;
-			ctx.drawImage(baseImage, absX, absY);
-			ctx.drawImage(bogieImage, absX, absY);
-
-			if (roofBackgroundColor) {
-				ctx.fillStyle = roofBackgroundColor;
-				if (baseInfo.isLeftCab) {
-					for (let row = 0; row < LEFT_CAB_PATTERN.length; row++) {
-						const patternRow = LEFT_CAB_PATTERN[row];
-						const startCol = patternRow.findIndex((cell) => cell === CAB_INNER);
-						if (0 <= startCol) {
-							ctx.fillRect(
-								absX + startCol,
-								absY + CAB_Y + row,
-								CAB_WIDTH - startCol - CAB_BORDER,
-								1,
-							);
-						}
-					}
-				} else if (baseInfo.isRightCab) {
-					for (let row = 0; row < RIGHT_CAB_PATTERN.length; row++) {
-						const patternRow = RIGHT_CAB_PATTERN[row];
-						const endCol =
-							patternRow.length -
-							[...patternRow].reverse().findIndex((cell) => cell === CAB_INNER);
-						if (0 <= endCol && endCol < patternRow.length) {
-							ctx.fillRect(
-								absX + RIGHT_CAB_CLIFF_COL + CAB_BORDER,
-								absY + CAB_Y + row,
-								endCol - CAB_BORDER,
-								1,
-							);
-						}
-					}
-				}
-				ctx.fillRect(
-					absX + CAB_BORDER,
-					absY + ROOF_Y + CAB_BORDER,
-					WIDTH - CAB_BORDER * 2,
-					ROOF_HEIGHT - 1,
-				);
-			}
-			if (bodyBackgroundColor) {
-				ctx.fillStyle = bodyBackgroundColor;
-				ctx.fillRect(
-					absX + CAB_BORDER,
-					absY + SEPARATOR_Y + CAB_INNER,
-					WIDTH - CAB_BORDER * 2,
-					FLOOR_Y - SEPARATOR_Y - CAB_INNER - CAB_BORDER,
-				);
-			}
-		},
-		[
-			baseImage,
-			bogieImage,
-			roofBackgroundColor,
-			bodyBackgroundColor,
-			baseInfo.isLeftCab,
-			baseInfo.isRightCab,
-		],
-	);
 
 	const isClickDetector: ClickDetector = useCallback(
 		(clickX: number, clickY: number) => {
@@ -134,6 +72,82 @@ export default memo<CarImageProps>(function CarImage({
 		},
 		[],
 	);
+
+	const { container, graphicsContainer, metadata } = usePixiObject({
+		relX,
+		relY,
+		width: WIDTH,
+		height: HEIGHT + CAR_NUMBER_HEIGHT,
+		onClick,
+		isClickDetector,
+	});
+
+	useEffect(() => {
+		if (graphicsContainer.destroyed) return;
+		clearContainer(graphicsContainer);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const baseSprite = new Sprite(Texture.from(baseImage as any));
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const bogieSprite = new Sprite(Texture.from(bogieImage as any));
+		graphicsContainer.addChild(baseSprite);
+		graphicsContainer.addChild(bogieSprite);
+
+		if (roofBackgroundColor) {
+			const g = new Graphics();
+			if (baseInfo.isLeftCab) {
+				for (let row = 0; row < LEFT_CAB_PATTERN.length; row++) {
+					const patternRow = LEFT_CAB_PATTERN[row];
+					const startCol = patternRow.findIndex((cell) => cell === CAB_INNER);
+					if (0 <= startCol) {
+						g.rect(startCol, CAB_Y + row, CAB_WIDTH - startCol - CAB_BORDER, 1);
+					}
+				}
+			} else if (baseInfo.isRightCab) {
+				for (let row = 0; row < RIGHT_CAB_PATTERN.length; row++) {
+					const patternRow = RIGHT_CAB_PATTERN[row];
+					const endCol =
+						patternRow.length -
+						[...patternRow].reverse().findIndex((cell) => cell === CAB_INNER);
+					if (0 <= endCol && endCol < patternRow.length) {
+						g.rect(
+							RIGHT_CAB_CLIFF_COL + CAB_BORDER,
+							CAB_Y + row,
+							endCol - CAB_BORDER,
+							1,
+						);
+					}
+				}
+			}
+			g.rect(
+				CAB_BORDER,
+				ROOF_Y + CAB_BORDER,
+				WIDTH - CAB_BORDER * 2,
+				ROOF_HEIGHT - 1,
+			).fill(roofBackgroundColor);
+			graphicsContainer.addChild(g);
+		}
+
+		if (bodyBackgroundColor) {
+			const g = new Graphics();
+			g.rect(
+				CAB_BORDER,
+				SEPARATOR_Y + CAB_INNER,
+				WIDTH - CAB_BORDER * 2,
+				FLOOR_Y - SEPARATOR_Y - CAB_INNER - CAB_BORDER,
+			).fill(bodyBackgroundColor);
+			graphicsContainer.addChild(g);
+		}
+	}, [
+		graphicsContainer,
+		baseImage,
+		bogieImage,
+		roofBackgroundColor,
+		bodyBackgroundColor,
+		baseInfo.isLeftCab,
+		baseInfo.isRightCab,
+	]);
+
 	const carNumberStr = useMemo(() => {
 		if (10 <= carNumber) {
 			return carNumber.toString();
@@ -143,15 +157,9 @@ export default memo<CarImageProps>(function CarImage({
 	}, [carNumber]);
 
 	return (
-		<CanvasObjectBase
-			onRender={onRender}
-			onClick={onClick}
-			isClickDetector={isClickDetector}
-			relX={relX}
-			relY={relY}
-			width={WIDTH}
-			height={HEIGHT + CAR_NUMBER_HEIGHT}
-			isFilled
+		<CanvasObjectContext
+			pixiContainer={container}
+			metadata={metadata}
 		>
 			{carType != null && (
 				<CanvasText
@@ -172,6 +180,6 @@ export default memo<CarImageProps>(function CarImage({
 				fillColor={COLORS.WHITE}
 				text={carNumberStr}
 			/>
-		</CanvasObjectBase>
+		</CanvasObjectContext>
 	);
 });

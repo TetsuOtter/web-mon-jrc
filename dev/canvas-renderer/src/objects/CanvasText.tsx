@@ -1,16 +1,15 @@
-import { memo, useCallback, useMemo, useEffect } from "react";
+import { memo, useEffect, useMemo } from "react";
+
+import { Container, Sprite } from "pixi.js";
 
 import {
 	useCanvasObjectContext,
-	type CanvasRenderFunction,
 	type ClickEventHandler,
 } from "../contexts/CanvasObjectContext";
+import { usePixiObject, clearContainer } from "../hooks/usePixiObject";
 import { isFullWidthChar, DEFAULT_FONT_INFO } from "../types/FontInfo";
-import { useTofu } from "../utils/TofuFontHook";
-import { hexToRgb, setTransparentToData } from "../utils/colorUtil";
 import { loadFont, type AvailableFont } from "../utils/fontLoader";
-
-import CanvasObjectBase from "./CanvasObjectBase";
+import { getGlyphTexture, getTofu } from "../utils/glyphTextureCache";
 
 import type { FontInfo, GlyphData } from "../types/FontInfo";
 
@@ -35,24 +34,15 @@ export type CanvasTextProps = {
 	) => void;
 };
 
-// 描画内容の型定義
-type LineImage = {
-	canvas: OffscreenCanvas | null;
-	width: number;
-};
 type DrawLine = {
-	canvas: OffscreenCanvas;
-	width: number;
-	height: number;
+	glyphs: GlyphData[];
 	x: number;
 	y: number;
+	lineWidth: number;
+	height: number;
 };
 
 type DrawContent = {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
 	lines: DrawLine[];
 };
 
@@ -62,7 +52,7 @@ type WrappedLineInfo = {
 };
 
 /**
- * BDF フォントを使用するテキスト描画オブジェクト
+ * BDF フォントを使用するテキスト描画オブジェクト（PIXI.Sprite版）
  */
 export default memo<CanvasTextProps>(function CanvasText({
 	relX,
@@ -87,17 +77,61 @@ export default memo<CanvasTextProps>(function CanvasText({
 	const maxHeightPx =
 		maxHeightPxProps ?? parentObjectContext.metadata.height - relY;
 
-	const lineImagesPromise = useLineImagesPromise({
-		fontInfo,
-		text,
-		fillColor,
-		maxWidthPx,
-	});
+	const charBitmapsPromise = useCharBitmaps({ fontInfo, text });
 
-	const drawContentPromise = useDrawContentPromise({
-		x: relX,
-		y: relY,
-		fontInfo,
+	const drawContentPromise = useMemo(async (): Promise<DrawContent> => {
+		const charBitmaps = await charBitmapsPromise;
+		const normalizedSkipLineCount = Math.max(0, Math.floor(skipLineCount));
+		const fontHeightPx = fontInfo.fontSize * scaleY;
+		const lineHeightPx = fontInfo.fontSize * lineHeight * scaleY;
+
+		let visibleHeight = 0;
+		const lines: DrawLine[] = [];
+
+		for (let lineIndex = 0; lineIndex < charBitmaps.length; lineIndex++) {
+			if (lineIndex < normalizedSkipLineCount) continue;
+
+			const lineGlyphs = charBitmaps[lineIndex];
+
+			const wrappedLines = maxWidthPx
+				? wrapLineByWidth(lineGlyphs, maxWidthPx)
+				: [createLineGlyphInfo(lineGlyphs)];
+
+			for (const { glyphs, width: lineWidth } of wrappedLines) {
+				if (maxHeightPx && visibleHeight + lineHeightPx > maxHeightPx) {
+					break;
+				}
+
+				if (glyphs.length === 0) {
+					visibleHeight += lineHeightPx;
+					continue;
+				}
+
+				const scaledWidth = lineWidth * scaleX;
+				const lineX = calculateXPosition(0, scaledWidth, maxWidthPx, align);
+
+				lines.push({
+					glyphs,
+					x: lineX,
+					y: visibleHeight,
+					lineWidth,
+					height: fontHeightPx,
+				});
+
+				visibleHeight += lineHeightPx;
+			}
+		}
+
+		// 垂直アライメント調整
+		const adjustedLines = lines.map((line) => ({
+			...line,
+			y: calculateYPosition(line.y, visibleHeight, maxHeightPx, verticalAlign),
+		}));
+
+		return { lines: adjustedLines };
+	}, [
+		charBitmapsPromise,
+		fontInfo.fontSize,
 		scaleX,
 		scaleY,
 		lineHeight,
@@ -106,69 +140,73 @@ export default memo<CanvasTextProps>(function CanvasText({
 		skipLineCount,
 		align,
 		verticalAlign,
-		lineImagesPromise,
-	});
+	]);
 
-	// onLineInfoChangedを非同期で更新
+	// onLineInfoChanged を非同期で更新
 	useEffect(() => {
 		if (!onLineInfoChanged) return;
 		drawContentPromise.then((drawContent) => {
-			const lineCount = drawContent.lines.length; // 総行数
-			const visibleLineCount = drawContent.lines.length; // 表示可能な行数
-			onLineInfoChanged(lineCount, visibleLineCount);
+			onLineInfoChanged(drawContent.lines.length, drawContent.lines.length);
 		});
 	}, [drawContentPromise, onLineInfoChanged]);
 
-	const onRender: CanvasRenderFunction = useCallback(
-		async (ctx, metadata) => {
+	const { graphicsContainer } = usePixiObject({
+		relX,
+		relY,
+		width: maxWidthPx,
+		height: maxHeightPx,
+		onClick,
+	});
+
+	useEffect(() => {
+		if (graphicsContainer.destroyed) return;
+
+		let cancelled = false;
+
+		(async () => {
 			const drawContent = await drawContentPromise;
+			if (cancelled || graphicsContainer.destroyed) return;
 
-			try {
-				for (const line of drawContent.lines) {
-					ctx.save();
-					ctx.imageSmoothingEnabled = false;
-					ctx.drawImage(
-						line.canvas,
-						0,
-						0,
-						line.canvas.width,
-						line.canvas.height,
-						metadata.absX + line.x,
-						metadata.absY + line.y,
-						line.width,
-						line.height,
-					);
-					ctx.restore();
+			clearContainer(graphicsContainer);
+
+			for (const line of drawContent.lines) {
+				const lineContainer = new Container();
+				lineContainer.x = roundToPixel(line.x);
+				lineContainer.y = roundToPixel(line.y);
+
+				let currentX = 0;
+				for (const glyph of line.glyphs) {
+					const texture = getGlyphTexture(glyph, fillColor);
+
+					if (texture.width > 0 && texture.height > 0) {
+						const sprite = new Sprite(texture);
+						sprite.roundPixels = true;
+						sprite.x = roundToPixel(currentX + glyph.xOffset);
+						sprite.y = roundToPixel(glyph.yOffset);
+						lineContainer.addChild(sprite);
+					}
+
+					currentX += glyph.advanceWidth;
 				}
-			} catch (error) {
-				console.error("Error rendering text:", error);
-			}
-		},
-		[drawContentPromise],
-	);
 
-	return (
-		<CanvasObjectBase
-			onRender={onRender}
-			onClick={onClick}
-			relX={relX}
-			relY={relY}
-			width={maxWidthPx}
-			height={maxHeightPx}
-			isFilled={false}
-		/>
-	);
+				lineContainer.scale.set(scaleX, scaleY);
+				graphicsContainer.addChild(lineContainer);
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [graphicsContainer, drawContentPromise, fillColor, scaleX, scaleY]);
+
+	return null;
 });
 
-type UseCharBitmapsHookParams = {
+type UseCharBitmapsParams = {
 	fontInfo: FontInfo;
 	text: string;
 };
 
-/**
- * 指定されたフォント（配列または単一）から文字のグリフを取得
- * 配列の場合は先頭から順に探索し、見つかるまで試す
- */
 async function getGlyphFromFonts(
 	char: string,
 	fontSpec: AvailableFont | readonly AvailableFont[],
@@ -191,22 +229,14 @@ async function getGlyphFromFonts(
 	return null;
 }
 
-/**
- * グリフオブジェクトから GlyphData を生成する
- * - ビットマップは BBX サイズ（mode=1）
- * - advanceWidth は DWIDTH x（glyph.meta.dwx0）
- * - yOffset = FONT_ASCENT - BBX_y_offset - BBX_height
- * - xOffset = BBX_x_offset
- */
 function glyphToGlyphData(
 	glyph: NonNullable<ReturnType<Awaited<ReturnType<typeof loadFont>>["glyph"]>>,
 	fontSize: number,
 ): GlyphData {
-	const bitmap = glyph.draw(1); // BBX サイズのビットマップ
+	const bitmap = glyph.draw(1);
 	const advanceWidth = glyph.meta.dwx0 ?? glyph.meta.bbw;
 	const xOffset = glyph.meta.bbxoff;
 	const bbyoff = glyph.meta.bbyoff ?? 0;
-	// bdfparser は props のキーを小文字で保持する
 	const fontAscentStr = glyph.font.props["font_ascent"];
 	const fontAscent = fontAscentStr != null ? parseInt(fontAscentStr) : fontSize;
 	const yOffset = fontAscent - bbyoff - glyph.meta.bbh;
@@ -216,8 +246,9 @@ function glyphToGlyphData(
 function useCharBitmaps({
 	fontInfo,
 	text,
-}: UseCharBitmapsHookParams): Promise<GlyphData[][]> {
-	const tofu = useTofu(fontInfo);
+}: UseCharBitmapsParams): Promise<GlyphData[][]> {
+	const tofu = getTofu(fontInfo.fontSize);
+
 	return useMemo(async () => {
 		try {
 			const lines = text.split("\n");
@@ -269,201 +300,6 @@ function useCharBitmaps({
 	]);
 }
 
-type LineImagesPromiseHookParams = {
-	fontInfo: FontInfo;
-	text: string;
-	fillColor: string;
-	maxWidthPx?: number;
-};
-
-function useLineImagesPromise({
-	fontInfo,
-	text,
-	fillColor,
-	maxWidthPx,
-}: LineImagesPromiseHookParams): Promise<LineImage[]> {
-	const charBitmapsPromise = useCharBitmaps({ fontInfo, text });
-	const fillColorRgb = useMemo(() => hexToRgb(fillColor), [fillColor]);
-
-	return useMemo(async () => {
-		try {
-			const charBitmaps = await charBitmapsPromise;
-
-			const drawLines: LineImage[] = [];
-			for (const lineCharBitmaps of charBitmaps) {
-				const wrappedLines = maxWidthPx
-					? wrapLineByWidth(lineCharBitmaps, maxWidthPx)
-					: [createLineGlyphInfo(lineCharBitmaps)];
-
-				for (const wrappedLine of wrappedLines) {
-					const { glyphs, width: lineWidth } = wrappedLine;
-
-					if (glyphs.length === 0) {
-						drawLines.push({
-							canvas: null,
-							width: 0,
-						});
-						continue;
-					}
-
-					// 行ごとのOffscreenCanvasを作成
-					const canvas = new OffscreenCanvas(lineWidth, fontInfo.fontSize);
-					const ctx = canvas.getContext("2d");
-
-					if (!ctx) {
-						throw new Error("Failed to get OffscreenCanvasRenderingContext2D");
-					}
-
-					let currentX = 0;
-					for (const glyphData of glyphs) {
-						const { bitmap, advanceWidth, xOffset, yOffset } = glyphData;
-						const bitmapWidth = bitmap.width();
-						const bitmapHeight = bitmap.height();
-
-						if (bitmapWidth > 0 && bitmapHeight > 0) {
-							// ImageData を作成して描画
-							const imageData = ctx.createImageData(bitmapWidth, bitmapHeight);
-							const data = imageData.data;
-
-							for (let row = 0; row < bitmapHeight; row++) {
-								for (let col = 0; col < bitmapWidth; col++) {
-									const pixelIndex = (row * bitmapWidth + col) * 4;
-									if (bitmap.bindata[row][col] === "1") {
-										fillColorRgb.setToData(data, pixelIndex);
-									} else {
-										setTransparentToData(data, pixelIndex);
-									}
-								}
-							}
-
-							// BBX x/y オフセットを考慮した位置に描画
-							ctx.putImageData(imageData, currentX + xOffset, yOffset);
-						}
-						// DWIDTH を使って x を進める
-						currentX += advanceWidth;
-					}
-
-					drawLines.push({
-						canvas,
-						width: lineWidth,
-					});
-				}
-			}
-
-			return drawLines;
-		} catch (error) {
-			console.error("Failed to create line data:", error);
-			return [];
-		}
-	}, [charBitmapsPromise, maxWidthPx, fontInfo.fontSize, fillColorRgb]);
-}
-
-type DrawContentHookParams = {
-	x: number;
-	y: number;
-	fontInfo: FontInfo;
-	scaleX: number;
-	scaleY: number;
-	lineHeight: number;
-	maxWidthPx: number;
-	maxHeightPx: number;
-	skipLineCount: number;
-	align: "left" | "center" | "right";
-	verticalAlign: "top" | "center" | "bottom";
-	lineImagesPromise: Promise<LineImage[]>;
-};
-function useDrawContentPromise({
-	x,
-	y,
-	fontInfo,
-	scaleX,
-	scaleY,
-	lineHeight,
-	maxWidthPx,
-	maxHeightPx,
-	skipLineCount,
-	align,
-	verticalAlign,
-	lineImagesPromise,
-}: DrawContentHookParams): Promise<DrawContent> {
-	return useMemo(async () => {
-		const drawLines = await lineImagesPromise;
-		const normalizedSkipLineCount = Math.max(0, Math.floor(skipLineCount));
-
-		let maxWidth = 0;
-		let visibleHeight = 0;
-		const lines: DrawLine[] = [];
-
-		const fontHeightPx = fontInfo.fontSize * scaleY;
-		const lineHeightPx = fontInfo.fontSize * lineHeight * scaleY;
-
-		drawLines.forEach((drawLine, index) => {
-			if (index < normalizedSkipLineCount) {
-				return;
-			}
-
-			if (maxHeightPx && visibleHeight + lineHeightPx > maxHeightPx) {
-				return;
-			}
-
-			if (drawLine.canvas == null) {
-				visibleHeight += lineHeightPx;
-				return;
-			}
-
-			const scaledWidth = drawLine.width * scaleX;
-			const lineX = calculateXPosition(0, scaledWidth, maxWidthPx, align);
-
-			lines.push({
-				x: lineX,
-				y: visibleHeight,
-				canvas: drawLine.canvas,
-				width: scaledWidth,
-				height: fontHeightPx,
-			});
-
-			maxWidth = Math.max(maxWidth, scaledWidth);
-			visibleHeight += lineHeightPx;
-		});
-
-		// 垂直アライメントに基づいて行のY位置を調整
-		const adjustedLines = lines.map((line) => ({
-			...line,
-			y: calculateYPosition(line.y, visibleHeight, maxHeightPx, verticalAlign),
-		}));
-
-		// 垂直アライメントで行がシフトされた場合、高さを実際の描画範囲に合わせる
-		const adjustedHeight =
-			adjustedLines.length > 0
-				? Math.max(
-						visibleHeight,
-						...adjustedLines.map((line) => line.y + line.height),
-					)
-				: visibleHeight;
-
-		return {
-			x,
-			y,
-			width: maxWidth,
-			height: adjustedHeight,
-			lines: adjustedLines,
-		};
-	}, [
-		lineImagesPromise,
-		fontInfo.fontSize,
-		scaleY,
-		lineHeight,
-		x,
-		y,
-		maxHeightPx,
-		skipLineCount,
-		scaleX,
-		maxWidthPx,
-		align,
-		verticalAlign,
-	]);
-}
-
 function wrapLineByWidth(
 	charGlyphs: GlyphData[],
 	maxWidthPx: number,
@@ -473,19 +309,11 @@ function wrapLineByWidth(
 	let currentWidth = 0;
 
 	for (const glyphData of charGlyphs) {
-		// advance width でセル幅を判定する
 		const charWidth = glyphData.advanceWidth;
-
-		if (charWidth === 0) {
-			continue;
-		}
+		if (charWidth === 0) continue;
 
 		if (currentWidth + charWidth > maxWidthPx && currentGlyphs.length > 0) {
-			// 折り返し
-			wrappedLines.push({
-				glyphs: currentGlyphs,
-				width: currentWidth,
-			});
+			wrappedLines.push({ glyphs: currentGlyphs, width: currentWidth });
 			currentGlyphs = [glyphData];
 			currentWidth = charWidth;
 		} else {
@@ -494,14 +322,11 @@ function wrapLineByWidth(
 		}
 	}
 
-	if (0 < currentGlyphs.length) {
-		wrappedLines.push({
-			glyphs: currentGlyphs,
-			width: currentWidth,
-		});
+	if (currentGlyphs.length > 0) {
+		wrappedLines.push({ glyphs: currentGlyphs, width: currentWidth });
 	}
 
-	return 0 < wrappedLines.length ? wrappedLines : [{ glyphs: [], width: 0 }];
+	return wrappedLines.length > 0 ? wrappedLines : [{ glyphs: [], width: 0 }];
 }
 
 function createLineGlyphInfo(charGlyphs: GlyphData[]): WrappedLineInfo {
@@ -509,9 +334,7 @@ function createLineGlyphInfo(charGlyphs: GlyphData[]): WrappedLineInfo {
 	let lineWidth = 0;
 
 	for (const glyphData of charGlyphs) {
-		// advance width を使ってセル幅を積算する
 		const charWidth = glyphData.advanceWidth;
-
 		if (charWidth > 0) {
 			glyphs.push(glyphData);
 			lineWidth += charWidth;
@@ -527,9 +350,7 @@ function calculateXPosition(
 	maxWidth: number,
 	align: "left" | "center" | "right",
 ): number {
-	if (maxWidth === 0) {
-		return baseX;
-	}
+	if (maxWidth === 0) return baseX;
 
 	switch (align) {
 		case "center":
@@ -550,9 +371,7 @@ function calculateYPosition(
 ): number {
 	const availableHeight = maxHeight ?? totalHeight;
 
-	if (totalHeight >= availableHeight) {
-		return currentY;
-	}
+	if (totalHeight >= availableHeight) return currentY;
 
 	const verticalOffset = availableHeight - totalHeight;
 
@@ -565,4 +384,8 @@ function calculateYPosition(
 		default:
 			return currentY;
 	}
+}
+
+function roundToPixel(value: number): number {
+	return Math.round(value);
 }

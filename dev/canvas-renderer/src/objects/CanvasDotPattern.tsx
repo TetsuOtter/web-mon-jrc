@@ -1,12 +1,15 @@
 import type { PropsWithChildren } from "react";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect } from "react";
 
-import CanvasObjectBase from "./CanvasObjectBase";
+import { Texture, Sprite } from "pixi.js";
+
+import CanvasObjectContext from "../contexts/CanvasObjectContext";
+import { usePixiObject, clearContainer } from "../hooks/usePixiObject";
+import { hexToRgb, setTransparentToData } from "../utils/colorUtil";
 
 import type {
 	ClickEventHandler,
 	ClickDetector,
-	CanvasRenderFunction,
 } from "../contexts/CanvasObjectContext";
 
 type CanvasDotPatternProps = {
@@ -22,13 +25,6 @@ type CanvasDotPatternProps = {
 /**
  * ドットパターン描画オブジェクト
  * 文字列配列で表現されたパターン（"1"は塗る、"0"は塗らない）を描画
- * 例：
- * [
- *   "1111",
- *   "1001",
- *   "1001",
- *   "1111",
- * ]
  */
 export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 	function CanvasDotPattern({
@@ -41,43 +37,13 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 		onClick,
 		children,
 	}) {
-		// 画像サイズを計算
 		const imageWidth = image != null && image.length > 0 ? image[0].length : 0;
 		const imageHeight = image?.length ?? 0;
 		const width = imageWidth * scaleX;
 		const height = imageHeight * scaleY;
 
-		const onRender: CanvasRenderFunction = useCallback(
-			async (ctx, metadata) => {
-				if (image == null) {
-					return;
-				}
-				ctx.save();
-
-				// 各ドット位置を計算して描画
-				for (let row = 0; row < imageHeight; row++) {
-					const line = image[row];
-					for (let col = 0; col < line.length; col++) {
-						if (line[col] === "1") {
-							const dotX = Math.round(metadata.absX) + col * scaleX;
-							const dotY = Math.round(metadata.absY) + row * scaleY;
-							const dotW = Math.ceil(scaleX);
-							const dotH = Math.ceil(scaleY);
-
-							ctx.fillStyle = color;
-							ctx.fillRect(dotX, dotY, dotW, dotH);
-						}
-					}
-				}
-
-				ctx.restore();
-			},
-			[image, scaleX, scaleY, color, imageHeight],
-		);
-
 		const isClickDetector: ClickDetector = useCallback(
 			(clickX: number, clickY: number) => {
-				// clickX, clickY は相対座標（このオブジェクトの左上を原点とした座標）
 				return (
 					clickX >= 0 && clickX <= width && clickY >= 0 && clickY <= height
 				);
@@ -85,19 +51,66 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 			[width, height],
 		);
 
+		const { container, graphicsContainer, metadata } = usePixiObject({
+			relX: x,
+			relY: y,
+			width,
+			height,
+			onClick,
+			isClickDetector,
+		});
+
+		useEffect(() => {
+			if (graphicsContainer.destroyed) return;
+			clearContainer(graphicsContainer);
+
+			if (!image || imageWidth === 0 || imageHeight === 0) return;
+
+			const canvas = new OffscreenCanvas(imageWidth, imageHeight);
+			const ctx = canvas.getContext("2d");
+			if (!ctx) return;
+
+			const imageData = ctx.createImageData(imageWidth, imageHeight);
+			const data = imageData.data;
+			const fillColorRgb = hexToRgb(color);
+
+			for (let row = 0; row < imageHeight; row++) {
+				const line = image[row];
+				for (let col = 0; col < line.length; col++) {
+					const pixelIndex = (row * imageWidth + col) * 4;
+					if (line[col] === "1") {
+						fillColorRgb.setToData(data, pixelIndex);
+					} else {
+						setTransparentToData(data, pixelIndex);
+					}
+				}
+			}
+
+			ctx.putImageData(imageData, 0, 0);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const texture = Texture.from(canvas as any);
+			const sprite = new Sprite(texture);
+			sprite.width = width;
+			sprite.height = height;
+			graphicsContainer.addChild(sprite);
+		}, [
+			graphicsContainer,
+			image,
+			color,
+			imageWidth,
+			imageHeight,
+			width,
+			height,
+		]);
+
 		return (
-			<CanvasObjectBase
-				onRender={onRender}
-				onClick={onClick}
-				isClickDetector={isClickDetector}
-				relX={x}
-				relY={y}
-				width={width}
-				height={height}
-				isFilled
+			<CanvasObjectContext
+				pixiContainer={container}
+				metadata={metadata}
 			>
 				{children}
-			</CanvasObjectBase>
+			</CanvasObjectContext>
 		);
 	},
 );

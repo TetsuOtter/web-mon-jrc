@@ -1,275 +1,192 @@
-import type {
-	CSSProperties,
-	PropsWithChildren,
-	ReactNode,
-	RefCallback,
-} from "react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+
+import { Application, Color } from "pixi.js";
 
 import CanvasObjectContext from "./contexts/CanvasObjectContext";
-import { RenderRequesterContext } from "./contexts/RenderRequestContext";
-import { intersectsRects, mergeRenderAreas } from "./utils/renderGeometry";
 
-import type {
-	CanvasObjectMetadata,
-	CanvasRenderFunctionObject,
-} from "./contexts/CanvasObjectContext";
-import type {
-	RenderRequestContextType,
-	RenderArea,
-} from "./contexts/RenderRequestContext";
+import type { CanvasObjectMetadata } from "./contexts/CanvasObjectContext";
+import type { Container } from "pixi.js";
 
 type CanvasRendererProps = {
 	width: number;
 	height: number;
-	fill?: CanvasFillStrokeStyles["fillStyle"];
+	fill?: string;
 	style?: CSSProperties;
 	children: ReactNode;
+	/** PIXIは自動レンダリングのため無視される（後方互換のために維持） */
 	renderRequestCount?: number;
 };
-export default memo<PropsWithChildren<CanvasRendererProps>>(
-	function CanvasRenderer({
-		width,
-		height,
-		fill,
-		style: styleProps,
-		children,
-		renderRequestCount,
-	}) {
-		const registeredObjectListRef = useRef<CanvasRenderFunctionObject[]>([]);
-		const isRenderingRef = useRef(false);
 
-		const [renderRequestedAreaList, setRenderRequestedAreaList] = useState<
-			RenderArea[]
-		>([]);
+export default memo<CanvasRendererProps>(function CanvasRenderer({
+	width,
+	height,
+	fill,
+	style: styleProps,
+	children,
+	renderRequestCount: _renderRequestCount,
+}) {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const appRef = useRef<Application | null>(null);
+	const [stageContainer, setStageContainer] = useState<Container | null>(null);
+	const latestSizeRef = useRef({ width, height });
+	const latestFillRef = useRef<string | undefined>(fill);
 
-		const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
-		const [scale, setScale] = useState<number>(window.devicePixelRatio || 1);
-		const canvasMetadata: CanvasObjectMetadata = useMemo(
-			() => ({
-				absX: 0,
-				absY: 0,
-				relX: 0,
-				relY: 0,
+	latestSizeRef.current = { width, height };
+	latestFillRef.current = fill;
+
+	const applyBackground = (
+		app: Application,
+		backgroundFill: string | undefined,
+	): void => {
+		if (backgroundFill) {
+			const color = new Color(backgroundFill);
+			app.renderer.background.color = color.toNumber();
+			app.renderer.background.alpha = color.alpha;
+		} else {
+			app.renderer.background.alpha = 0;
+		}
+	};
+
+	// PIXIアプリケーションを初期化（マウント時のみ）
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		let cancelled = false;
+		const app = new Application();
+		appRef.current = app;
+
+		const backgroundColor = fill ? new Color(fill).toNumber() : 0x000000;
+		const backgroundAlpha = fill ? new Color(fill).alpha : 0;
+
+		app
+			.init({
+				canvas,
 				width,
 				height,
-				isFilled: true,
-			}),
-			[width, height],
-		);
-
-		const requestRender: RenderRequestContextType = useCallback((area) => {
-			setRenderRequestedAreaList((prev) => [...prev, area]);
-		}, []);
-		useEffect(() => {
-			setRenderRequestedAreaList([canvasMetadata]);
-		}, [canvasMetadata, renderRequestCount]);
-
-		useEffect(() => {
-			if (renderRequestedAreaList.length === 0 || !ctx) {
-				return;
-			}
-
-			// 前の非同期レンダリングが完了していない場合はスキップ（後で再実行される）
-			if (isRenderingRef.current) {
-				return;
-			}
-
-			isRenderingRef.current = true;
-
-			// ダーティ領域をマージして最小セットに
-			const mergedAreas = mergeRenderAreas(renderRequestedAreaList);
-			// レンダリング対象の領域をリストから除去する
-			// 子EffectがrequestRenderで追加した新しい領域を消さないよう、
-			// 直接[]にセットせず、関数型アップデートで先頭N個だけ削除する
-			const consumedCount = renderRequestedAreaList.length;
-			setRenderRequestedAreaList((prev) => prev.slice(consumedCount));
-
-			// 1. ダーティ領域のみクリア（背景色があれば塗りつぶし）
-			mergedAreas.forEach((area) => {
-				if (fill) {
-					ctx.fillStyle = fill;
-					ctx.fillRect(area.absX, area.absY, area.width, area.height);
-				} else {
-					ctx.clearRect(area.absX, area.absY, area.width, area.height);
+				backgroundColor,
+				backgroundAlpha,
+				antialias: false,
+				autoDensity: true,
+				resolution: window.devicePixelRatio || 1,
+				preserveDrawingBuffer: true,
+			})
+			.then(() => {
+				if (!cancelled) {
+					app.stage.sortableChildren = true;
+					const latestSize = latestSizeRef.current;
+					app.renderer.resize(latestSize.width, latestSize.height);
+					applyBackground(app, latestFillRef.current);
+					setStageContainer(app.stage);
+					// テスト用: スクリーンショット撮影前にPIXIを制御できるよう公開
+					const testApps = (
+						window as Window & { __testPixiApps?: Application[] }
+					).__testPixiApps;
+					if (testApps) {
+						testApps.push(app);
+					} else {
+						(
+							window as Window & { __testPixiApps?: Application[] }
+						).__testPixiApps = [app];
+					}
 				}
+			})
+			.catch((error: unknown) => {
+				console.error("Failed to initialize PIXI Application:", error);
 			});
 
-			// 非同期描画が完了したらクリップを解除し、次のレンダリングを許可
-			const finishRender = () => {
-				ctx.restore();
-				isRenderingRef.current = false;
-				// レンダリング中に蓄積されたダーティ領域があれば再レンダリングをトリガー
-				setRenderRequestedAreaList((prev) =>
-					prev.length > 0 ? [...prev] : prev,
-				);
-			};
+		return () => {
+			cancelled = true;
+			const appToDestroy = appRef.current;
+			appRef.current = null;
+			setStageContainer(null);
+			// __testPixiAppsから削除
+			if (appToDestroy) {
+				const testApps = (window as Window & { __testPixiApps?: Application[] })
+					.__testPixiApps;
+				if (testApps) {
+					const idx = testApps.indexOf(appToDestroy);
+					if (idx !== -1) testApps.splice(idx, 1);
+				}
+			}
+			// renderer は init() 完了後にのみ存在するため、未初期化の場合はスキップ
+			if (appToDestroy?.renderer) {
+				appToDestroy.destroy(false, { children: true });
+			}
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-			// 2. ダーティ領域のみを描画するようクリップを設定
-			ctx.save();
-			ctx.beginPath();
-			mergedAreas.forEach((area) => {
-				ctx.rect(area.absX, area.absY, area.width, area.height);
+	// stageContainerが設定されてReact childrenがマウントされた後、
+	// PIXIが最初のフレームを描画してからpixiReadyをセットする
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas || stageContainer == null) return;
+
+		let id2: ReturnType<typeof requestAnimationFrame>;
+		// 2フレーム待ってPIXIが子要素を描画してからフラグをセット
+		const id1 = requestAnimationFrame(() => {
+			id2 = requestAnimationFrame(() => {
+				canvas.dataset.pixiReady = "true";
 			});
-			ctx.clip();
+		});
+		return () => {
+			cancelAnimationFrame(id1);
+			cancelAnimationFrame(id2);
+			delete canvas.dataset.pixiReady;
+		};
+	}, [stageContainer]);
 
-			// 3. ダーティ領域と交差するオブジェクトのみ描画（Z-order 保持）
-			const renderPromises: Promise<void>[] = [];
-			try {
-				for (const obj of registeredObjectListRef.current) {
-					if (mergedAreas.some((area) => intersectsRects(obj.metadata, area))) {
-						const result = obj.onRender(ctx, obj.metadata, mergedAreas);
-						if (result instanceof Promise) {
-							renderPromises.push(result);
-						}
-					}
-				}
-			} catch (error) {
-				console.error("Error during canvas render:", error);
-				finishRender();
-				return;
-			}
+	// サイズ変更に対応
+	useEffect(() => {
+		const app = appRef.current;
+		if (!app || !app.renderer) return;
+		app.renderer.resize(width, height);
+	}, [width, height]);
 
-			if (renderPromises.length > 0) {
-				Promise.all(renderPromises)
-					.then(finishRender)
-					.catch((error) => {
-						console.error("Error during canvas render:", error);
-						finishRender();
-					});
-			} else {
-				finishRender();
-			}
-		}, [ctx, height, renderRequestedAreaList, width, fill]);
+	// 背景色変更に対応
+	useEffect(() => {
+		const app = appRef.current;
+		if (!app || !app.renderer) return;
+		applyBackground(app, fill);
+	}, [fill]);
 
-		useEffect(() => {
-			const targetCtx = ctx;
-			if (!targetCtx) {
-				return;
-			}
-			const updateScale = () => {
-				const dpr = window.devicePixelRatio || 1;
-				targetCtx.clearRect(0, 0, width * dpr, height * dpr);
-				targetCtx.scale(dpr, dpr);
-				setScale(dpr);
-				setRenderRequestedAreaList([canvasMetadata]);
-			};
+	const rootMetadata = useMemo(
+		(): CanvasObjectMetadata => ({
+			absX: 0,
+			absY: 0,
+			relX: 0,
+			relY: 0,
+			width,
+			height,
+		}),
+		[width, height],
+	);
 
-			updateScale();
-			window.addEventListener("dpichange", updateScale);
-			return () => {
-				window.removeEventListener("dpichange", updateScale);
-			};
-		}, [ctx, canvasMetadata, width, height]);
+	const style = useMemo(
+		(): CSSProperties => ({
+			width: `${width}px`,
+			height: `${height}px`,
+			...styleProps,
+		}),
+		[width, height, styleProps],
+	);
 
-		const canvasRefCallback: RefCallback<HTMLCanvasElement> = useCallback(
-			(canvas) => {
-				const context = canvas?.getContext("2d");
-				if (context) {
-					setCtx(context);
-				} else {
-					setCtx(null);
-				}
-			},
-			[],
-		);
-
-		const handleCanvasClick = useCallback(
-			async (event: React.MouseEvent<HTMLCanvasElement>) => {
-				const canvas = event.currentTarget;
-				const rect = canvas.getBoundingClientRect();
-
-				// objectFit: "contain"が適用されている場合、実際に表示されている領域を計算
-				const displayAspectRatio = rect.width / rect.height;
-				const canvasAspectRatio = canvas.width / canvas.height;
-
-				let displayWidth: number;
-				let displayHeight: number;
-				let offsetX: number;
-				let offsetY: number;
-
-				if (displayAspectRatio > canvasAspectRatio) {
-					// 高さで制限される（幅に空白がある）
-					displayHeight = rect.height;
-					displayWidth = displayHeight * canvasAspectRatio;
-					offsetX = (rect.width - displayWidth) / 2;
-					offsetY = 0;
-				} else {
-					// 幅で制限される（高さに空白がある）
-					displayWidth = rect.width;
-					displayHeight = displayWidth / canvasAspectRatio;
-					offsetX = 0;
-					offsetY = (rect.height - displayHeight) / 2;
-				}
-
-				// マウス座標が表示領域内かチェック
-				const mouseX = event.clientX - rect.left;
-				const mouseY = event.clientY - rect.top;
-
-				if (
-					mouseX < offsetX ||
-					mouseX > offsetX + displayWidth ||
-					mouseY < offsetY ||
-					mouseY > offsetY + displayHeight
-				) {
-					return;
-				}
-
-				// Canvas論理座標に変換
-				const relativeX = (mouseX - offsetX) / displayWidth;
-				const relativeY = (mouseY - offsetY) / displayHeight;
-				const absX = relativeX * width;
-				const absY = relativeY * height;
-
-				// オブジェクトを Z-order（逆順）で走査して、最初にマッチしたものだけハンドルする
-				const objectsArray = registeredObjectListRef.current;
-				for (let i = objectsArray.length - 1; i >= 0; i--) {
-					const obj = objectsArray[i];
-					if (!obj.onClickHandler) {
-						continue;
-					}
-					const m = obj.metadata;
-					const relX = absX - m.absX;
-					const relY = absY - m.absY;
-					const isClicked =
-						(await obj.isClickDetector?.(relX, relY)) ??
-						(0 <= relX && relX <= m.width && 0 <= relY && relY <= m.height);
-					if (isClicked) {
-						const handled = await obj.onClickHandler(relX, relY);
-						if (handled || handled == null) {
-							break; // イベントが処理されたら終了
-						}
-					}
-				}
-			},
-			[height, width],
-		);
-
-		const style = useMemo(
-			() => ({
-				width: `${width * scale}px`,
-				height: `${height * scale}px`,
-				...styleProps,
-			}),
-			[styleProps, width, height, scale],
-		);
-
-		return (
-			<RenderRequesterContext.Provider value={requestRender}>
-				<canvas
-					ref={canvasRefCallback}
-					onClick={handleCanvasClick}
-					height={height * scale}
-					width={width * scale}
-					style={style}
-				/>
+	return (
+		<>
+			<canvas
+				ref={canvasRef}
+				style={style}
+			/>
+			{stageContainer != null && (
 				<CanvasObjectContext
-					registeredObjectListRef={registeredObjectListRef}
-					metadata={canvasMetadata}
+					pixiContainer={stageContainer}
+					metadata={rootMetadata}
 				>
 					{children}
 				</CanvasObjectContext>
-			</RenderRequesterContext.Provider>
-		);
-	},
-);
+			)}
+		</>
+	);
+});

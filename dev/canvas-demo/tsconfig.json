@@ -24,7 +24,8 @@
 		"paths": {
 			"@web-mon-jrc/canvas-renderer": ["../canvas-renderer/src/index.ts"],
 			"@web-mon-jrc/canvas-renderer/*": ["../canvas-renderer/src/*"]
-		}
+		},
+		"types": ["vite/client"]
 	},
 	"include": ["src"]
 }
