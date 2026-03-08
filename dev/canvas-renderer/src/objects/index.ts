@@ -2,7 +2,6 @@ export { default as CanvasCircle } from "./CanvasCircle";
 export { default as CanvasDotPattern } from "./CanvasDotPattern";
 export { default as CanvasImage } from "./CanvasImage";
 export { default as CanvasLine } from "./CanvasLine";
-export { default as CanvasObjectBase } from "./CanvasObjectBase";
 export { default as CanvasObjectGroup } from "./CanvasObjectGroup";
 export { default as CanvasOrderDemoItem } from "./CanvasOrderDemoItem";
 export { default as CanvasQuadrilateral } from "./CanvasQuadrilateral";

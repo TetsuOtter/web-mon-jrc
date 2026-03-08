@@ -119,8 +119,8 @@ export default memo(function CanvasDemo() {
 
 					{/* クリック可能な青い円 */}
 					<CanvasCircle
-						relX={260}
-						relY={70}
+						centerRelX={260}
+						centerRelY={70}
 						radius={35}
 						fillColor="#4dabf7"
 						strokeColor="#000000"
@@ -164,8 +164,8 @@ export default memo(function CanvasDemo() {
 
 					{/* クリック可能な黄色の円 */}
 					<CanvasCircle
-						relX={350}
-						relY={200}
+						centerRelX={350}
+						centerRelY={200}
 						radius={40}
 						fillColor="#ffd43b"
 						strokeColor="#000000"
@@ -256,8 +256,8 @@ export default memo(function CanvasDemo() {
 
 					{/* 塗りつぶしなし円 */}
 					<CanvasCircle
-						relX={310}
-						relY={100}
+						centerRelX={310}
+						centerRelY={100}
 						radius={40}
 						strokeColor="#0000ff"
 						strokeWidth={2}
@@ -265,8 +265,8 @@ export default memo(function CanvasDemo() {
 
 					{/* 塗りつぶしあり円 */}
 					<CanvasCircle
-						relX={430}
-						relY={100}
+						centerRelX={430}
+						centerRelY={100}
 						radius={40}
 						fillColor="#ffff00"
 						strokeColor="#000000"
@@ -307,8 +307,8 @@ export default memo(function CanvasDemo() {
 					{Array.from({ length: 5 }).map((_, i) => (
 						<CanvasCircle
 							key={`circle-${i}`}
-							relX={600}
-							relY={250}
+							centerRelX={600}
+							centerRelY={250}
 							radius={40 - i * 8}
 							fillColor={`rgba(${i * 50}, ${200 - i * 40}, 255, ${0.3 + i * 0.15})`}
 						/>
@@ -601,8 +601,8 @@ export default memo(function CanvasDemo() {
 						fillColor="#868e96"
 					/>
 					<CanvasCircle
-						relX={555}
-						relY={110}
+						centerRelX={555}
+						centerRelY={110}
 						radius={45}
 						fillColor="#dee2e6"
 						strokeColor="#adb5bd"

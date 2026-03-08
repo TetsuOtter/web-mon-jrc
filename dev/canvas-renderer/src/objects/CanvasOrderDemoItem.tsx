@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from "react";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
-import CanvasObjectBase from "./CanvasObjectBase";
+import { Graphics, Text } from "pixi.js";
 
-import type {
-	CanvasRenderFunction,
-	ClickEventHandler,
-} from "../contexts/CanvasObjectContext";
+import CanvasObjectContext from "../contexts/CanvasObjectContext";
+import { usePixiObject, clearContainer } from "../hooks/usePixiObject";
+
+import type { ClickEventHandler } from "../contexts/CanvasObjectContext";
 
 type CanvasOrderDemoItemProps = {
 	relX: number;
@@ -20,7 +20,6 @@ type CanvasOrderDemoItemProps = {
 
 /**
  * 描画順序デモ用のCanvasObject
- * 図形と共にラベルを描画し、描画順序の変化を視覚的に確認できる
  */
 export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 	function CanvasOrderDemoItem({
@@ -35,67 +34,65 @@ export default memo<PropsWithChildren<CanvasOrderDemoItemProps>>(
 	}) {
 		const [count, setCount] = useState(0);
 
-		const onRender: CanvasRenderFunction = useCallback(
-			(ctx, metadata) => {
-				// 図形を描画
-				ctx.fillStyle = color;
-				ctx.fillRect(
-					metadata.relX,
-					metadata.relY,
-					metadata.width,
-					metadata.height,
-				);
-
-				// 枠線を描画
-				ctx.strokeStyle = "#000000";
-				ctx.lineWidth = 2;
-				ctx.strokeRect(
-					metadata.relX,
-					metadata.relY,
-					metadata.width,
-					metadata.height,
-				);
-
-				// ラベルを描画
-				ctx.fillStyle = "#000000";
-				ctx.font = "bold 14px Arial";
-				ctx.textAlign = "center";
-				ctx.textBaseline = "middle";
-				ctx.fillText(
-					label + " (" + count + ")",
-					metadata.relX + metadata.width / 2,
-					metadata.relY + metadata.height / 2,
-				);
-			},
-			[color, count, label],
-		);
-
 		const handleClick: ClickEventHandler = useCallback(
 			async (relX, relY) => {
 				setCount((prev) => prev + 1);
 				if (onClick) {
 					const handled = await onClick(relX, relY);
-					if (handled) {
-						return true;
-					}
+					if (handled) return true;
 				}
 				return true;
 			},
 			[onClick],
 		);
 
+		const { container, graphicsContainer, metadata } = usePixiObject({
+			relX,
+			relY,
+			width,
+			height,
+			onClick: handleClick,
+		});
+
+		useEffect(() => {
+			if (graphicsContainer.destroyed) return;
+			clearContainer(graphicsContainer);
+
+			const g = new Graphics();
+			g.rect(0, 0, metadata.width, metadata.height);
+			g.fill(color);
+			g.rect(0, 0, metadata.width, metadata.height);
+			g.stroke({ color: "#000000", width: 2 });
+			graphicsContainer.addChild(g);
+
+			const labelText = new Text({
+				text: `${label} (${count})`,
+				style: {
+					fontFamily: "Arial",
+					fontSize: 14,
+					fontWeight: "bold",
+					fill: "#000000",
+				},
+			});
+			labelText.x = metadata.width / 2 - labelText.width / 2;
+			labelText.y = metadata.height / 2 - labelText.height / 2;
+			graphicsContainer.addChild(labelText);
+		}, [
+			graphicsContainer,
+			color,
+			count,
+			label,
+			metadata.width,
+			metadata.height,
+		]);
+
 		return (
-			<CanvasObjectBase
-				onRender={onRender}
-				onClick={handleClick}
-				relX={relX}
-				relY={relY}
-				width={width}
-				height={height}
-				isFilled
+			<CanvasObjectContext
+				pixiContainer={container}
+				metadata={metadata}
 			>
 				{children}
-			</CanvasObjectBase>
+			</CanvasObjectContext>
 		);
 	},
 );

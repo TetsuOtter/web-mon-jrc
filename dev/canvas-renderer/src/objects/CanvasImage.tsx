@@ -1,14 +1,13 @@
 import type { PropsWithChildren } from "react";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useEffect } from "react";
 
-import {
+import { Assets, Sprite } from "pixi.js";
+
+import CanvasObjectContext, {
 	type ClickEventHandler,
-	type CanvasRenderFunction,
 	useCanvasObjectContext,
 } from "../contexts/CanvasObjectContext";
-import { useStoredImage } from "../utils/ImageStore";
-
-import CanvasObjectBase from "./CanvasObjectBase";
+import { usePixiObject, clearContainer } from "../hooks/usePixiObject";
 
 type CanvasImageProps = {
 	readonly imagePath: string;
@@ -25,8 +24,8 @@ type CanvasImageProps = {
 
 export default memo<PropsWithChildren<CanvasImageProps>>(function CanvasImage({
 	imagePath,
-	relX: propsRelX,
-	relY: propsRelY,
+	relX,
+	relY,
 	scaleX = 1,
 	scaleY = 1,
 	areaWidth: propsAreaWidth,
@@ -37,71 +36,85 @@ export default memo<PropsWithChildren<CanvasImageProps>>(function CanvasImage({
 	children,
 }) {
 	const parentObjectContext = useCanvasObjectContext();
-	const imageData = useStoredImage(imagePath);
-	const imageHeight = (imageData?.canvas.height ?? 0) * scaleY;
-	const imageWidth = (imageData?.canvas.width ?? 0) * scaleX;
 	const areaHeight = propsAreaHeight ?? parentObjectContext.metadata.height;
 	const areaWidth = propsAreaWidth ?? parentObjectContext.metadata.width;
 
-	const offsetX = useMemo((): number => {
-		switch (horizontalAlign) {
-			case "left":
-				return 0;
-			case "center":
-				return -Math.round((imageWidth - areaWidth) / 2);
-			case "right":
-				return imageWidth - areaWidth;
-		}
-	}, [areaWidth, horizontalAlign, imageWidth]);
+	const { container, graphicsContainer, metadata } = usePixiObject({
+		relX,
+		relY,
+		width: areaWidth,
+		height: areaHeight,
+		onClick,
+	});
 
-	const offsetY = useMemo((): number => {
-		switch (verticalAlign) {
-			case "top":
-				return 0;
-			case "middle":
-				return -Math.round((imageHeight - areaHeight) / 2);
-			case "bottom":
-				return imageHeight - areaHeight;
-		}
-	}, [areaHeight, verticalAlign, imageHeight]);
+	useEffect(() => {
+		if (graphicsContainer.destroyed) return;
+		if (!imagePath) return;
 
-	const relX = propsRelX + offsetX;
-	const relY = propsRelY + offsetY;
+		let cancelled = false;
 
-	const onRender: CanvasRenderFunction = useCallback(
-		(ctx, metadata) => {
-			if (!imageData?.canvas) {
-				return;
+		(async () => {
+			try {
+				const texture = await Assets.load(imagePath);
+				if (cancelled || !texture || graphicsContainer.destroyed) return;
+
+				clearContainer(graphicsContainer);
+
+				const imageWidth = texture.width * scaleX;
+				const imageHeight = texture.height * scaleY;
+
+				let offsetX = 0;
+				switch (horizontalAlign) {
+					case "center":
+						offsetX = -Math.round((imageWidth - areaWidth) / 2);
+						break;
+					case "right":
+						offsetX = imageWidth - areaWidth;
+						break;
+				}
+
+				let offsetY = 0;
+				switch (verticalAlign) {
+					case "middle":
+						offsetY = -Math.round((imageHeight - areaHeight) / 2);
+						break;
+					case "bottom":
+						offsetY = imageHeight - areaHeight;
+						break;
+				}
+
+				const sprite = new Sprite(texture);
+				sprite.x = offsetX;
+				sprite.y = offsetY;
+				sprite.width = imageWidth;
+				sprite.height = imageHeight;
+
+				graphicsContainer.addChild(sprite);
+			} catch (error) {
+				console.error(`Failed to load image: ${imagePath}`, error);
 			}
+		})();
 
-			ctx.save();
-
-			// 整数座標に丸める
-			const ix = Math.round(metadata.absX);
-			const iy = Math.round(metadata.absY);
-			const iw = Math.round(metadata.width);
-			const ih = Math.round(metadata.height);
-
-			// 画像を描画
-			ctx.imageSmoothingEnabled = false;
-			ctx.drawImage(imageData.canvas, ix, iy, iw, ih);
-
-			ctx.restore();
-		},
-		[imageData],
-	);
+		return () => {
+			cancelled = true;
+		};
+	}, [
+		graphicsContainer,
+		imagePath,
+		scaleX,
+		scaleY,
+		areaWidth,
+		areaHeight,
+		horizontalAlign,
+		verticalAlign,
+	]);
 
 	return (
-		<CanvasObjectBase
-			onRender={onRender}
-			onClick={onClick}
-			relX={relX}
-			relY={relY}
-			width={imageWidth}
-			height={imageHeight}
-			isFilled
+		<CanvasObjectContext
+			pixiContainer={container}
+			metadata={metadata}
 		>
 			{children}
-		</CanvasObjectBase>
+		</CanvasObjectContext>
 	);
 });

@@ -1,16 +1,18 @@
 import type { PropsWithChildren } from "react";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo } from "react";
 
-import CanvasObjectBase from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectBase";
+import CanvasObjectContext from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import {
+	usePixiObject,
+	clearContainer,
+} from "@web-mon-jrc/canvas-renderer/hooks/usePixiObject";
+import { Sprite, Texture } from "pixi.js";
 
 import { RGB_COLORS } from "../constants";
 
 import { getButtonImage } from "./buttonImageCache";
 
-import type {
-	CanvasRenderFunction,
-	ClickEventHandler,
-} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
 export const SHADOW_WIDTH = {
@@ -57,36 +59,30 @@ export default memo<PropsWithChildren<ButtonProps>>(function Button({
 		}
 	}, [onClick]);
 
-	const onRender: CanvasRenderFunction = useCallback(
-		async (ctx, metadata) => {
-			ctx.save();
+	const { container, graphicsContainer, metadata } = usePixiObject({
+		relX,
+		relY,
+		width,
+		height,
+		onClick: onClick ? handleClick : undefined,
+	});
 
-			// 整数座標に丸める
-			const ix = Math.round(metadata.absX);
-			const iy = Math.round(metadata.absY);
-			const iw = Math.round(metadata.width);
-			const ih = Math.round(metadata.height);
+	useEffect(() => {
+		if (graphicsContainer.destroyed) return;
+		clearContainer(graphicsContainer);
 
-			// ボタン画像を描画
-			ctx.imageSmoothingEnabled = false;
-			ctx.drawImage(buttonImageData, ix, iy, iw, ih);
-
-			ctx.restore();
-		},
-		[buttonImageData],
-	);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const texture = Texture.from(buttonImageData as any);
+		const sprite = new Sprite(texture);
+		graphicsContainer.addChild(sprite);
+	}, [graphicsContainer, buttonImageData]);
 
 	return (
-		<CanvasObjectBase
-			onRender={onRender}
-			onClick={onClick ? handleClick : undefined}
-			relX={relX}
-			relY={relY}
-			width={width}
-			height={height}
-			isFilled
+		<CanvasObjectContext
+			pixiContainer={container}
+			metadata={metadata}
 		>
 			{children}
-		</CanvasObjectBase>
+		</CanvasObjectContext>
 	);
 });
