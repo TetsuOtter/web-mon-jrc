@@ -41,34 +41,38 @@ export type Type313sCarState = {
 	occupancyRate: number | null;
 
 	// 車両状態
-	carStates: {
-		isMSOn?: boolean | null;
-		isCPOn?: boolean | null;
-		isMRPressureNormal: boolean | null;
-		isTestSWOn: boolean | null;
-		isSnowBrakeOn: boolean | null;
-
-		sivLineState?: {
-			isCgKForSIVOn: boolean | null;
-			isIvMSOn: boolean;
-			isIvHBOn: boolean;
-			isIvLOn: boolean;
-			isSIVOn: boolean | null;
-			is3phMKOn: boolean | null;
-			isIvCNOn: boolean | null;
-			isIVSMDSOn: boolean | null;
-			sivVoltage: number | null;
-			sivFrequency: number | null;
-		};
-		isReduceLoadOn: boolean | null;
-
-		bcPressure: [number | null, number | null, number | null, number | null];
-		mrPressure: number | null;
-		receivedNotchCommand: string | null;
-	};
+	carStates: Type313sCarStatus;
 
 	cabState?: Type313sCabState;
 	bogieState?: Type313sBogieCommonState;
+};
+
+export type Type313sCarStatus = {
+	isMSOn?: boolean | null;
+	isCPOn?: boolean | null;
+	isMRPressureNormal: boolean | null;
+	isTestSWOn: boolean | null;
+	isSnowBrakeOn: boolean | null;
+
+	sivLineState?: Type313sSIVLineState;
+	isReduceLoadOn: boolean | null;
+
+	bcPressure: [number | null, number | null, number | null, number | null];
+	mrPressure: number | null;
+	receivedNotchCommand: string | null;
+};
+
+export type Type313sSIVLineState = {
+	isCgKForSIVOn: boolean | null;
+	isIvMSOn: boolean;
+	isIvHBOn: boolean;
+	isIvLOn: boolean;
+	isSIVOn: boolean | null;
+	is3phMKOn: boolean | null;
+	isIvCNOn: boolean | null;
+	isIVSMDSOn: boolean | null;
+	sivVoltage: number | null;
+	sivFrequency: number | null;
 };
 
 export type Type313sCabState = {
