@@ -195,6 +195,7 @@ export function createDefaultCarState(carNumber: number): Type313sCarState {
 			isSnowBrakeOn: null,
 			sivLineState: undefined,
 			isReduceLoadOn: null,
+			isBrakeChopperOn: false,
 			bcPressure: [null, null, null, null],
 			mrPressure: null,
 			receivedNotchCommand: null,
@@ -582,6 +583,21 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 				carStates: { ...car.carStates, bcPressure: nextBcPressure },
 			};
 		},
+	},
+	{
+		type: "select",
+		fieldKey: "isBrakeChopperOn",
+		label: "ブレーキチョッパ",
+		options: NULLABLE_BOOLEAN_OPTIONS,
+		toSelectValue: (car) =>
+			nullableBooleanToSelectValue(car.carStates.isBrakeChopperOn),
+		fromSelectValue: (car, value) => ({
+			...car,
+			carStates: {
+				...car.carStates,
+				isBrakeChopperOn: selectValueToNullableBoolean(value),
+			},
+		}),
 	},
 	{
 		type: "nullable-string",

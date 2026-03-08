@@ -142,9 +142,25 @@ const createIsTestSWOnCell = createCellInfoCreator<boolean>((v) => {
 	}
 });
 
+const createBrakeChopperOnCell = createCellInfoCreator<boolean>((v) => {
+	if (v) {
+		return {
+			text: "○",
+			textColor: COLORS.WHITE,
+			backgroundColor: COLORS.BLACK,
+			horizontalAlign: "center",
+		};
+	} else {
+		return {
+			text: "",
+			textColor: COLORS.GRAY,
+		};
+	}
+});
+
 const createNumberCell = createCellInfoCreator<number>((v) => {
 	return {
-		text: `${v} `,
+		text: `${Math.round(v)} `,
 		textColor: COLORS.WHITE,
 		backgroundColor: COLORS.BLACK,
 		horizontalAlign: "right",
@@ -163,8 +179,9 @@ const createPowerBrakeNumberCell = (
 	const valueIfNoData = "".padStart(maxCharCount, "－");
 	return (value) => {
 		if (value !== undefined) {
+			const numStr = value == null ? valueIfNoData : `${Math.round(value)}`;
 			return {
-				text: `${value ?? valueIfNoData} `,
+				text: `${numStr} `,
 				textColor: COLORS.BLACK,
 				backgroundColor: color,
 				horizontalAlign: "right",
@@ -287,6 +304,13 @@ export function createIsTestSWOnCellListSelector(
 	sel: ValueFromStateSelector<boolean>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(label, sel, createIsTestSWOnCell);
+}
+
+export function createBrakeChopperOnCellListSelector(
+	label: string,
+	sel: ValueFromStateSelector<boolean>,
+): ToCellListForRowSelector {
+	return createSelectorWithLabel(label, sel, createBrakeChopperOnCell);
 }
 
 export function createNumberCellListSelector(

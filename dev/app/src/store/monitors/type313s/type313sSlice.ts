@@ -57,6 +57,7 @@ const defaultInitialState: Type313sState = {
 				},
 				isReduceLoadOn: false,
 
+				isBrakeChopperOn: false,
 				bcPressure: [300, 300, 300, 300],
 				mrPressure: 860,
 				receivedNotchCommand: "非常",
@@ -128,6 +129,7 @@ const defaultInitialState: Type313sState = {
 				sivLineState: undefined,
 				isReduceLoadOn: false,
 
+				isBrakeChopperOn: false,
 				bcPressure: [300, 300, 300, 300],
 				mrPressure: 860,
 				receivedNotchCommand: "非常",
@@ -185,6 +187,7 @@ const defaultInitialState: Type313sState = {
 				sivLineState: undefined,
 				isReduceLoadOn: false,
 
+				isBrakeChopperOn: false,
 				bcPressure: [300, 300, 300, 300],
 				mrPressure: 860,
 				receivedNotchCommand: "非常",

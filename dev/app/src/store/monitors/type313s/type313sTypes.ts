@@ -57,6 +57,7 @@ export type Type313sCarStatus = {
 	sivLineState?: Type313sSIVLineState;
 	isReduceLoadOn: boolean | null;
 
+	isBrakeChopperOn: boolean | null;
 	bcPressure: [number | null, number | null, number | null, number | null];
 	mrPressure: number | null;
 	receivedNotchCommand: string | null;
