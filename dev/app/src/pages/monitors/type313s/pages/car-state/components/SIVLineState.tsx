@@ -11,22 +11,19 @@ import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constant
 import { COLORS } from "../../../constants";
 
 import VerticalLineSwitchState from "./VerticalLineSwitchState";
+import {
+	LINE_WIDTH,
+	SIV_LINE_STATE_HEIGHT,
+	IVMS_Y,
+	IVHB_Y,
+	IVL_Y,
+	SIV_Y,
+	SIV_RADIUS,
+	MK_Y,
+	VERTICAL_LINE_X,
+} from "./constants";
 
 import type { Type313sSIVLineState } from "../../../../../../store/monitors/type313s/type313sTypes";
-
-export const SIV_LINE_STATE_HEIGHT = 154;
-
-const LINE_WIDTH = 2;
-
-const VERTICAL_LINE_X = (CAR_IMAGE_WIDTH - LINE_WIDTH) / 2;
-
-export const IVMS_Y = 16;
-export const IVHB_Y = 40;
-export const IVL_Y = 64;
-export const SIV_Y = 83;
-export const MK_Y = 128;
-
-export const SIV_RADIUS = 16;
 
 type SIVLineStateProps = {
 	relY: number;

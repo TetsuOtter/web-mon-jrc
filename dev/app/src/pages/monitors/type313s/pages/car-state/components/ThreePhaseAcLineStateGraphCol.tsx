@@ -12,19 +12,18 @@ import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constant
 import { COLORS } from "../../../constants";
 
 import HorizontalLineSwitchState from "./HorizontalLineSwitchState";
-import SIVLineState, { SIV_LINE_STATE_HEIGHT } from "./SIVLineState";
+import SIVLineState from "./SIVLineState";
+import {
+	LINE_WIDTH,
+	BUS_LINE_Y,
+	PAN_LINE_HEIGHT,
+	SIV_LINE_Y,
+	TLK_LINE_Y,
+} from "./constants";
 
 const GRAPH_HEIGHT = 173;
 
-export const LINE_WIDTH = 2;
-
-const PAN_LINE_HEIGHT = 10;
-export const BUS_LINE_Y = PAN_LINE_HEIGHT;
-
 const VERTICAL_LINE_X = (CAR_IMAGE_WIDTH - LINE_WIDTH) / 2;
-export const SIV_LINE_Y = BUS_LINE_Y + LINE_WIDTH;
-
-export const TLK_LINE_Y = SIV_LINE_Y + SIV_LINE_STATE_HEIGHT;
 
 type ThreePhaseAcLineStateGraphColProps = {
 	carIndex: number;

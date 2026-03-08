@@ -10,22 +10,23 @@ import { carCountSelector } from "../../../../../../store/monitors/type313s/type
 import { toWide } from "../../../../../../utils/toWide";
 import { LEFT as TRAIN_FORMATION_LEFT } from "../../../components/car-image/TrainFormationImage";
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
-import { COLORS, FONT_SIZE_1X } from "../../../constants";
+import { COLORS } from "../../../constants";
 
-import { IVMS_Y, IVHB_Y, IVL_Y, SIV_Y, SIV_RADIUS, MK_Y } from "./SIVLineState";
-import ThreePhaseAcLineStateGraphCol, {
-	BUS_LINE_Y,
-	LINE_WIDTH,
-	SIV_LINE_Y,
-	TLK_LINE_Y,
-} from "./ThreePhaseAcLineStateGraphCol";
-import { HEIGHT as SWITCH_HEIGHT } from "./VerticalLineSwitchState";
+import ThreePhaseAcLineStateGraphCol from "./ThreePhaseAcLineStateGraphCol";
+import {
+	BUS_LABEL_Y,
+	GRAPH_REL_Y,
+	IVHB_LABEL_Y,
+	IVL_LABEL_Y,
+	IVMS_LABEL_Y,
+	LABEL_REL_X,
+	LABEL_WIDTH,
+	MK_LABEL_Y,
+	SIV_LABEL_Y,
+	TLK_LABEL_Y,
+} from "./constants";
 
-const REL_Y = 161;
 const HEIGHT = 176;
-
-const LABEL_REL_X = 16;
-const LABEL_WIDTH = TRAIN_FORMATION_LEFT - LABEL_REL_X - 26;
 
 export default memo(function ThreePhaseAcLineStateGraph() {
 	const carCount = useAppSelector(carCountSelector);
@@ -33,7 +34,7 @@ export default memo(function ThreePhaseAcLineStateGraph() {
 	return (
 		<CanvasObjectGroup
 			relX={0}
-			relY={REL_Y}
+			relY={GRAPH_REL_Y}
 			width={TRAIN_FORMATION_LEFT + carCount * CAR_IMAGE_WIDTH}
 			height={HEIGHT}
 		>
@@ -109,14 +110,3 @@ export default memo(function ThreePhaseAcLineStateGraph() {
 		</CanvasObjectGroup>
 	);
 });
-
-const BUS_LABEL_Y = getLabelY(BUS_LINE_Y, LINE_WIDTH);
-const IVMS_LABEL_Y = getLabelY(IVMS_Y + SIV_LINE_Y, SWITCH_HEIGHT);
-const IVHB_LABEL_Y = getLabelY(IVHB_Y + SIV_LINE_Y, SWITCH_HEIGHT);
-const IVL_LABEL_Y = getLabelY(IVL_Y + SIV_LINE_Y, SWITCH_HEIGHT);
-const SIV_LABEL_Y = getLabelY(SIV_Y + SIV_LINE_Y, SIV_RADIUS * 2);
-const MK_LABEL_Y = getLabelY(MK_Y + SIV_LINE_Y, SWITCH_HEIGHT);
-const TLK_LABEL_Y = getLabelY(TLK_LINE_Y, LINE_WIDTH);
-function getLabelY(stateY: number, stateHeight: number) {
-	return stateY + stateHeight / 2 - FONT_SIZE_1X / 2;
-}
