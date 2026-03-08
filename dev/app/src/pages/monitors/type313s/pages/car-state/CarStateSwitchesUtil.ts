@@ -289,13 +289,6 @@ export function createIsTestSWOnCellListSelector(
 	return createSelectorWithLabel(label, sel, createIsTestSWOnCell);
 }
 
-export function createIsIvCNOnCellListSelector(
-	label: string,
-	sel: ValueFromStateSelector<boolean>,
-): ToCellListForRowSelector {
-	return createSelectorWithLabel(label, sel, createIsTestSWOnCell);
-}
-
 export function createNumberCellListSelector(
 	label: string,
 	sel: ValueFromStateSelector<number>,
