@@ -48,7 +48,7 @@ export default memo<PropsWithChildren<CanvasCircleProps>>(
 				if (fillColor) {
 					ctx.fillStyle = fillColor;
 					// ストローク幅を考慮した内側の円の半径
-					const fillRadius = Math.max(0, radius - sw / 2);
+					const fillRadius = Math.max(0, radius);
 
 					// 塗りつぶし部分を描画
 					for (let dy = -fillRadius + 0.5; dy < fillRadius + 0.5; dy++) {
