@@ -16,7 +16,7 @@ const SWITCH_STATE_HEIGHT = HEIGHT - 2;
 const SWITCH_STATE_WIDTH = LINE_WIDTH - 4;
 const SWITCH_STATE_X = (LINE_WIDTH - SWITCH_STATE_WIDTH) / 2;
 
-const LINE_X = (CAR_IMAGE_WIDTH - LINE_WIDTH) / 2;
+export const LINE_X = (CAR_IMAGE_WIDTH - LINE_WIDTH) / 2;
 
 type VerticalLineSwitchStateProps = {
 	relX?: number;

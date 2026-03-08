@@ -28,10 +28,10 @@ export const carCountSelector: AppSelector<number> = (state) =>
 	type313sSelector(state).carStateList.length;
 
 export function createCarStateByCarIndexSelector<T>(
-	sel: (carState: Type313sCarState) => T,
+	sel: (carState: Type313sCarState, carIndex: number) => T,
 ): CarStateByCarIndexSelector<T> {
 	return (state, carIndex) =>
-		sel(type313sSelector(state).carStateList[carIndex]);
+		sel(type313sSelector(state).carStateList[carIndex], carIndex);
 }
 
 // 車掌状態（編成全体）

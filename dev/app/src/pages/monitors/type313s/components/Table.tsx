@@ -14,6 +14,12 @@ export type CellInfo = {
 	text: string;
 	textColor: string;
 	backgroundColor?: string;
+	backgroundMargin?: {
+		left: number;
+		top: number;
+		right: number;
+		bottom: number;
+	};
 	verticalAlign?: CanvasTextProps["verticalAlign"];
 	horizontalAlign?: CanvasTextProps["align"];
 	scaleX?: number;
@@ -24,6 +30,10 @@ export const isCellInfoEqual = (a: CellInfo, b: CellInfo): boolean => {
 		a.text === b.text &&
 		a.textColor === b.textColor &&
 		a.backgroundColor === b.backgroundColor &&
+		a.backgroundMargin?.left === b.backgroundMargin?.left &&
+		a.backgroundMargin?.top === b.backgroundMargin?.top &&
+		a.backgroundMargin?.right === b.backgroundMargin?.right &&
+		a.backgroundMargin?.bottom === b.backgroundMargin?.bottom &&
 		a.verticalAlign === b.verticalAlign &&
 		a.horizontalAlign === b.horizontalAlign &&
 		a.scaleX === b.scaleX &&
@@ -52,11 +62,15 @@ export const areRowListsEqual = (a: RowList, b: RowList): boolean => {
 	return true;
 };
 
-type TableProps = {
+export type LeftRight = {
+	left: number;
+	right: number;
+};
+export type TableProps = {
 	relX: number;
 	relY: number;
 	rowList: RowList;
-	cellPaddingXList?: { left: number; right: number }[];
+	cellPaddingXList?: LeftRight[];
 } & TableBaseProps;
 export default memo<TableProps>(function Table(props) {
 	const { relX, relY, rowList, cellPaddingXList } = props;
@@ -85,10 +99,19 @@ export default memo<TableProps>(function Table(props) {
 
 				// 背景色
 				if (cell.backgroundColor) {
+					const margin = cell.backgroundMargin ?? {
+						left: 0,
+						top: 0,
+						right: 0,
+						bottom: 0,
+					};
 					const g = new Graphics();
-					g.rect(cellDef.x, rowDef.y, cellDef.width, rowDef.height).fill(
-						cell.backgroundColor,
-					);
+					g.rect(
+						cellDef.x + margin.left,
+						rowDef.y + margin.top,
+						cellDef.width - margin.left - margin.right,
+						rowDef.height - margin.top - margin.bottom,
+					).fill(cell.backgroundColor);
 					graphicsContainer.addChild(g);
 				}
 			}
@@ -109,20 +132,16 @@ export default memo<TableProps>(function Table(props) {
 							left: 0,
 							right: 0,
 						};
-						const maxWidthPx =
-							cellDef.width +
-							cellDef.borderThickness -
-							cellPaddingX.left -
-							cellPaddingX.right;
-						const maxHeightPx = rowDef.height + cellDef.borderThickness;
 						return (
 							<CanvasText
 								// eslint-disable-next-line react/no-array-index-key
 								key={`table-cell-${rowIndex}-${colIndex}`}
 								relX={cellDef.x + cellPaddingX.left}
 								relY={rowDef.y}
-								maxWidthPx={maxWidthPx}
-								maxHeightPx={maxHeightPx}
+								maxWidthPx={
+									cellDef.width - cellPaddingX.left - cellPaddingX.right
+								}
+								maxHeightPx={rowDef.height}
 								text={cell.text}
 								fillColor={cell.textColor}
 								verticalAlign={cell.verticalAlign}

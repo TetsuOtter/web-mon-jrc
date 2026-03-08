@@ -16,7 +16,7 @@ import type { ColorValue } from "../../constants";
 
 const TABLE_ROW_COUNT = 18;
 
-type ValueFromStateSelector<T> = (
+export type ValueFromStateSelector<T> = (
 	carState: Type313sCarState,
 ) => T | null | undefined;
 type ToCellListForRowSelector = (
@@ -150,7 +150,51 @@ const createNumberCell = createCellInfoCreator<number>((v) => {
 		horizontalAlign: "right",
 	};
 });
+const createPowerBrakeNumberCell = (
+	color: ColorValue,
+	maxCharCount: number,
+): CellCreator<number> => {
+	const backgroundMargin: CellInfo["backgroundMargin"] = {
+		left: 8 * Math.max(5 - maxCharCount, 0),
+		top: 0,
+		right: 8,
+		bottom: 0,
+	};
+	const valueIfNoData = "".padStart(maxCharCount, "－");
+	return (value) => {
+		if (value !== undefined) {
+			return {
+				text: `${value ?? valueIfNoData} `,
+				textColor: COLORS.BLACK,
+				backgroundColor: color,
+				horizontalAlign: "right",
+				backgroundMargin,
+			};
+		} else {
+			return {
+				text: "",
+				textColor: COLORS.GRAY,
+			};
+		}
+	};
+};
 
+const NOTCH_CELL_BG_MARGIN = {
+	left: 2,
+	top: 0,
+	right: 2,
+	bottom: 0,
+} as const satisfies CellInfo["backgroundMargin"];
+const createNotchCell = createCellInfoCreator<string>((v) => {
+	return {
+		text: v.slice(0, 2),
+		textColor: COLORS.BLACK,
+		backgroundColor: COLORS.WHITE,
+		horizontalAlign: "center",
+		verticalAlign: "center",
+		backgroundMargin: NOTCH_CELL_BG_MARGIN,
+	};
+});
 function createSelectorWithLabel<T>(
 	label: string,
 	sel: ValueFromStateSelector<T>,
@@ -160,6 +204,20 @@ function createSelectorWithLabel<T>(
 		{
 			text: label,
 			textColor: COLORS.WHITE,
+		},
+		...carStateList.map((carState) => cellCreator(sel(carState))),
+	];
+}
+function createPowerBrakeSelectorWithLabel<T>(
+	label: string,
+	color: ColorValue,
+	sel: ValueFromStateSelector<T>,
+	cellCreator: CellCreator<T>,
+): ToCellListForRowSelector {
+	return (carStateList) => [
+		{
+			text: label,
+			textColor: color,
 		},
 		...carStateList.map((carState) => cellCreator(sel(carState))),
 	];
@@ -243,6 +301,36 @@ export function createNumberCellListSelector(
 	sel: ValueFromStateSelector<number>,
 ): ToCellListForRowSelector {
 	return createSelectorWithLabel(label, sel, createNumberCell);
+}
+
+export function createPowerCellListSelector(
+	label: string,
+	sel: ValueFromStateSelector<number>,
+): ToCellListForRowSelector {
+	return createPowerBrakeSelectorWithLabel(
+		label,
+		COLORS.AQUA,
+		sel,
+		createPowerBrakeNumberCell(COLORS.AQUA, 3),
+	);
+}
+export function createBrakeCellListSelector(
+	label: string,
+	sel: ValueFromStateSelector<number>,
+): ToCellListForRowSelector {
+	return createPowerBrakeSelectorWithLabel(
+		label,
+		COLORS.YELLOW,
+		sel,
+		createPowerBrakeNumberCell(COLORS.YELLOW, 3),
+	);
+}
+
+export function createNotchCellListSelector(
+	label: string,
+	sel: ValueFromStateSelector<string>,
+): ToCellListForRowSelector {
+	return createSelectorWithLabel(label, sel, createNotchCell);
 }
 
 export function createTableRowListSelector(
