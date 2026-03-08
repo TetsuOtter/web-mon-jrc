@@ -151,7 +151,7 @@ export default memo<TableProps>(function Table(props) {
 type TableBaseProps = {
 	cellHeightList: number[];
 	cellWidthList: number[];
-	borderColor: string;
+	borderColor: string | null;
 	borderWidth: number | number[];
 	borderHeight: number | number[];
 };
@@ -185,13 +185,15 @@ function useTableBase(props: TableBaseProps): TableBaseReturn {
 			throw new Error("Failed to get OffscreenCanvasRenderingContext2D");
 		}
 
-		ctx.fillStyle = borderColor;
-		horizontalLineDefinitionList.forEach(({ pos, thickness }) => {
-			ctx.fillRect(0, pos, totalWidth, thickness);
-		});
-		verticalLineDefinitionList.forEach(({ pos, thickness }) => {
-			ctx.fillRect(pos, 0, thickness, totalHeight);
-		});
+		if (borderColor) {
+			ctx.fillStyle = borderColor;
+			horizontalLineDefinitionList.forEach(({ pos, thickness }) => {
+				ctx.fillRect(0, pos, totalWidth, thickness);
+			});
+			verticalLineDefinitionList.forEach(({ pos, thickness }) => {
+				ctx.fillRect(pos, 0, thickness, totalHeight);
+			});
+		}
 
 		return {
 			totalWidth,

@@ -142,6 +142,15 @@ const createIsTestSWOnCell = createCellInfoCreator<boolean>((v) => {
 	}
 });
 
+const createNumberCell = createCellInfoCreator<number>((v) => {
+	return {
+		text: `${v} `,
+		textColor: COLORS.WHITE,
+		backgroundColor: COLORS.BLACK,
+		horizontalAlign: "right",
+	};
+});
+
 function createSelectorWithLabel<T>(
 	label: string,
 	sel: ValueFromStateSelector<T>,
@@ -222,7 +231,21 @@ export function createIsTestSWOnCellListSelector(
 	return createSelectorWithLabel(label, sel, createIsTestSWOnCell);
 }
 
-export function createSwitchesRowListSelector(
+export function createIsIvCNOnCellListSelector(
+	label: string,
+	sel: ValueFromStateSelector<boolean>,
+): ToCellListForRowSelector {
+	return createSelectorWithLabel(label, sel, createIsTestSWOnCell);
+}
+
+export function createNumberCellListSelector(
+	label: string,
+	sel: ValueFromStateSelector<number>,
+): ToCellListForRowSelector {
+	return createSelectorWithLabel(label, sel, createNumberCell);
+}
+
+export function createTableRowListSelector(
 	...selectorList: ToCellListForRowSelector[]
 ): AppSelector<RowList> {
 	return (state) => {

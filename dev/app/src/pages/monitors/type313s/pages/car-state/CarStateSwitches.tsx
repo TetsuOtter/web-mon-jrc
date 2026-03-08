@@ -18,7 +18,7 @@ import {
 	createNormalOrNotWhiteCellListSelector,
 	createNormalOrNotYellowCellListSelector,
 	createOnOffCellListSelector,
-	createSwitchesRowListSelector,
+	createTableRowListSelector,
 	createVVVF2CellListSelector,
 	createWorkingOrNotCellListSelector,
 } from "./CarStateSwitchesUtil";
@@ -83,7 +83,7 @@ function useTableDefinition(carCount: number) {
 	);
 }
 
-const rowsForPage1Selector = createSwitchesRowListSelector(
+const rowsForPage1Selector = createTableRowListSelector(
 	createOnOffCellListSelector(
 		toWide("MS"),
 		(carState) => carState.carStates.isMSOn,
@@ -168,7 +168,7 @@ const rowsForPage1Selector = createSwitchesRowListSelector(
 // 	toWide("直予備B"),
 // ];
 
-const rowsForPage2Selector = createSwitchesRowListSelector(
+const rowsForPage2Selector = createTableRowListSelector(
 	createOnOffCellListSelector(
 		toWide("SIV"),
 		(carState) => carState.carStates.sivLineState?.isSIVOn,
