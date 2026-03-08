@@ -9,6 +9,20 @@
   dependencies:
     playwright "1.58.2"
 
+"@types/node@*":
+  version "25.3.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.3.5.tgz#beccb5915561f7a9970ace547ad44d6cdbf39b46"
+  integrity sha512-oX8xrhvpiyRCQkG1MFchB09f+cXftgIXb3a7UUa4Y3wpmZPw5tyZGTLWhlESOLq1Rq6oDlc8npVU2/9xiCuXMA==
+  dependencies:
+    undici-types "~7.18.0"
+
+"@types/pngjs@^6.0.5":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@types/pngjs/-/pngjs-6.0.5.tgz#6dec2f7eb8284543ca4e423f3c09b119fa939ea3"
+  integrity sha512-0k5eKfrA83JOZPppLtS2C7OUtyNAl2wKNxfyYl9Q5g9lPkgBl/9hNyAu6HuEH2J4XmIv2znEpkDd0SaZVxW6iQ==
+  dependencies:
+    "@types/node" "*"
+
 fsevents@2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
@@ -27,3 +41,13 @@ playwright@1.58.2:
     playwright-core "1.58.2"
   optionalDependencies:
     fsevents "2.3.2"
+
+pngjs@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-7.0.0.tgz#a8b7446020ebbc6ac739db6c5415a65d17090e26"
+  integrity sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==
+
+undici-types@~7.18.0:
+  version "7.18.2"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-7.18.2.tgz#29357a89e7b7ca4aef3bf0fd3fd0cd73884229e9"
+  integrity sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==

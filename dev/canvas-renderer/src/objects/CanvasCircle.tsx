@@ -61,8 +61,8 @@ export default memo<PropsWithChildren<CanvasCircleProps>>(
 
 			const g = new Graphics();
 			const sw = strokeWidth ?? 0;
-			const cx = ir - 0.5;
-			const cy = ir - 0.5;
+			const cx = ir;
+			const cy = ir;
 
 			if (fillColor) {
 				const fillRadius = Math.max(0, ir - sw / 2);

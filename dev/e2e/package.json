@@ -10,6 +10,8 @@
 		"test:headed": "playwright test --headed"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.52.0"
+		"@playwright/test": "^1.52.0",
+		"@types/pngjs": "^6.0.5",
+		"pngjs": "^7.0.0"
 	}
 }

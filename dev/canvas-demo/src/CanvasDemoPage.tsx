@@ -23,6 +23,9 @@ export default memo(function CanvasDemo() {
 	const [orderDemoClickedObject, setOrderDemoClickedObject] = useState<
 		string | null
 	>(null);
+	const showLinePixelTest =
+		typeof window !== "undefined" &&
+		new URLSearchParams(window.location.search).get("linePixelTest") === "1";
 	return (
 		<div style={{ padding: "20px" }}>
 			<h1>Canvas Renderer Demo</h1>
@@ -193,6 +196,38 @@ export default memo(function CanvasDemo() {
 					/>
 				</CanvasRenderer>
 			</div>
+
+			{showLinePixelTest && (
+				<div
+					style={{ marginBottom: "30px" }}
+					data-testid="line-pixel-alignment-test"
+				>
+					<h2>CanvasLine ピクセル位置検証</h2>
+					<p>E2Eで 1px 線の位置ずれを検証するための固定描画です。</p>
+					<CanvasRenderer
+						width={260}
+						height={400}
+						fill="#ffffff"
+					>
+						<CanvasLine
+							relX1={197}
+							relY1={363}
+							relX2={197}
+							relY2={372}
+							width={1}
+							color="#000000"
+						/>
+						<CanvasLine
+							relX1={213}
+							relY1={341}
+							relX2={222}
+							relY2={341}
+							width={1}
+							color="#000000"
+						/>
+					</CanvasRenderer>
+				</div>
+			)}
 
 			<div style={{ marginBottom: "30px" }}>
 				<CanvasRenderer

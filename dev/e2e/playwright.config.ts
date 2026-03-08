@@ -29,7 +29,7 @@ export default defineConfig({
 			reuseExistingServer: true,
 		},
 		{
-			command: "yarn dev",
+			command: "yarn --cwd ../canvas-renderer build && yarn dev",
 			cwd: "../canvas-demo",
 			port: 5174,
 			reuseExistingServer: true,

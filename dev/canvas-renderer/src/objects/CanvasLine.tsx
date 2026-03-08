@@ -31,17 +31,34 @@ export default memo<CanvasLineProps>(function CanvasLine({
 	width = 1,
 	onClick,
 }) {
-	const minX = Math.min(Math.round(relX1), Math.round(relX2));
-	const maxX = Math.max(Math.round(relX1), Math.round(relX2));
-	const minY = Math.min(Math.round(relY1), Math.round(relY2));
-	const maxY = Math.max(Math.round(relY1), Math.round(relY2));
+	const w = width || 1;
+	const isVertical = Math.abs(relX1 - relX2) < 1e-6;
+	const isHorizontal = Math.abs(relY1 - relY2) < 1e-6;
+	const isAxisAlignedThinLine =
+		Math.abs(w - 1) < 1e-6 && (isVertical || isHorizontal);
+	const usePixelLine = Math.abs(w - 1) < 1e-6;
+	const halfW = w / 2;
+	const minX = Math.min(relX1, relX2);
+	const maxX = Math.max(relX1, relX2);
+	const minY = Math.min(relY1, relY2);
+	const maxY = Math.max(relY1, relY2);
+	const boundsX = isAxisAlignedThinLine ? minX : minX - halfW;
+	const boundsY = isAxisAlignedThinLine ? minY : minY - halfW;
+	const boundsWidth = isAxisAlignedThinLine
+		? isVertical
+			? 1
+			: Math.max(1, maxX - minX + 1)
+		: maxX - minX + w;
+	const boundsHeight = isAxisAlignedThinLine
+		? isHorizontal
+			? 1
+			: Math.max(1, maxY - minY + 1)
+		: maxY - minY + w;
 
 	const isClickDetector: ClickDetector = useCallback(
 		(clickX: number, clickY: number) => {
-			const w = width || 1;
-
-			const bboxMaxX = maxX - minX;
-			const bboxMaxY = maxY - minY;
+			const bboxMaxX = boundsWidth;
+			const bboxMaxY = boundsHeight;
 
 			if (
 				clickX < -w ||
@@ -52,10 +69,10 @@ export default memo<CanvasLineProps>(function CanvasLine({
 				return false;
 			}
 
-			const x1 = Math.round(relX1) - minX;
-			const y1 = Math.round(relY1) - minY;
-			const x2 = Math.round(relX2) - minX;
-			const y2 = Math.round(relY2) - minY;
+			const x1 = relX1 - boundsX;
+			const y1 = relY1 - boundsY;
+			const x2 = relX2 - boundsX;
+			const y2 = relY2 - boundsY;
 			const dx = x2 - x1;
 			const dy = y2 - y1;
 			const lengthSq = dx * dx + dy * dy;
@@ -74,14 +91,24 @@ export default memo<CanvasLineProps>(function CanvasLine({
 			const py = clickY - nearestY;
 			return px * px + py * py <= w * w;
 		},
-		[width, maxX, minX, maxY, minY, relX1, relY1, relX2, relY2],
+		[
+			boundsWidth,
+			boundsHeight,
+			w,
+			relX1,
+			relY1,
+			relX2,
+			relY2,
+			boundsX,
+			boundsY,
+		],
 	);
 
 	const { graphicsContainer } = usePixiObject({
-		relX: minX,
-		relY: minY,
-		width: maxX - minX,
-		height: maxY - minY,
+		relX: boundsX,
+		relY: boundsY,
+		width: boundsWidth,
+		height: boundsHeight,
 		onClick,
 		isClickDetector,
 	});
@@ -91,19 +118,46 @@ export default memo<CanvasLineProps>(function CanvasLine({
 		clearContainer(graphicsContainer);
 
 		const g = new Graphics();
-		const w = width || 1;
 
-		const x1 = Math.round(relX1) - minX;
-		const y1 = Math.round(relY1) - minY;
-		const x2 = Math.round(relX2) - minX;
-		const y2 = Math.round(relY2) - minY;
+		const x1 = relX1 - boundsX;
+		const y1 = relY1 - boundsY;
+		const x2 = relX2 - boundsX;
+		const y2 = relY2 - boundsY;
 
-		g.moveTo(x1, y1);
-		g.lineTo(x2, y2);
-		g.stroke({ color, width: w });
+		if (isAxisAlignedThinLine) {
+			const rectX = Math.min(x1, x2);
+			const rectY = Math.min(y1, y2);
+			const rectW = isVertical ? 1 : Math.max(1, Math.abs(x2 - x1) + 1);
+			const rectH = isHorizontal ? 1 : Math.max(1, Math.abs(y2 - y1) + 1);
+			g.rect(rectX, rectY, rectW, rectH);
+			g.fill(color);
+		} else {
+			g.moveTo(x1, y1);
+			g.lineTo(x2, y2);
+			g.stroke({
+				color,
+				width: w,
+				alignment: 0.5,
+				pixelLine: usePixelLine,
+			});
+		}
 
 		graphicsContainer.addChild(g);
-	}, [graphicsContainer, color, width, relX1, relY1, relX2, relY2, minX, minY]);
+	}, [
+		graphicsContainer,
+		color,
+		w,
+		isAxisAlignedThinLine,
+		isVertical,
+		isHorizontal,
+		usePixelLine,
+		relX1,
+		relY1,
+		relX2,
+		relY2,
+		boundsX,
+		boundsY,
+	]);
 
 	return null;
 });
