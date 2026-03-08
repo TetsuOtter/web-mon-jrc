@@ -1,7 +1,11 @@
 import type { ComponentType } from "react";
 import { memo, useCallback } from "react";
 
-import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import {
+	CanvasHorizontalLine,
+	CanvasText,
+	CanvasVerticalLine,
+} from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 
 import { COLORS, DISPLAY_WIDTH, FONT_SIZE_1X } from "../../../constants";
@@ -43,24 +47,22 @@ export default memo<SelectionGridProps>(function SelectionGrid({
 			height={AREA_HEIGHT}
 		>
 			{Array.from({ length: ROW_COUNT }).map((_, idx) => (
-				<CanvasLine
+				<CanvasHorizontalLine
 					// eslint-disable-next-line react/no-array-index-key
 					key={`hline-${idx}`}
 					relX1={0}
 					relX2={AREA_WIDTH - 1}
 					// Cellの下側に線を引く
-					relY1={(idx + 1) * ROW_HEIGHT - 1}
-					relY2={(idx + 1) * ROW_HEIGHT - 1}
+					relY={(idx + 1) * ROW_HEIGHT - 1}
 					color={COLORS.WHITE}
 				/>
 			))}
 			{Array.from({ length: COLUMN_COUNT - 1 }).map((_, idx) => (
-				<CanvasLine
+				<CanvasVerticalLine
 					// eslint-disable-next-line react/no-array-index-key
 					key={`vline-${idx}`}
 					// Cellの左側に線を引く
-					relX1={(idx + 1) * COLUMN_WIDTH}
-					relX2={(idx + 1) * COLUMN_WIDTH}
+					relX={(idx + 1) * COLUMN_WIDTH}
 					relY1={0}
 					relY2={AREA_HEIGHT - 1}
 					color={COLORS.WHITE}

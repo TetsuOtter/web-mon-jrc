@@ -80,7 +80,7 @@ test.describe("canvas-demo - JS エラーなし", () => {
 		await expect(page).toHaveScreenshot("demo.png");
 	});
 
-	test("CanvasLine の 1px 線が座標ずれしない", async () => {
+	test("CanvasLine の 1px/2px 線が座標ずれしない", async () => {
 		try {
 			const { stdout } = await execFileAsync(
 				"node",

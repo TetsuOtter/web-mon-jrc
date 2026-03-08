@@ -1,9 +1,9 @@
 import { memo, useMemo } from "react";
 
 import {
-	CanvasLine,
 	CanvasObjectGroup,
 	CanvasRect,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer/objects";
 
 import { useAppSelectorWithParamsAndEqualityFn } from "../../../../../../store/hooks";
@@ -64,11 +64,10 @@ export default memo<BarGraphProps>(function BarGraph({
 					return;
 				}
 				return (
-					<CanvasLine
+					<CanvasVerticalLine
 						// eslint-disable-next-line react/no-array-index-key
 						key={`line-${index}`}
-						relX1={index * (BAR_WIDTH + 1)}
-						relX2={index * (BAR_WIDTH + 1)}
+						relX={index * (BAR_WIDTH + 1)}
 						relY1={0}
 						relY2={barAreaHeight - 1}
 						color={LINE_COLOR}

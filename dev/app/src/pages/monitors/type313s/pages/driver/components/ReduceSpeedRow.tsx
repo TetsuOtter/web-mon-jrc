@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 
 import {
-	CanvasLine,
+	CanvasHorizontalLine,
 	CanvasRect,
 	CanvasText,
 } from "@web-mon-jrc/canvas-renderer";
@@ -114,11 +114,10 @@ export default memo<ReduceSpeedRowProps>(function ReduceSpeedRow({
 					fillColor={COLORS.BLACK}
 				/>
 			)}
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={STA_LINE_X}
-				relY1={STA_LINE_Y}
 				relX2={STA_LINE_X + STA_LINE_WIDTH}
-				relY2={STA_LINE_Y}
+				relY={STA_LINE_Y}
 				color={COLORS.BLACK}
 			/>
 			{toSta != null && (
@@ -139,11 +138,10 @@ export default memo<ReduceSpeedRowProps>(function ReduceSpeedRow({
 				align="right"
 				fillColor={COLORS.BLACK}
 			/>
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={KM_LINE_X}
-				relY1={KM_LINE_Y}
 				relX2={KM_LINE_X + KM_LINE_WIDTH}
-				relY2={KM_LINE_Y}
+				relY={KM_LINE_Y}
 				color={COLORS.BLACK}
 			/>
 			<CanvasText

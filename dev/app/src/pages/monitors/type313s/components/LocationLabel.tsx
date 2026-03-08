@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 
-import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import { CanvasHorizontalLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 
 import { useAppSelector } from "../../../../store/hooks";
@@ -49,11 +49,10 @@ export default memo(function LocationLabel() {
 				fillColor={COLORS.WHITE}
 			/>
 
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={LINE_X}
-				relY1={LINE_Y}
 				relX2={LINE_X + LINE_WIDTH}
-				relY2={LINE_Y}
+				relY={LINE_Y}
 				color={COLORS.WHITE}
 				width={LINE_THICKNESS}
 			/>

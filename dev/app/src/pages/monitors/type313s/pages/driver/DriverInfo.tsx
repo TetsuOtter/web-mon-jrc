@@ -1,6 +1,10 @@
 import { memo } from "react";
 
-import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import {
+	CanvasHorizontalLine,
+	CanvasText,
+	CanvasVerticalLine,
+} from "@web-mon-jrc/canvas-renderer";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 
 import FooterPageFrame from "../../components/FooterPageFrame";
@@ -47,17 +51,15 @@ export default memo(function DriverInfo() {
 				width={DISPLAY_WIDTH}
 				height={LOWER_BOX_HEIGHT}
 			>
-				<CanvasLine
+				<CanvasHorizontalLine
 					relX1={0}
-					relY1={0}
 					relX2={DISPLAY_WIDTH}
-					relY2={0}
+					relY={0}
 					color={COLORS.WHITE}
 				/>
-				<CanvasLine
-					relX1={LOWER_BOX_SEPARATOR_LEFT}
+				<CanvasVerticalLine
+					relX={LOWER_BOX_SEPARATOR_LEFT}
 					relY1={0}
-					relX2={LOWER_BOX_SEPARATOR_LEFT}
 					relY2={LOWER_BOX_HEIGHT}
 					color={COLORS.WHITE}
 				/>

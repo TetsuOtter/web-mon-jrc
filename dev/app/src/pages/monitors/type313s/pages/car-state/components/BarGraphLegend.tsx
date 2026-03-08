@@ -1,9 +1,10 @@
 import { memo, useMemo } from "react";
 
 import {
-	CanvasLine,
+	CanvasHorizontalLine,
 	CanvasObjectGroup,
 	CanvasText,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer/objects";
 
 import { COLORS, FONT_SIZE_1X } from "../../../constants";
@@ -72,11 +73,10 @@ export default memo<BarGraphLegendProps>(function BarGraphLegend({
 			)}
 
 			{Array.from({ length: 5 }).map((_, index) => (
-				<CanvasLine
+				<CanvasVerticalLine
 					// eslint-disable-next-line react/no-array-index-key
 					key={`bar-separator-${index}`}
-					relX1={LEFT_LINE_X + (BAR_WIDTH + 1) * index}
-					relX2={LEFT_LINE_X + (BAR_WIDTH + 1) * index}
+					relX={LEFT_LINE_X + (BAR_WIDTH + 1) * index}
 					relY1={BAR_AREA_TOP}
 					relY2={groupHeight - 1}
 					color={LINE_COLOR}
@@ -98,11 +98,10 @@ export default memo<BarGraphLegendProps>(function BarGraphLegend({
 				/>
 			))}
 
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={0}
 				relX2={WIDTH - 1 - (rightSideScale == null ? SCALE_WIDTH : 0)}
-				relY1={groupHeight - 1}
-				relY2={groupHeight - 1}
+				relY={groupHeight - 1}
 				color={LINE_COLOR}
 			/>
 		</CanvasObjectGroup>
@@ -159,12 +158,11 @@ const Scale = memo<
 					];
 					if (scaleStep !== 0)
 						components.push(
-							<CanvasLine
+							<CanvasHorizontalLine
 								key={`left-scale-${scaleStep}`}
 								relX1={relX}
 								relX2={relX + SCALE_WIDTH - 1}
-								relY1={y}
-								relY2={y}
+								relY={y}
 								color={LINE_COLOR}
 							/>,
 						);

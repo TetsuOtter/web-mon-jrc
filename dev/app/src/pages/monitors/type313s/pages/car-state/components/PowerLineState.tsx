@@ -1,8 +1,9 @@
 import { memo } from "react";
 
 import {
-	CanvasLine,
+	CanvasHorizontalLine,
 	CanvasObjectGroup,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer/objects";
 
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
@@ -59,9 +60,8 @@ export default memo<PowerLineStateProps>(
 				width={CAR_IMAGE_WIDTH}
 				height={POWER_LINE_STATE_HEIGHT}
 			>
-				<CanvasLine
-					relX1={VERTICAL_LINE_X}
-					relX2={VERTICAL_LINE_X}
+				<CanvasVerticalLine
+					relX={VERTICAL_LINE_X}
 					relY1={0}
 					relY2={BRANCH_Y - 1}
 					width={LINE_WIDTH}
@@ -76,27 +76,24 @@ export default memo<PowerLineStateProps>(
 					isOn={isLB1On}
 				/>
 				{isBothBogieMotored && (
-					<CanvasLine
+					<CanvasHorizontalLine
 						relX1={VERTICAL_LINE_X - BRANCH_WIDTH}
 						relX2={VERTICAL_LINE_X + BRANCH_WIDTH + LINE_WIDTH}
-						relY1={BRANCH_Y}
-						relY2={BRANCH_Y}
+						relY={BRANCH_Y}
 						width={LINE_WIDTH}
 						color={COLORS.WHITE}
 					/>
 				)}
-				<CanvasLine
-					relX1={isBothBogieMotored ? LB2_BRANCH_LINE_X : VERTICAL_LINE_X}
-					relX2={isBothBogieMotored ? LB2_BRANCH_LINE_X : VERTICAL_LINE_X}
+				<CanvasVerticalLine
+					relX={isBothBogieMotored ? LB2_BRANCH_LINE_X : VERTICAL_LINE_X}
 					relY1={BRANCH_Y}
 					relY2={POWER_LINE_STATE_HEIGHT - 1}
 					width={LINE_WIDTH}
 					color={COLORS.WHITE}
 				/>
 				{isBothBogieMotored && (
-					<CanvasLine
-						relX1={LB3_BRANCH_LINE_X}
-						relX2={LB3_BRANCH_LINE_X}
+					<CanvasVerticalLine
+						relX={LB3_BRANCH_LINE_X}
 						relY1={BRANCH_Y}
 						relY2={POWER_LINE_STATE_HEIGHT - 1}
 						width={LINE_WIDTH}

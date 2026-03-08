@@ -1,9 +1,9 @@
 import { memo, useMemo, useSyncExternalStore } from "react";
 
 import {
-	CanvasLine,
 	CanvasRect,
 	CanvasText,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer";
 import CanvasDotPattern from "@web-mon-jrc/canvas-renderer/objects/CanvasDotPattern";
 import CanvasQuadrilateral from "@web-mon-jrc/canvas-renderer/objects/CanvasQuadrilateral";
@@ -147,17 +147,15 @@ export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
 				scaleY={2}
 			/>
 
-			<CanvasLine
-				relX1={PAGE_NAME_TRAIN_NUMBER_SEPARATOR_X}
-				relX2={PAGE_NAME_TRAIN_NUMBER_SEPARATOR_X}
+			<CanvasVerticalLine
+				relX={PAGE_NAME_TRAIN_NUMBER_SEPARATOR_X}
 				relY1={0}
 				relY2={HEADER_HEIGHT - 1}
 				width={LINE_WIDTH}
 				color={COLORS.WHITE}
 			/>
-			<CanvasLine
-				relX1={TRAIN_NUMBER_TRAIN_TYPE_SEPARATOR_X}
-				relX2={TRAIN_NUMBER_TRAIN_TYPE_SEPARATOR_X}
+			<CanvasVerticalLine
+				relX={TRAIN_NUMBER_TRAIN_TYPE_SEPARATOR_X}
 				relY1={0}
 				relY2={HEADER_HEIGHT - 1}
 				width={LINE_WIDTH}
@@ -176,9 +174,8 @@ export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
 				strokeColor={COLORS.WHITE}
 				fillColor={COLORS.BLACK}
 			/>
-			<CanvasLine
-				relX1={TRAIN_DEST_TIME_SEPARATOR_X}
-				relX2={TRAIN_DEST_TIME_SEPARATOR_X}
+			<CanvasVerticalLine
+				relX={TRAIN_DEST_TIME_SEPARATOR_X}
 				relY1={0}
 				relY2={HEADER_HEIGHT - 1}
 				width={LINE_WIDTH}

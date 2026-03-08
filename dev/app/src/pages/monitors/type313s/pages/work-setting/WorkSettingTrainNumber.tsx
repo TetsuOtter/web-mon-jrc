@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from "react";
 
 import {
-	CanvasLine,
+	CanvasHorizontalLine,
 	CanvasRect,
 	CanvasText,
 } from "@web-mon-jrc/canvas-renderer";
@@ -160,11 +160,10 @@ export default memo(function WorkSettingTrainNumber() {
 			}
 			pagerProps={pagerProps}
 		>
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={0}
-				relY1={TOP_AREA_HR_Y}
 				relX2={DISPLAY_WIDTH - 1}
-				relY2={TOP_AREA_HR_Y}
+				relY={TOP_AREA_HR_Y}
 				color={COLORS.WHITE}
 			/>
 			<CanvasRect

@@ -1,6 +1,10 @@
 import { memo } from "react";
 
-import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import {
+	CanvasHorizontalLine,
+	CanvasText,
+	CanvasVerticalLine,
+} from "@web-mon-jrc/canvas-renderer";
 
 import { createCarStateByCarIndexSelector } from "../../../../../store/monitors/type313s/type313sSelector";
 import FooterPageFrame from "../../components/FooterPageFrame";
@@ -90,25 +94,22 @@ export default memo(function ConductorService() {
 				/>
 			</RoundedButton>
 
-			<CanvasLine
-				relX1={ROOM_LIGHT_CTRL_LINE_X}
+			<CanvasVerticalLine
+				relX={ROOM_LIGHT_CTRL_LINE_X}
 				relY1={ROOM_LIGHT_CTRL_LINE_Y1}
-				relX2={ROOM_LIGHT_CTRL_LINE_X}
 				relY2={ROOM_LIGHT_CTRL_LINE_Y2}
 				color={COLORS.WHITE}
 			/>
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={ROOM_LIGHT_CTRL_LINE_X}
-				relY1={ROOM_LIGHT_CAR_SELECT_LINE_Y}
 				relX2={ROOM_LIGHT_CAR_SELECT_LINE_X2}
-				relY2={ROOM_LIGHT_CAR_SELECT_LINE_Y}
+				relY={ROOM_LIGHT_CAR_SELECT_LINE_Y}
 				color={COLORS.WHITE}
 			/>
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={ROOM_LIGHT_CTRL_LINE_X}
-				relY1={ROOM_LIGHT_MODE_SELECT_LINE_Y}
 				relX2={ROOM_LIGHT_CAR_SELECT_LINE_X2}
-				relY2={ROOM_LIGHT_MODE_SELECT_LINE_Y}
+				relY={ROOM_LIGHT_MODE_SELECT_LINE_Y}
 				color={COLORS.WHITE}
 			/>
 

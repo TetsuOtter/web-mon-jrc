@@ -1,6 +1,7 @@
 export { default as CanvasCircle } from "./CanvasCircle";
 export { default as CanvasDotPattern } from "./CanvasDotPattern";
 export { default as CanvasImage } from "./CanvasImage";
+export { default as CanvasHorizontalLine } from "./CanvasHorizontalLine";
 export { default as CanvasLine } from "./CanvasLine";
 export { default as CanvasObjectGroup } from "./CanvasObjectGroup";
 export { default as CanvasOrderDemoItem } from "./CanvasOrderDemoItem";
@@ -8,4 +9,5 @@ export { default as CanvasQuadrilateral } from "./CanvasQuadrilateral";
 export { default as CanvasRect } from "./CanvasRect";
 export { default as CanvasRoundedRect } from "./CanvasRoundedRect";
 export { default as CanvasText } from "./CanvasText";
+export { default as CanvasVerticalLine } from "./CanvasVerticalLine";
 export type { CanvasTextProps } from "./CanvasText";

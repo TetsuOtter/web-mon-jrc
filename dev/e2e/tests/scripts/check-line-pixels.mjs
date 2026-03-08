@@ -18,6 +18,21 @@ function isWhite(png, x, y) {
   return a > 200 && r > 225 && g > 225 && b > 225;
 }
 
+async function captureLineTestPngBase64(page) {
+  return page.evaluate(() => {
+    const canvases = Array.from(
+      document.querySelectorAll(
+        "[data-testid='line-pixel-alignment-test'] canvas[data-pixi-ready='true']",
+      ),
+    );
+    const canvas = canvases.at(-1);
+    if (!(canvas instanceof HTMLCanvasElement)) {
+      throw new Error("Line pixel test canvas not found");
+    }
+    return canvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
+  });
+}
+
 async function run() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ ...devices["Desktop Chrome"] });
@@ -55,17 +70,29 @@ async function run() {
       }
     });
 
-    const pngBase64 = await page.evaluate(() => {
-      const canvas = document.querySelector(
-        "[data-testid='line-pixel-alignment-test'] canvas[data-pixi-ready='true']",
-      );
-      if (!(canvas instanceof HTMLCanvasElement)) {
-        throw new Error("Line pixel test canvas not found");
+    let png = null;
+    for (let i = 0; i < 40; i += 1) {
+      const pngBase64 = await captureLineTestPngBase64(page);
+      png = PNG.sync.read(Buffer.from(pngBase64, "base64"));
+      if (isBlack(png, 197, 363) && isBlack(png, 213, 341)) {
+        break;
       }
-      return canvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
-    });
+      await page.waitForTimeout(250);
+      await page.evaluate(() => {
+        const apps = window.__testPixiApps || [];
+        for (const app of apps) {
+          app.ticker?.stop();
+          if (app.renderer && app.stage != null) {
+            app.renderer.render(app.stage);
+          }
+        }
+      });
+    }
 
-    const png = PNG.sync.read(Buffer.from(pngBase64, "base64"));
+    if (png == null) {
+      throw new Error("Failed to capture line pixel test PNG");
+    }
+
     const failures = [];
 
     if (jsErrors.length > 0) {
@@ -83,6 +110,14 @@ async function run() {
     if (!isBlack(png, 222, 341)) failures.push("Expected black at (222,341)");
     if (!isWhite(png, 222, 340)) failures.push("Expected white at (222,340)");
 
+    // 2px 横線: (194, 211) -> (241, 211)
+    if (!isBlack(png, 194, 210)) failures.push("Expected black at (194,210)");
+    if (!isBlack(png, 194, 211)) failures.push("Expected black at (194,211)");
+    if (!isBlack(png, 241, 210)) failures.push("Expected black at (241,210)");
+    if (!isBlack(png, 241, 211)) failures.push("Expected black at (241,211)");
+    if (!isWhite(png, 241, 209)) failures.push("Expected white at (241,209)");
+    if (!isWhite(png, 242, 210)) failures.push("Expected white at (242,210)");
+
     const sample = {
       p197_363: getPixel(png, 197, 363),
       p197_372: getPixel(png, 197, 372),
@@ -90,6 +125,12 @@ async function run() {
       p213_341: getPixel(png, 213, 341),
       p222_341: getPixel(png, 222, 341),
       p222_340: getPixel(png, 222, 340),
+      p194_210: getPixel(png, 194, 210),
+      p194_211: getPixel(png, 194, 211),
+      p241_210: getPixel(png, 241, 210),
+      p241_211: getPixel(png, 241, 211),
+      p241_209: getPixel(png, 241, 209),
+      p242_210: getPixel(png, 242, 210),
     };
 
     const result = {

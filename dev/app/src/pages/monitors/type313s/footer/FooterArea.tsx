@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { memo } from "react";
 
-import { CanvasLine } from "@web-mon-jrc/canvas-renderer";
+import { CanvasHorizontalLine } from "@web-mon-jrc/canvas-renderer";
 import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 import CanvasObjectGroup from "@web-mon-jrc/canvas-renderer/objects/CanvasObjectGroup";
 
@@ -55,11 +55,10 @@ export default memo<PropsWithChildren<FooterAreaProps>>(function FooterArea({
 			width={parentObjectContext.metadata.width}
 			height={FOOTER_HEIGHT}
 		>
-			<CanvasLine
+			<CanvasHorizontalLine
 				relX1={0}
-				relY1={0}
 				relX2={parentObjectContext.metadata.width}
-				relY2={0}
+				relY={0}
 				color={COLORS.WHITE}
 				width={1}
 			/>

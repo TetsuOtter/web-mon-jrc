@@ -2,9 +2,9 @@ import { memo } from "react";
 
 import {
 	CanvasCircle,
-	CanvasLine,
 	CanvasObjectGroup,
 	CanvasText,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer/objects";
 
 import { WIDTH as CAR_IMAGE_WIDTH } from "../../../components/car-image/constants";
@@ -42,9 +42,8 @@ export default memo<SIVLineStateProps>(
 				width={CAR_IMAGE_WIDTH}
 				height={SIV_LINE_STATE_HEIGHT}
 			>
-				<CanvasLine
-					relX1={VERTICAL_LINE_X}
-					relX2={VERTICAL_LINE_X}
+				<CanvasVerticalLine
+					relX={VERTICAL_LINE_X}
 					relY1={0}
 					relY2={SIV_LINE_STATE_HEIGHT - 1}
 					width={LINE_WIDTH}

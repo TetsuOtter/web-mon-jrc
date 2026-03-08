@@ -5,8 +5,10 @@ import {
 	CanvasText,
 	CanvasRect,
 	CanvasCircle,
+	CanvasHorizontalLine,
 	CanvasLine,
 	CanvasOrderDemoItem,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer";
 
 import BlinkingItem from "./components/BlinkingItem";
@@ -209,20 +211,25 @@ export default memo(function CanvasDemo() {
 						height={400}
 						fill="#ffffff"
 					>
-						<CanvasLine
-							relX1={197}
+						<CanvasVerticalLine
+							relX={197}
 							relY1={363}
-							relX2={197}
 							relY2={372}
 							width={1}
 							color="#000000"
 						/>
-						<CanvasLine
+						<CanvasHorizontalLine
 							relX1={213}
-							relY1={341}
 							relX2={222}
-							relY2={341}
+							relY={341}
 							width={1}
+							color="#000000"
+						/>
+						<CanvasHorizontalLine
+							relX1={194}
+							relX2={241}
+							relY={211}
+							width={2}
 							color="#000000"
 						/>
 					</CanvasRenderer>
@@ -237,22 +244,20 @@ export default memo(function CanvasDemo() {
 					{/* 背景グリッド */}
 					{/* eslint-disable react/no-array-index-key */}
 					{Array.from({ length: 41 }).map((_, i) => (
-						<CanvasLine
+						<CanvasHorizontalLine
 							key={`grid-h-${i}`}
 							relX1={0}
-							relY1={i * 10}
 							relX2={800}
-							relY2={i * 10}
+							relY={i * 10}
 							color="#f0f0f0"
 							width={1}
 						/>
 					))}
 					{Array.from({ length: 81 }).map((_, i) => (
-						<CanvasLine
+						<CanvasVerticalLine
 							key={`grid-v-${i}`}
-							relX1={i * 10}
+							relX={i * 10}
 							relY1={0}
-							relX2={i * 10}
 							relY2={400}
 							color="#f0f0f0"
 							width={1}
@@ -380,21 +385,19 @@ export default memo(function CanvasDemo() {
 					height={300}
 				>
 					{/* 細い直線（1px） */}
-					<CanvasLine
+					<CanvasHorizontalLine
 						relX1={10}
-						relY1={10}
 						relX2={100}
-						relY2={10}
+						relY={10}
 						color="#000000"
 						width={1}
 					/>
 
 					{/* 3px直線 */}
-					<CanvasLine
+					<CanvasHorizontalLine
 						relX1={10}
-						relY1={30}
 						relX2={100}
-						relY2={30}
+						relY={30}
 						color="#ff0000"
 						width={3}
 					/>
@@ -651,11 +654,10 @@ export default memo(function CanvasDemo() {
 						align="center"
 						lineHeight={1.4}
 					/>
-					<CanvasLine
+					<CanvasHorizontalLine
 						relX1={10}
-						relY1={155}
 						relX2={590}
-						relY2={155}
+						relY={155}
 						color="#dee2e6"
 						width={1}
 					/>

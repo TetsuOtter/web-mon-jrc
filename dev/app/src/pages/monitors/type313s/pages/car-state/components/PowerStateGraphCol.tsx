@@ -1,8 +1,9 @@
 import { memo } from "react";
 
 import {
-	CanvasLine,
+	CanvasHorizontalLine,
 	CanvasObjectGroup,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer/objects";
 
 import { useAppSelectorWithParams } from "../../../../../../store/hooks";
@@ -52,9 +53,8 @@ export default memo<ThreePhaseAcLineStateGraphColProps>(
 				height={GRAPH_HEIGHT}
 			>
 				{hasPantograph && (
-					<CanvasLine
-						relX1={VERTICAL_LINE_X}
-						relX2={VERTICAL_LINE_X}
+					<CanvasVerticalLine
+						relX={VERTICAL_LINE_X}
 						relY1={0}
 						relY2={PAN_LINE_HEIGHT - 1}
 						width={LINE_WIDTH}
@@ -62,11 +62,10 @@ export default memo<ThreePhaseAcLineStateGraphColProps>(
 					/>
 				)}
 
-				<CanvasLine
+				<CanvasHorizontalLine
 					relX1={0}
 					relX2={CAR_IMAGE_WIDTH - 1}
-					relY1={BUS_LINE_Y}
-					relY2={BUS_LINE_Y}
+					relY={BUS_LINE_Y}
 					width={LINE_WIDTH}
 					color={COLORS.WHITE}
 				/>

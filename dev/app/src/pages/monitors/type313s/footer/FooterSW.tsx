@@ -1,6 +1,6 @@
 import { memo, useCallback } from "react";
 
-import { CanvasLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
+import { CanvasHorizontalLine, CanvasText } from "@web-mon-jrc/canvas-renderer";
 import { useCanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
 import CanvasQuadrilateral from "@web-mon-jrc/canvas-renderer/objects/CanvasQuadrilateral";
 
@@ -98,21 +98,19 @@ export default memo<FooterSWProps>(function FooterSW({
 				fillColor={COLORS.WHITE}
 			/>
 			{isSelected && (
-				<CanvasLine
+				<CanvasHorizontalLine
 					relX1={0}
-					relY1={0}
 					relX2={WIDTH}
-					relY2={0}
+					relY={0}
 					color={COLORS.BLACK}
 					width={1}
 				/>
 			)}
 			{isSelected && (
-				<CanvasLine
+				<CanvasHorizontalLine
 					relX1={BOTTOM_SHRINK}
-					relY1={HEIGHT - 2}
 					relX2={WIDTH - BOTTOM_SHRINK}
-					relY2={HEIGHT - 2}
+					relY={HEIGHT - 2}
 					color={COLORS.WHITE}
 					width={1}
 				/>

@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 import {
-	CanvasLine,
+	CanvasHorizontalLine,
 	CanvasObjectGroup,
 	CanvasRect,
 } from "@web-mon-jrc/canvas-renderer/objects";
@@ -32,11 +32,10 @@ export default memo<VerticalLineSwitchStateProps>(
 				width={LINE_WIDTH}
 				height={HEIGHT}
 			>
-				<CanvasLine
+				<CanvasHorizontalLine
 					relX1={0}
 					relX2={LINE_WIDTH - 1}
-					relY1={0}
-					relY2={0}
+					relY={0}
 					color={COLORS.WHITE}
 				/>
 				<CanvasRect
@@ -46,11 +45,10 @@ export default memo<VerticalLineSwitchStateProps>(
 					height={SWITCH_STATE_HEIGHT}
 					fillColor={isOn ? COLORS.LIME : COLORS.BLACK}
 				/>
-				<CanvasLine
+				<CanvasHorizontalLine
 					relX1={0}
 					relX2={LINE_WIDTH - 1}
-					relY1={HEIGHT - 1}
-					relY2={HEIGHT - 1}
+					relY={HEIGHT - 1}
 					color={COLORS.WHITE}
 				/>
 			</CanvasObjectGroup>

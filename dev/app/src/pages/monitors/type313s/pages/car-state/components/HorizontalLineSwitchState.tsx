@@ -1,9 +1,9 @@
 import { memo } from "react";
 
 import {
-	CanvasLine,
 	CanvasObjectGroup,
 	CanvasRect,
+	CanvasVerticalLine,
 } from "@web-mon-jrc/canvas-renderer/objects";
 
 import { COLORS } from "../../../constants";
@@ -29,9 +29,8 @@ export default memo<HorizontalLineSwitchStateProps>(
 				width={WIDTH}
 				height={LINE_HEIGHT}
 			>
-				<CanvasLine
-					relX1={0}
-					relX2={0}
+				<CanvasVerticalLine
+					relX={0}
 					relY1={0}
 					relY2={LINE_HEIGHT - 1}
 					color={COLORS.WHITE}
@@ -43,9 +42,8 @@ export default memo<HorizontalLineSwitchStateProps>(
 					height={SWITCH_STATE_HEIGHT}
 					fillColor={isOn ? COLORS.LIME : COLORS.BLACK}
 				/>
-				<CanvasLine
-					relX1={WIDTH - 1}
-					relX2={WIDTH - 1}
+				<CanvasVerticalLine
+					relX={WIDTH - 1}
 					relY1={0}
 					relY2={LINE_HEIGHT - 1}
 					color={COLORS.WHITE}

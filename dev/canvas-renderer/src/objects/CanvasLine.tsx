@@ -34,24 +34,34 @@ export default memo<CanvasLineProps>(function CanvasLine({
 	const w = width || 1;
 	const isVertical = Math.abs(relX1 - relX2) < 1e-6;
 	const isHorizontal = Math.abs(relY1 - relY2) < 1e-6;
-	const isAxisAlignedThinLine =
-		Math.abs(w - 1) < 1e-6 && (isVertical || isHorizontal);
+	const isAxisAlignedPixelPerfectLine =
+		Number.isInteger(w) && w >= 1 && (isVertical || isHorizontal);
 	const usePixelLine = Math.abs(w - 1) < 1e-6;
+	const thickness = Math.max(1, Math.round(w));
+	const axisHalfFloor = Math.floor(thickness / 2);
 	const halfW = w / 2;
 	const minX = Math.min(relX1, relX2);
 	const maxX = Math.max(relX1, relX2);
 	const minY = Math.min(relY1, relY2);
 	const maxY = Math.max(relY1, relY2);
-	const boundsX = isAxisAlignedThinLine ? minX : minX - halfW;
-	const boundsY = isAxisAlignedThinLine ? minY : minY - halfW;
-	const boundsWidth = isAxisAlignedThinLine
+	const boundsX = isAxisAlignedPixelPerfectLine
 		? isVertical
-			? 1
+			? minX - axisHalfFloor
+			: minX
+		: minX - halfW;
+	const boundsY = isAxisAlignedPixelPerfectLine
+		? isHorizontal
+			? minY - axisHalfFloor
+			: minY
+		: minY - halfW;
+	const boundsWidth = isAxisAlignedPixelPerfectLine
+		? isVertical
+			? thickness
 			: Math.max(1, maxX - minX + 1)
 		: maxX - minX + w;
-	const boundsHeight = isAxisAlignedThinLine
+	const boundsHeight = isAxisAlignedPixelPerfectLine
 		? isHorizontal
-			? 1
+			? thickness
 			: Math.max(1, maxY - minY + 1)
 		: maxY - minY + w;
 
@@ -124,11 +134,17 @@ export default memo<CanvasLineProps>(function CanvasLine({
 		const x2 = relX2 - boundsX;
 		const y2 = relY2 - boundsY;
 
-		if (isAxisAlignedThinLine) {
-			const rectX = Math.min(x1, x2);
-			const rectY = Math.min(y1, y2);
-			const rectW = isVertical ? 1 : Math.max(1, Math.abs(x2 - x1) + 1);
-			const rectH = isHorizontal ? 1 : Math.max(1, Math.abs(y2 - y1) + 1);
+		if (isAxisAlignedPixelPerfectLine) {
+			const rectX = isVertical
+				? Math.min(x1, x2) - axisHalfFloor
+				: Math.min(x1, x2);
+			const rectY = isHorizontal
+				? Math.min(y1, y2) - axisHalfFloor
+				: Math.min(y1, y2);
+			const rectW = isVertical ? thickness : Math.max(1, Math.abs(x2 - x1) + 1);
+			const rectH = isHorizontal
+				? thickness
+				: Math.max(1, Math.abs(y2 - y1) + 1);
 			g.rect(rectX, rectY, rectW, rectH);
 			g.fill(color);
 		} else {
@@ -147,7 +163,9 @@ export default memo<CanvasLineProps>(function CanvasLine({
 		graphicsContainer,
 		color,
 		w,
-		isAxisAlignedThinLine,
+		thickness,
+		axisHalfFloor,
+		isAxisAlignedPixelPerfectLine,
 		isVertical,
 		isHorizontal,
 		usePixelLine,
