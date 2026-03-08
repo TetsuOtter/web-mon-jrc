@@ -28,7 +28,9 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const appRef = useRef<Application | null>(null);
+	const wrapperRef = useRef<HTMLDivElement>(null);
 	const [stageContainer, setStageContainer] = useState<Container | null>(null);
+	const [scale, setScale] = useState(1);
 	const latestSizeRef = useRef({ width, height });
 	const latestFillRef = useRef<string | undefined>(fill);
 
@@ -152,6 +154,26 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		applyBackground(app, fill);
 	}, [fill]);
 
+	// wrapper divのサイズを監視してcanvasのスケールを計算
+	useEffect(() => {
+		const wrapper = wrapperRef.current;
+		if (!wrapper) return;
+
+		const observer = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				const { width: wrapperWidth, height: wrapperHeight } =
+					entry.contentRect;
+				const scaleX = wrapperWidth / width;
+				const scaleY = wrapperHeight / height;
+				const newScale = Math.min(scaleX, scaleY);
+				setScale(newScale);
+			}
+		});
+
+		observer.observe(wrapper);
+		return () => observer.disconnect();
+	}, [width, height]);
+
 	const rootMetadata = useMemo(
 		(): CanvasObjectMetadata => ({
 			absX: 0,
@@ -164,21 +186,35 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		[width, height],
 	);
 
-	const style = useMemo(
+	const wrapperStyle = useMemo(
 		(): CSSProperties => ({
-			width: `${width}px`,
-			height: `${height}px`,
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
 			...styleProps,
 		}),
-		[width, height, styleProps],
+		[styleProps],
+	);
+
+	const canvasStyle = useMemo(
+		(): CSSProperties => ({
+			transform: `scale(${scale})`,
+			transformOrigin: "center",
+		}),
+		[scale],
 	);
 
 	return (
 		<>
-			<canvas
-				ref={canvasRef}
-				style={style}
-			/>
+			<div
+				ref={wrapperRef}
+				style={wrapperStyle}
+			>
+				<canvas
+					ref={canvasRef}
+					style={canvasStyle}
+				/>
+			</div>
 			{stageContainer != null && (
 				<CanvasObjectContext
 					pixiContainer={stageContainer}
