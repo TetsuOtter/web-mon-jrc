@@ -322,7 +322,7 @@ export function createBrakeCellListSelector(
 		label,
 		COLORS.YELLOW,
 		sel,
-		createPowerBrakeNumberCell(COLORS.YELLOW, 3),
+		createPowerBrakeNumberCell(COLORS.YELLOW, 4),
 	);
 }
 
