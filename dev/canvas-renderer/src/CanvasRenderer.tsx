@@ -29,6 +29,24 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const appRef = useRef<Application | null>(null);
 	const [stageContainer, setStageContainer] = useState<Container | null>(null);
+	const latestSizeRef = useRef({ width, height });
+	const latestFillRef = useRef<string | undefined>(fill);
+
+	latestSizeRef.current = { width, height };
+	latestFillRef.current = fill;
+
+	const applyBackground = (
+		app: Application,
+		backgroundFill: string | undefined,
+	): void => {
+		if (backgroundFill) {
+			const color = new Color(backgroundFill);
+			app.renderer.background.color = color.toNumber();
+			app.renderer.background.alpha = color.alpha;
+		} else {
+			app.renderer.background.alpha = 0;
+		}
+	};
 
 	// PIXIアプリケーションを初期化（マウント時のみ）
 	useEffect(() => {
@@ -57,6 +75,9 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 			.then(() => {
 				if (!cancelled) {
 					app.stage.sortableChildren = true;
+					const latestSize = latestSizeRef.current;
+					app.renderer.resize(latestSize.width, latestSize.height);
+					applyBackground(app, latestFillRef.current);
 					setStageContainer(app.stage);
 					// テスト用: スクリーンショット撮影前にPIXIを制御できるよう公開
 					const testApps = (
@@ -128,13 +149,7 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	useEffect(() => {
 		const app = appRef.current;
 		if (!app || !app.renderer) return;
-		if (fill) {
-			const color = new Color(fill);
-			app.renderer.background.color = color.toNumber();
-			app.renderer.background.alpha = color.alpha;
-		} else {
-			app.renderer.background.alpha = 0;
-		}
+		applyBackground(app, fill);
 	}, [fill]);
 
 	const rootMetadata = useMemo(

@@ -19,14 +19,10 @@ import type {
 } from "../contexts/CanvasObjectContext";
 
 class CustomHitArea implements IHitArea {
-	constructor(
-		private detector: (x: number, y: number) => boolean | Promise<boolean>,
-	) {}
+	constructor(private detector: (x: number, y: number) => boolean) {}
 
 	contains(x: number, y: number): boolean {
-		const result = this.detector(x, y);
-		if (result instanceof Promise) return false;
-		return result;
+		return this.detector(x, y);
 	}
 }
 

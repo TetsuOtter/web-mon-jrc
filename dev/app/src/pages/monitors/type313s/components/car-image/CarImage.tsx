@@ -1,11 +1,11 @@
 import { memo, useCallback, useEffect, useMemo } from "react";
 
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
-import CanvasObjectContext from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
 import {
 	usePixiObject,
 	clearContainer,
-} from "@web-mon-jrc/canvas-renderer/hooks/usePixiObject";
+} from "@web-mon-jrc/canvas-renderer/hooks";
 import { Graphics, Sprite, Texture } from "pixi.js";
 
 import { toWide } from "../../../../../utils/toWide";
@@ -33,7 +33,7 @@ import type { CarImageBogieInfo, BaseCarImageInfo } from "./types";
 import type {
 	ClickEventHandler,
 	ClickDetector,
-} from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+} from "@web-mon-jrc/canvas-renderer/contexts";
 
 const CAR_NUMBER_HEIGHT = FONT_SIZE_1X + 2;
 

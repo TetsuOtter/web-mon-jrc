@@ -1,19 +1,19 @@
 import type { PropsWithChildren } from "react";
 import { memo, useCallback, useEffect, useMemo } from "react";
 
-import CanvasObjectContext from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
 import {
 	usePixiObject,
 	clearContainer,
-} from "@web-mon-jrc/canvas-renderer/hooks/usePixiObject";
+} from "@web-mon-jrc/canvas-renderer/hooks";
 import { Sprite, Texture } from "pixi.js";
 
 import { RGB_COLORS } from "../constants";
 
 import { getButtonImage } from "./buttonImageCache";
 
-import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
-import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
+import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils";
 
 export const SHADOW_WIDTH = {
 	EXTRA_SMALL: 1,

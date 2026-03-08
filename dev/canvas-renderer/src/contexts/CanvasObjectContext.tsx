@@ -29,10 +29,7 @@ export type ClickEventHandler = (
 	relY: number,
 ) => boolean | Promise<boolean>;
 
-export type ClickDetector = (
-	relX: number,
-	relY: number,
-) => boolean | Promise<boolean>;
+export type ClickDetector = (relX: number, relY: number) => boolean;
 
 export type CanvasObjectContextType = {
 	pixiContainer: Container;

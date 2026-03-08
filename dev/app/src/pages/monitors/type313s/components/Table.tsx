@@ -1,14 +1,14 @@
 import { memo, useEffect, useMemo } from "react";
 
-import CanvasObjectContext from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import { CanvasText } from "@web-mon-jrc/canvas-renderer";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
 import {
 	usePixiObject,
 	clearContainer,
 } from "@web-mon-jrc/canvas-renderer/hooks";
-import CanvasText from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
 import { Graphics, Sprite, Texture } from "pixi.js";
 
-import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects/CanvasText";
+import type { CanvasTextProps } from "@web-mon-jrc/canvas-renderer/objects";
 
 export type CellInfo = {
 	text: string;

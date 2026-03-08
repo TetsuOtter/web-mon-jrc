@@ -8,3 +8,4 @@ export { default as CanvasQuadrilateral } from "./CanvasQuadrilateral";
 export { default as CanvasRect } from "./CanvasRect";
 export { default as CanvasRoundedRect } from "./CanvasRoundedRect";
 export { default as CanvasText } from "./CanvasText";
+export type { CanvasTextProps } from "./CanvasText";

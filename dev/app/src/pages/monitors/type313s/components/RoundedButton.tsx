@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { memo, useCallback, useEffect, useMemo } from "react";
 
-import CanvasObjectContext from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
 import {
 	usePixiObject,
 	clearContainer,
@@ -13,8 +13,8 @@ import {
 	QUADRANT_SIZE,
 } from "./roundedButtonImageCache";
 
-import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
-import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
+import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts";
+import type { RgbColor } from "@web-mon-jrc/canvas-renderer/utils";
 
 type RoundedButtonProps = {
 	readonly relX: number;

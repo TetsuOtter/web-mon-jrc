@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect } from "react";
 
 import { CanvasImage, CanvasText } from "@web-mon-jrc/canvas-renderer";
-import CanvasObjectContext from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import { CanvasObjectContext } from "@web-mon-jrc/canvas-renderer/contexts";
 import {
 	usePixiObject,
 	clearContainer,
@@ -10,7 +10,7 @@ import { Graphics } from "pixi.js";
 
 import { COLORS, DISPLAY_WIDTH } from "../../../constants";
 
-import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts/CanvasObjectContext";
+import type { ClickEventHandler } from "@web-mon-jrc/canvas-renderer/contexts";
 
 const WIDTH = DISPLAY_WIDTH;
 const HEIGHT = 70;
