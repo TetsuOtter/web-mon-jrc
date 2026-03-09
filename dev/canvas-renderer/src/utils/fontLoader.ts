@@ -25,6 +25,14 @@ async function* getLines(text: string): AsyncGenerator<string> {
 
 const fontCache = new Map<AvailableFont, Promise<Font>>();
 
+// テスト用: フォントロードの進行状況を追跡
+if (typeof window !== "undefined") {
+	(window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress = {
+		loaded: 0,
+		total: 0,
+	};
+}
+
 /**
  * BDFフォントを読み込む（グローバルキャッシュを使用）
  */
@@ -37,9 +45,27 @@ export async function loadFont(font: AvailableFont): Promise<Font> {
 
 	// フォント読み込みのPromiseをキャッシュに追加
 	const fontPromise = (async () => {
+		// テスト用: ロード開始をカウント
+		if (typeof window !== "undefined") {
+			const progress = (window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress;
+			if (progress) {
+				progress.total++;
+			}
+		}
+
 		const response = await fetch(AVAILABLE_FONT_PATHS[font]);
 		const fontText = await response.text();
-		return await $Font(getLines(fontText));
+		const loadedFont = await $Font(getLines(fontText));
+
+		// テスト用: ロード完了をカウント
+		if (typeof window !== "undefined") {
+			const progress = (window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress;
+			if (progress) {
+				progress.loaded++;
+			}
+		}
+
+		return loadedFont;
 	})();
 
 	fontCache.set(font, fontPromise);

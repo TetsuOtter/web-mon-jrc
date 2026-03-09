@@ -18,11 +18,19 @@ export default memo(function SettingMenu() {
 		>
 			<CanvasText
 				relX={0}
-				relY={0}
+				relY={-12}
 				verticalAlign="center"
 				align="center"
 				text="準備中"
 				fillColor={COLORS.WHITE}
+			/>
+			<CanvasText
+				relX={0}
+				relY={12}
+				verticalAlign="center"
+				align="center"
+				text="設定メニュー"
+				fillColor={COLORS.BLUE}
 			/>
 		</FooterPageFrame>
 	);

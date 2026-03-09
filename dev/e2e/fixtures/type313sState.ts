@@ -1,6 +1,6 @@
 /**
  * テスト用の固定 type313s Redux ステート
- * timeMs=0 にすることで時刻表示が固定される
+ * timeMs=45240000 (12:34) にすることで時刻表示が固定される
  */
 export const TYPE313S_STORAGE_KEY = "type313s_state";
 
@@ -22,7 +22,7 @@ const carCommon = {
 
 export const TEST_STATE = {
 	currentLocation: 123.4,
-	timeMs: 0,
+	timeMs: 45240000, // 12:34 = 754分 * 60000ミリ秒
 	trainNumber: "101",
 	carStateList: [
 		{

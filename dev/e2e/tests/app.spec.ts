@@ -3,29 +3,88 @@ import { test, expect, type Page } from "@playwright/test";
 import { TEST_STATE, TYPE313S_STORAGE_KEY } from "../fixtures/type313sState";
 
 /**
- * PIXIティッカーを停止して1フレーム強制描画し、スクリーンショットを決定的にするヘルパー
+ * Canvas要素に実際にコンテンツが描画されているか確認するヘルパー
+ * requestIdleCallbackを使ってブラウザがアイドル状態になるまで待つ
  */
-async function freezePixiForScreenshot(page: Page): Promise<void> {
+async function waitForCanvasContent(page: Page): Promise<void> {
+	// まずフォントのロードが完了するまで待機
+	const fontLoadStart = Date.now();
+	const fontLoadTimeout = 60000; // 60秒
+
+	while (Date.now() - fontLoadStart < fontLoadTimeout) {
+		const fontProgress = await page.evaluate(() => {
+			const progress = (window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress;
+			return progress || { loaded: 0, total: 0 };
+		});
+
+		// フォントロードが開始され、すべて完了していれば抜ける
+		if (fontProgress.total > 0 && fontProgress.loaded >= fontProgress.total) {
+			console.log(`[waitForCanvasContent] Font load complete: ${fontProgress.loaded}/${fontProgress.total}`);
+			break;
+		}
+
+		// まだロード中の場合は500ms待機
+		if (fontProgress.total > 0) {
+			console.log(`[waitForCanvasContent] Waiting for fonts: ${fontProgress.loaded}/${fontProgress.total}`);
+		}
+		await page.waitForTimeout(500);
+	}
+
+	// requestIdleCallbackで複数回アイドル状態を待つ
 	await page.evaluate(() => {
 		return new Promise<void>((resolve) => {
-			const apps =
-				(window as Window & { __testPixiApps?: unknown[] }).__testPixiApps ||
-				[];
+			let idleCount = 0;
+			const targetIdleCount = 5; // 5回アイドル状態を確認
+
+			const checkIdle = () => {
+				if ('requestIdleCallback' in window) {
+					requestIdleCallback(() => {
+						idleCount++;
+						if (idleCount >= targetIdleCount) {
+							resolve();
+						} else {
+							checkIdle();
+						}
+					}, { timeout: 1000 });
+				} else {
+					// requestIdleCallbackがサポートされていない場合はsetTimeoutで代替
+					setTimeout(() => {
+						idleCount++;
+						if (idleCount >= targetIdleCount) {
+							resolve();
+						} else {
+							checkIdle();
+						}
+					}, 200);
+				}
+			};
+
+			checkIdle();
+		});
+	});
+
+	// さらに描画の安定化を待つ
+	await page.waitForTimeout(2000);
+
+	// PIXIアプリがあれば、追加のレンダリングを実行
+	await page.evaluate(() => {
+		const apps = (window as Window & { __testPixiApps?: unknown[] }).__testPixiApps;
+		if (apps && apps.length > 0) {
 			for (const app of apps) {
 				const a = app as {
-					ticker?: { stop: () => void };
-					renderer?: { render: (stage: unknown) => void };
+					renderer?: { render?: (stage: unknown) => void };
 					stage?: unknown;
 				};
-				a.ticker?.stop();
-				if (a.renderer && a.stage != null) {
+				if (a.renderer?.render && a.stage) {
 					a.renderer.render(a.stage);
 				}
 			}
-			// ブラウザコンポジターが描画バッファを反映するまで1フレーム待つ
-			requestAnimationFrame(() => resolve());
-		});
+		}
 	});
+
+	// CanvasTextのuseEffectによる描画処理が完了するまで十分に待機
+	// フォントロード後、グリフのテクスチャキャッシュ生成と描画に時間がかかる
+	await page.waitForTimeout(20000);
 }
 
 /**
@@ -70,6 +129,8 @@ async function setupPage(
 		await page.waitForLoadState("networkidle", { timeout: 15000 });
 		// React StrictMode 二重マウントサイクルと PIXI 描画が安定するまで待機
 		await page.waitForTimeout(10000);
+		// 実際にCanvasに描画内容が表示されるまで待機
+		await waitForCanvasContent(page);
 	} else {
 		// Canvas なしページ
 		await page.waitForTimeout(500);
@@ -119,7 +180,7 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 				`/monitors/type313s/${pageType}?mode=${mode}`,
 			);
 			expect(jsErrors).toHaveLength(0);
-			await freezePixiForScreenshot(page);
+
 			await expect(page).toHaveScreenshot(`type313s-${pageType}.png`);
 		});
 	}

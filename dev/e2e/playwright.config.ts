@@ -5,7 +5,7 @@ export default defineConfig({
 	fullyParallel: false,
 	workers: 1,
 	retries: 0,
-	timeout: 30000,
+	timeout: 60000, // Canvas描画とフォントロード完了のために長めに設定
 	reporter: [["html", { open: "never" }], ["list"]],
 
 	use: {
