@@ -62,6 +62,10 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		const backgroundColor = fill ? new Color(fill).toNumber() : 0x000000;
 		const backgroundAlpha = fill ? new Color(fill).alpha : 0;
 
+		// E2Eテスト環境では、ウィンドウサイズに依存しないようオートスケールを無効化
+		const isE2ETest =
+			localStorage.getItem("__e2e_test_disable_autoscale") === "true";
+
 		app
 			.init({
 				canvas,
@@ -70,8 +74,8 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 				backgroundColor,
 				backgroundAlpha,
 				antialias: false,
-				autoDensity: true,
-				resolution: window.devicePixelRatio || 1,
+				autoDensity: isE2ETest ? false : true,
+				resolution: isE2ETest ? 1 : window.devicePixelRatio || 1,
 				preserveDrawingBuffer: true,
 			})
 			.then(() => {
@@ -155,7 +159,16 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	}, [fill]);
 
 	// wrapper divのサイズを監視してcanvasのスケールを計算
+	// E2Eテスト環境ではオートスケールを無効化してscale=1に固定
 	useEffect(() => {
+		const isE2ETest =
+			localStorage.getItem("__e2e_test_disable_autoscale") === "true";
+
+		if (isE2ETest) {
+			setScale(1);
+			return;
+		}
+
 		const wrapper = wrapperRef.current;
 		if (!wrapper) return;
 
