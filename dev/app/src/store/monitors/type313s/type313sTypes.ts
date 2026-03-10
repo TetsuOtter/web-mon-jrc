@@ -10,6 +10,8 @@ export type Type313sState = {
 };
 
 export type Type313sFormation = {
+	series: CarSeries;
+	unitName: string;
 	carInfoList: Type313sCarInfoState[];
 };
 
@@ -107,6 +109,15 @@ export type Type313sBogieState = {
 	isMCOS1On: boolean | null;
 	isMCOS2On: boolean | null;
 };
+
+export const CAR_SERIES = {
+	313: 313,
+	315: 315,
+	311: 311,
+	211: 211,
+	373: 373,
+} as const;
+export type CarSeries = (typeof CAR_SERIES)[keyof typeof CAR_SERIES];
 
 export const AIR_CONDITIONER_STATE = {
 	AUTO_HEATING: "AUTO_HEATING",
