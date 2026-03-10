@@ -195,6 +195,30 @@
 	padding-bottom: 0.25rem;
 }
 
+.formationCompositionGroup {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	background-color: #fff;
+}
+
+.formationCompositionLabel {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #374151;
+	text-align: center;
+}
+
+.carCompositionListInline {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5rem;
+}
+
 .carCompositionItem {
 	flex: 0 0 auto;
 	display: flex;
@@ -231,6 +255,40 @@
 	overflow-x: auto;
 	padding: 0 0 1rem 0;
 	margin-bottom: 0.5rem;
+}
+
+.formationsContainer {
+	display: flex;
+	flex-direction: row;
+	gap: 1.5rem;
+	overflow-x: auto;
+	padding: 1rem 0;
+	margin-bottom: 1rem;
+}
+
+.formationCard {
+	flex: 0 0 auto;
+	min-width: 380px;
+	padding: 1.5rem;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	background-color: #fafafa;
+}
+
+.formationHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	padding-bottom: 1rem;
+	border-bottom: 2px solid #2563eb;
+}
+
+.formationTitle {
+	margin: 0;
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: #1f2937;
 }
 
 .subSection {
