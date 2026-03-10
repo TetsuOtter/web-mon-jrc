@@ -165,10 +165,10 @@ const BAR_LEGEND_LABEL_LIST = Array.from({ length: 4 }).map(
 );
 
 const BC_PRESSURE_SELECTOR_LIST = [
-	(carState) => carState.carStates.bcPressure[0],
-	(carState) => carState.carStates.bcPressure[1],
-	(carState) => carState.carStates.bcPressure[2],
-	(carState) => carState.carStates.bcPressure[3],
+	(carState) => carState.carState.bcPressure[0],
+	(carState) => carState.carState.bcPressure[1],
+	(carState) => carState.carState.bcPressure[2],
+	(carState) => carState.carState.bcPressure[3],
 ] as const satisfies ValueFromStateSelector<number>[];
 const BAR_VALUE_DEF_LIST = BC_PRESSURE_SELECTOR_LIST.map(
 	(sel): ValueDef => ({
@@ -184,14 +184,14 @@ const bcPressureTableRowListSelector = createTableRowListSelector(
 	),
 	createNumberCellListSelector(
 		toWide("MR圧力") + "  (kPa)",
-		(carState) => carState.carStates.mrPressure,
+		(carState) => carState.carState.mrPressure,
 	),
 );
 
 const notchRowListSelector = createTableRowListSelector(
 	createNotchCellListSelector(
 		"受信ノッチ",
-		(carState) => carState.carStates.receivedNotchCommand,
+		(carState) => carState.carState.receivedNotchCommand,
 	),
 	createNotchCellListSelector(
 		"先頭ノッチ",

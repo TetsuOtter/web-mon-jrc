@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
-	setCarStateList,
+	setFormations,
 	setConductorState,
 	setCurrentLocation,
 	setDestination,
@@ -39,7 +39,7 @@ import {
 import type { FormFieldConfig } from "./types";
 import type {
 	Type313sConductorState,
-	Type313sCarState,
+	Type313sCarInfoState,
 } from "../../store/monitors/type313s/type313sTypes";
 
 const FORM_FIELDS = [
@@ -84,8 +84,8 @@ export default memo(function Type313sEditPage() {
 	const conductorState = useAppSelector(
 		(state) => state.monitors.type313s.conductorState,
 	);
-	const carStateList = useAppSelector(
-		(state) => state.monitors.type313s.carStateList,
+	const formations = useAppSelector(
+		(state) => state.monitors.type313s.formations,
 	);
 
 	const updateConductorState = useCallback(
@@ -96,44 +96,99 @@ export default memo(function Type313sEditPage() {
 	);
 
 	const updateCarState = useCallback(
-		(index: number, updater: (car: Type313sCarState) => Type313sCarState) => {
-			const nextCarStateList = carStateList.map((carState, carIndex) =>
-				carIndex === index ? updater(carState) : carState,
-			);
-			dispatch(setCarStateList(nextCarStateList));
-		},
-		[carStateList, dispatch],
-	);
-
-	const handleAddCar = useCallback(() => {
-		if (carStateList.length >= 12) {
-			return;
-		}
-		const maxCarNumber = carStateList.reduce(
-			(maxValue, carState) => Math.max(maxValue, carState.carNumber),
-			0,
-		);
-		dispatch(
-			setCarStateList([
-				...carStateList,
-				createDefaultCarState(maxCarNumber + 1),
-			]),
-		);
-	}, [carStateList, dispatch]);
-
-	const handleRemoveCar = useCallback(
-		(index: number) => {
-			if (carStateList.length <= 1) {
-				return;
-			}
-
+		(
+			formationIndex: number,
+			carIndex: number,
+			updater: (car: Type313sCarInfoState) => Type313sCarInfoState,
+		) => {
 			dispatch(
-				setCarStateList(
-					carStateList.filter((_, carIndex) => carIndex !== index),
+				setFormations(
+					formations.map((f, fi) =>
+						fi === formationIndex
+							? {
+									...f,
+									carInfoList: f.carInfoList.map((carState, ci) =>
+										ci === carIndex ? updater(carState) : carState,
+									),
+								}
+							: f,
+					),
 				),
 			);
 		},
-		[carStateList, dispatch],
+		[formations, dispatch],
+	);
+
+	const handleAddFormation = useCallback(() => {
+		dispatch(
+			setFormations([
+				...formations,
+				{ carInfoList: [createDefaultCarState(1)] },
+			]),
+		);
+	}, [formations, dispatch]);
+
+	const handleRemoveFormation = useCallback(
+		(formationIndex: number) => {
+			if (formations.length <= 1) {
+				return;
+			}
+			dispatch(
+				setFormations(formations.filter((_, fi) => fi !== formationIndex)),
+			);
+		},
+		[formations, dispatch],
+	);
+
+	const handleAddCar = useCallback(
+		(formationIndex: number) => {
+			const formation = formations[formationIndex];
+			if (!formation || formation.carInfoList.length >= 12) {
+				return;
+			}
+			const maxCarNumber = formation.carInfoList.reduce(
+				(maxValue, carState) => Math.max(maxValue, carState.carNumber),
+				0,
+			);
+			dispatch(
+				setFormations(
+					formations.map((f, fi) =>
+						fi === formationIndex
+							? {
+									...f,
+									carInfoList: [
+										...f.carInfoList,
+										createDefaultCarState(maxCarNumber + 1),
+									],
+								}
+							: f,
+					),
+				),
+			);
+		},
+		[formations, dispatch],
+	);
+
+	const handleRemoveCar = useCallback(
+		(formationIndex: number, carIndex: number) => {
+			const formation = formations[formationIndex];
+			if (!formation || formation.carInfoList.length <= 1) {
+				return;
+			}
+			dispatch(
+				setFormations(
+					formations.map((f, fi) =>
+						fi === formationIndex
+							? {
+									...f,
+									carInfoList: f.carInfoList.filter((_, ci) => ci !== carIndex),
+								}
+							: f,
+					),
+				),
+			);
+		},
+		[formations, dispatch],
 	);
 
 	const handleResetState = useCallback(() => {
@@ -245,337 +300,438 @@ export default memo(function Type313sEditPage() {
 						className={styles.collapseSection}
 					>
 						<summary className={styles.sectionSummaryWithAction}>
-							<span>車両状態</span>
+							<span>編成・車両状態</span>
 							<button
 								type="button"
 								onClick={(e) => {
 									e.preventDefault();
 									e.stopPropagation();
-									handleAddCar();
+									handleAddFormation();
 								}}
-								disabled={carStateList.length >= 12}
 								className={styles.actionButton}
 							>
-								+ 車両追加
+								+ 編成追加
 							</button>
 						</summary>
-						<div className={styles.carCompositionSection}>
-							<h3 className={styles.carCompositionTitle}>編成構成</h3>
-							<div className={styles.carCompositionList}>
-								{carStateList.map((carState, index) => (
-									<div
-										// eslint-disable-next-line react/no-array-index-key
-										key={`composition-${index}`}
-										className={styles.carCompositionItem}
-										onClick={() => handleCompositionItemClick(index)}
-										role="button"
-										tabIndex={0}
-										onKeyDown={(e) => {
-											if (e.key === "Enter" || e.key === " ") {
-												e.preventDefault();
-												handleCompositionItemClick(index);
-											}
-										}}
-										style={{ cursor: "pointer" }}
-									>
-										<CarCompositionDiagram carState={carState} />
-										<div className={styles.carInfo}>
-											<div className={styles.carId}>{carState.carNumber}</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-						<div className={styles.carListContainer}>
-							{carStateList.map((carState, index) => (
-								<details
-									open
-									// eslint-disable-next-line react/no-array-index-key
-									key={`car-${index}-${carState.carNumber}`}
-									ref={(el) => {
-										if (el) {
-											carDetailsRefs.current[index] = el;
-										}
-									}}
-									className={styles.subSection}
-								>
-									<summary className={styles.subTitleRow}>
-										<span className={styles.subTitle}>
-											{carState.carNumber}号車 ({carState.carType})
-										</span>
+
+						{formations.map((formation, formationIndex) => (
+							<details
+								open
+								// eslint-disable-next-line react/no-array-index-key
+								key={`formation-${formationIndex}`}
+								className={styles.collapseSection}
+							>
+								<summary className={styles.sectionSummaryWithAction}>
+									<span>編成 {formationIndex + 1}</span>
+									<div style={{ display: "flex", gap: "8px" }}>
 										<button
 											type="button"
 											onClick={(e) => {
 												e.preventDefault();
 												e.stopPropagation();
-												handleRemoveCar(index);
+												handleAddCar(formationIndex);
 											}}
-											disabled={carStateList.length <= 1}
+											disabled={formation.carInfoList.length >= 12}
+											className={styles.actionButton}
+										>
+											+ 車両追加
+										</button>
+										<button
+											type="button"
+											onClick={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+												handleRemoveFormation(formationIndex);
+											}}
+											disabled={formations.length <= 1}
 											className={styles.deleteButton}
 										>
-											削除
+											編成削除
 										</button>
-									</summary>
-
-									<div className={styles.fieldGrid}>
-										{CAR_BASIC_FIELDS.map((field) => (
-											<CarStateFormField
-												key={field.fieldKey}
-												carIndex={index}
-												field={field}
-												carState={carState}
-												updateCarState={updateCarState}
-												className={styles.formGroup}
-											/>
-										))}
-
-										{CAR_STATES_FIELDS.map((field) => (
-											<CarStateFormField
-												key={field.fieldKey}
-												carIndex={index}
-												field={field}
-												carState={carState}
-												updateCarState={updateCarState}
-												className={styles.formGroup}
-											/>
+									</div>
+								</summary>
+								<div className={styles.carCompositionSection}>
+									<h3 className={styles.carCompositionTitle}>編成構成</h3>
+									<div className={styles.carCompositionList}>
+										{formation.carInfoList.map((carState, carIndex) => (
+											<div
+												// eslint-disable-next-line react/no-array-index-key
+												key={`composition-${formationIndex}-${carIndex}`}
+												className={styles.carCompositionItem}
+												onClick={() => handleCompositionItemClick(carIndex)}
+												role="button"
+												tabIndex={0}
+												onKeyDown={(e) => {
+													if (e.key === "Enter" || e.key === " ") {
+														e.preventDefault();
+														handleCompositionItemClick(carIndex);
+													}
+												}}
+												style={{ cursor: "pointer" }}
+											>
+												<CarCompositionDiagram carState={carState} />
+												<div className={styles.carInfo}>
+													<div className={styles.carId}>
+														{carState.carNumber}
+													</div>
+												</div>
+											</div>
 										))}
 									</div>
-
-									<article className={styles.nestedSection}>
-										<h4 className={styles.nestedTitle}>SIV系</h4>
-										<div className={styles.fieldGrid}>
-											<CarStateSelectField
-												carIndex={index}
-												fieldKey="sivLineStateEnabled"
-												label="sivLineState"
-												value={
-													carState.carStates.sivLineState
-														? "present"
-														: "undefined"
+								</div>
+								<div className={styles.carListContainer}>
+									{formation.carInfoList.map((carState, carIndex) => (
+										<details
+											open
+											// eslint-disable-next-line react/no-array-index-key
+											key={`car-${formationIndex}-${carIndex}-${carState.carNumber}`}
+											ref={(el) => {
+												if (el) {
+													carDetailsRefs.current[carIndex] = el;
 												}
-												onChange={(carIndex, value) =>
-													updateCarState(carIndex, (current) => ({
-														...current,
-														carStates: {
-															...current.carStates,
-															sivLineState:
-																value === "present"
-																	? (current.carStates.sivLineState ?? {
-																			isCgKForSIVOn: null,
-																			isIvMSOn: false,
-																			isIvHBOn: false,
-																			isIvLOn: false,
-																			isSIVOn: null,
-																			is3phMKOn: null,
-																			isIvCNOn: null,
-																			isIVSMDSOn: null,
-																			sivVoltage: null,
-																			sivFrequency: null,
-																		})
-																	: undefined,
-														},
-													}))
-												}
-												options={ENABLED_OPTIONS}
-												className={styles.formGroup}
-											/>
-										</div>
+											}}
+											className={styles.subSection}
+										>
+											<summary className={styles.subTitleRow}>
+												<span className={styles.subTitle}>
+													{carState.carNumber}号車 ({carState.carType})
+												</span>
+												<button
+													type="button"
+													onClick={(e) => {
+														e.preventDefault();
+														e.stopPropagation();
+														handleRemoveCar(formationIndex, carIndex);
+													}}
+													disabled={formation.carInfoList.length <= 1}
+													className={styles.deleteButton}
+												>
+													削除
+												</button>
+											</summary>
 
-										{carState.carStates.sivLineState ? (
 											<div className={styles.fieldGrid}>
-												{SIV_LINE_STATE_FIELDS.map((field) => (
+												{CAR_BASIC_FIELDS.map((field) => (
 													<CarStateFormField
 														key={field.fieldKey}
-														carIndex={index}
+														formationIndex={formationIndex}
+														carIndex={carIndex}
 														field={field}
 														carState={carState}
-														updateCarState={updateCarState}
+														updateCarState={(ci, updater) =>
+															updateCarState(formationIndex, ci, updater)
+														}
+														className={styles.formGroup}
+													/>
+												))}
+
+												{CAR_STATES_FIELDS.map((field) => (
+													<CarStateFormField
+														key={field.fieldKey}
+														formationIndex={formationIndex}
+														carIndex={carIndex}
+														field={field}
+														carState={carState}
+														updateCarState={(ci, updater) =>
+															updateCarState(formationIndex, ci, updater)
+														}
 														className={styles.formGroup}
 													/>
 												))}
 											</div>
-										) : null}
-									</article>
 
-									<article className={styles.nestedSection}>
-										<h4 className={styles.nestedTitle}>運転台系 (cabState)</h4>
-										<div className={styles.fieldGrid}>
-											<CarStateSelectField
-												carIndex={index}
-												fieldKey="cabStateEnabled"
-												label="cabState"
-												value={carState.cabState ? "present" : "undefined"}
-												onChange={(carIndex, value) =>
-													updateCarState(carIndex, (current) => ({
-														...current,
-														cabState:
-															value === "present"
-																? (current.cabState ?? createDefaultCabState())
-																: undefined,
-													}))
-												}
-												options={ENABLED_OPTIONS}
-												className={styles.formGroup}
-											/>
-										</div>
-
-										{carState.cabState ? (
-											<div className={styles.fieldGrid}>
-												{CAB_STATE_FIELDS.map((field) => (
-													<CarStateFormField
-														key={field.fieldKey}
-														carIndex={index}
-														field={field}
-														carState={carState}
-														updateCarState={updateCarState}
-														className={styles.formGroup}
-													/>
-												))}
-											</div>
-										) : null}
-									</article>
-
-									<article className={styles.nestedSection}>
-										<h4 className={styles.nestedTitle}>台車系 (bogieState)</h4>
-										<div className={styles.fieldGrid}>
-											<CarStateSelectField
-												carIndex={index}
-												fieldKey="bogieStateEnabled"
-												label="bogieState"
-												value={carState.bogieState ? "present" : "undefined"}
-												onChange={(carIndex, value) =>
-													updateCarState(carIndex, (current) => ({
-														...current,
-														bogieState:
-															value === "present"
-																? (current.bogieState ??
-																	createDefaultBogieCommonState())
-																: undefined,
-													}))
-												}
-												options={ENABLED_OPTIONS}
-												className={styles.formGroup}
-											/>
-										</div>
-
-										{carState.bogieState ? (
-											<>
+											<article className={styles.nestedSection}>
+												<h4 className={styles.nestedTitle}>SIV系</h4>
 												<div className={styles.fieldGrid}>
-													{BOGIE_COMMON_FIELDS.map((field) => (
-														<CarStateFormField
-															key={field.fieldKey}
-															carIndex={index}
-															field={field}
-															carState={carState}
-															updateCarState={updateCarState}
-															className={styles.formGroup}
-														/>
-													))}
+													<CarStateSelectField
+														formationIndex={formationIndex}
+														carIndex={carIndex}
+														fieldKey="sivLineStateEnabled"
+														label="sivLineState"
+														value={
+															carState.carState.sivLineState
+																? "present"
+																: "undefined"
+														}
+														onChange={(_carIndex, value) =>
+															updateCarState(
+																formationIndex,
+																_carIndex,
+																(current) => ({
+																	...current,
+																	carState: {
+																		...current.carState,
+																		sivLineState:
+																			value === "present"
+																				? (current.carState.sivLineState ?? {
+																						isCgKForSIVOn: null,
+																						isIvMSOn: false,
+																						isIvHBOn: false,
+																						isIvLOn: false,
+																						isSIVOn: null,
+																						is3phMKOn: null,
+																						isIvCNOn: null,
+																						isIVSMDSOn: null,
+																						sivVoltage: null,
+																						sivFrequency: null,
+																					})
+																				: undefined,
+																	},
+																}),
+															)
+														}
+														options={ENABLED_OPTIONS}
+														className={styles.formGroup}
+													/>
 												</div>
 
-												<article className={styles.nestedSectionInner}>
-													<h5 className={styles.nestedTitle}>左台車</h5>
+												{carState.carState.sivLineState ? (
 													<div className={styles.fieldGrid}>
-														<CarStateSelectField
-															carIndex={index}
-															fieldKey="leftBogieEnabled"
-															label="left"
-															value={
-																carState.bogieState.left
-																	? "present"
-																	: "undefined"
-															}
-															onChange={(carIndex, value) =>
-																updateCarState(carIndex, (current) => {
-																	if (!current.bogieState) {
-																		return current;
-																	}
-																	return {
-																		...current,
-																		bogieState: {
-																			...current.bogieState,
-																			left:
-																				value === "present"
-																					? (current.bogieState.left ??
-																						createDefaultBogieState())
-																					: undefined,
-																		},
-																	};
-																})
-															}
-															options={ENABLED_OPTIONS}
-															className={styles.formGroup}
-														/>
-
-														{carState.bogieState.left
-															? BOGIE_LEFT_FIELDS.map((field) => (
-																	<CarStateFormField
-																		key={field.fieldKey}
-																		carIndex={index}
-																		field={field}
-																		carState={carState}
-																		updateCarState={updateCarState}
-																		className={styles.formGroup}
-																	/>
-																))
-															: null}
+														{SIV_LINE_STATE_FIELDS.map((field) => (
+															<CarStateFormField
+																key={field.fieldKey}
+																formationIndex={formationIndex}
+																carIndex={carIndex}
+																field={field}
+																carState={carState}
+																updateCarState={(ci, updater) =>
+																	updateCarState(formationIndex, ci, updater)
+																}
+																className={styles.formGroup}
+															/>
+														))}
 													</div>
-												</article>
+												) : null}
+											</article>
 
-												<article className={styles.nestedSectionInner}>
-													<h5 className={styles.nestedTitle}>右台車</h5>
+											<article className={styles.nestedSection}>
+												<h4 className={styles.nestedTitle}>
+													運転台系 (cabState)
+												</h4>
+												<div className={styles.fieldGrid}>
+													<CarStateSelectField
+														formationIndex={formationIndex}
+														carIndex={carIndex}
+														fieldKey="cabStateEnabled"
+														label="cabState"
+														value={carState.cabState ? "present" : "undefined"}
+														onChange={(_carIndex, value) =>
+															updateCarState(
+																formationIndex,
+																_carIndex,
+																(current) => ({
+																	...current,
+																	cabState:
+																		value === "present"
+																			? (current.cabState ??
+																				createDefaultCabState())
+																			: undefined,
+																}),
+															)
+														}
+														options={ENABLED_OPTIONS}
+														className={styles.formGroup}
+													/>
+												</div>
+
+												{carState.cabState ? (
 													<div className={styles.fieldGrid}>
-														<CarStateSelectField
-															carIndex={index}
-															fieldKey="rightBogieEnabled"
-															label="right"
-															value={
-																carState.bogieState.right
-																	? "present"
-																	: "undefined"
-															}
-															onChange={(carIndex, value) =>
-																updateCarState(carIndex, (current) => {
-																	if (!current.bogieState) {
-																		return current;
-																	}
-																	return {
-																		...current,
-																		bogieState: {
-																			...current.bogieState,
-																			right:
-																				value === "present"
-																					? (current.bogieState.right ??
-																						createDefaultBogieState())
-																					: undefined,
-																		},
-																	};
-																})
-															}
-															options={ENABLED_OPTIONS}
-															className={styles.formGroup}
-														/>
-
-														{carState.bogieState.right
-															? BOGIE_RIGHT_FIELDS.map((field) => (
-																	<CarStateFormField
-																		key={field.fieldKey}
-																		carIndex={index}
-																		field={field}
-																		carState={carState}
-																		updateCarState={updateCarState}
-																		className={styles.formGroup}
-																	/>
-																))
-															: null}
+														{CAB_STATE_FIELDS.map((field) => (
+															<CarStateFormField
+																key={field.fieldKey}
+																formationIndex={formationIndex}
+																carIndex={carIndex}
+																field={field}
+																carState={carState}
+																updateCarState={(ci, updater) =>
+																	updateCarState(formationIndex, ci, updater)
+																}
+																className={styles.formGroup}
+															/>
+														))}
 													</div>
-												</article>
-											</>
-										) : null}
-									</article>
-								</details>
-							))}
-						</div>
+												) : null}
+											</article>
+
+											<article className={styles.nestedSection}>
+												<h4 className={styles.nestedTitle}>
+													台車系 (bogieState)
+												</h4>
+												<div className={styles.fieldGrid}>
+													<CarStateSelectField
+														formationIndex={formationIndex}
+														carIndex={carIndex}
+														fieldKey="bogieStateEnabled"
+														label="bogieState"
+														value={
+															carState.bogieState ? "present" : "undefined"
+														}
+														onChange={(_carIndex, value) =>
+															updateCarState(
+																formationIndex,
+																_carIndex,
+																(current) => ({
+																	...current,
+																	bogieState:
+																		value === "present"
+																			? (current.bogieState ??
+																				createDefaultBogieCommonState())
+																			: undefined,
+																}),
+															)
+														}
+														options={ENABLED_OPTIONS}
+														className={styles.formGroup}
+													/>
+												</div>
+
+												{carState.bogieState ? (
+													<>
+														<div className={styles.fieldGrid}>
+															{BOGIE_COMMON_FIELDS.map((field) => (
+																<CarStateFormField
+																	key={field.fieldKey}
+																	formationIndex={formationIndex}
+																	carIndex={carIndex}
+																	field={field}
+																	carState={carState}
+																	updateCarState={(ci, updater) =>
+																		updateCarState(formationIndex, ci, updater)
+																	}
+																	className={styles.formGroup}
+																/>
+															))}
+														</div>
+
+														<article className={styles.nestedSectionInner}>
+															<h5 className={styles.nestedTitle}>左台車</h5>
+															<div className={styles.fieldGrid}>
+																<CarStateSelectField
+																	formationIndex={formationIndex}
+																	carIndex={carIndex}
+																	fieldKey="leftBogieEnabled"
+																	label="left"
+																	value={
+																		carState.bogieState.left
+																			? "present"
+																			: "undefined"
+																	}
+																	onChange={(_carIndex, value) =>
+																		updateCarState(
+																			formationIndex,
+																			_carIndex,
+																			(current) => {
+																				if (!current.bogieState) {
+																					return current;
+																				}
+																				return {
+																					...current,
+																					bogieState: {
+																						...current.bogieState,
+																						left:
+																							value === "present"
+																								? (current.bogieState.left ??
+																									createDefaultBogieState())
+																								: undefined,
+																					},
+																				};
+																			},
+																		)
+																	}
+																	options={ENABLED_OPTIONS}
+																	className={styles.formGroup}
+																/>
+
+																{carState.bogieState.left
+																	? BOGIE_LEFT_FIELDS.map((field) => (
+																			<CarStateFormField
+																				key={field.fieldKey}
+																				formationIndex={formationIndex}
+																				carIndex={carIndex}
+																				field={field}
+																				carState={carState}
+																				updateCarState={(ci, updater) =>
+																					updateCarState(
+																						formationIndex,
+																						ci,
+																						updater,
+																					)
+																				}
+																				className={styles.formGroup}
+																			/>
+																		))
+																	: null}
+															</div>
+														</article>
+
+														<article className={styles.nestedSectionInner}>
+															<h5 className={styles.nestedTitle}>右台車</h5>
+															<div className={styles.fieldGrid}>
+																<CarStateSelectField
+																	formationIndex={formationIndex}
+																	carIndex={carIndex}
+																	fieldKey="rightBogieEnabled"
+																	label="right"
+																	value={
+																		carState.bogieState.right
+																			? "present"
+																			: "undefined"
+																	}
+																	onChange={(_carIndex, value) =>
+																		updateCarState(
+																			formationIndex,
+																			_carIndex,
+																			(current) => {
+																				if (!current.bogieState) {
+																					return current;
+																				}
+																				return {
+																					...current,
+																					bogieState: {
+																						...current.bogieState,
+																						right:
+																							value === "present"
+																								? (current.bogieState.right ??
+																									createDefaultBogieState())
+																								: undefined,
+																					},
+																				};
+																			},
+																		)
+																	}
+																	options={ENABLED_OPTIONS}
+																	className={styles.formGroup}
+																/>
+
+																{carState.bogieState.right
+																	? BOGIE_RIGHT_FIELDS.map((field) => (
+																			<CarStateFormField
+																				key={field.fieldKey}
+																				formationIndex={formationIndex}
+																				carIndex={carIndex}
+																				field={field}
+																				carState={carState}
+																				updateCarState={(ci, updater) =>
+																					updateCarState(
+																						formationIndex,
+																						ci,
+																						updater,
+																					)
+																				}
+																				className={styles.formGroup}
+																			/>
+																		))
+																	: null}
+															</div>
+														</article>
+													</>
+												) : null}
+											</article>
+										</details>
+									))}
+								</div>
+							</details>
+						))}
 					</details>
 				</section>
 

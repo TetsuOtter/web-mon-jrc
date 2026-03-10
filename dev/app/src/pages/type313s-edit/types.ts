@@ -1,4 +1,4 @@
-import type { Type313sCarState } from "../../store/monitors/type313s/type313sTypes";
+import type { Type313sCarInfoState } from "../../store/monitors/type313s/type313sTypes";
 import type { AppSelector } from "../../store/types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -29,47 +29,53 @@ export type CarStateBasicField =
 			type: "string";
 			fieldKey: string;
 			label: string;
-			getValue: (car: Type313sCarState) => string;
-			setValue: (car: Type313sCarState, value: string) => Type313sCarState;
+			getValue: (car: Type313sCarInfoState) => string;
+			setValue: (
+				car: Type313sCarInfoState,
+				value: string,
+			) => Type313sCarInfoState;
 	  }
 	| {
 			type: "number";
 			fieldKey: string;
 			label: string;
-			getValue: (car: Type313sCarState) => number;
-			setValue: (car: Type313sCarState, value: number) => Type313sCarState;
+			getValue: (car: Type313sCarInfoState) => number;
+			setValue: (
+				car: Type313sCarInfoState,
+				value: number,
+			) => Type313sCarInfoState;
 	  }
 	| {
 			type: "nullable-number";
 			fieldKey: string;
 			label: string;
 			step?: string;
-			getValue: (car: Type313sCarState) => number | null;
+			getValue: (car: Type313sCarInfoState) => number | null;
 			setValue: (
-				car: Type313sCarState,
+				car: Type313sCarInfoState,
 				value: number | null,
-			) => Type313sCarState;
+			) => Type313sCarInfoState;
 	  }
 	| {
 			type: "nullable-string";
 			fieldKey: string;
 			label: string;
-			getValue: (car: Type313sCarState) => string | null;
+			getValue: (car: Type313sCarInfoState) => string | null;
 			setValue: (
-				car: Type313sCarState,
+				car: Type313sCarInfoState,
 				value: string | null,
-			) => Type313sCarState;
+			) => Type313sCarInfoState;
 	  }
 	| {
 			type: "select";
 			fieldKey: string;
 			label: string;
 			options: readonly { value: string; label: string }[];
-			toSelectValue: (car: Type313sCarState) => string;
+			toSelectValue: (car: Type313sCarInfoState) => string;
 			fromSelectValue: (
-				car: Type313sCarState,
+				car: Type313sCarInfoState,
 				value: string,
-			) => Type313sCarState;
+			) => Type313sCarInfoState;
 	  };
 
 export type SivLineStateField = Exclude<

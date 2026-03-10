@@ -97,7 +97,7 @@ const hasPantographSelector = createCarStateByCarIndexSelector(
 	(state) => state.hasLeftPantograph || state.hasRightPantograph,
 );
 const sivLineStateSelector = createCarStateByCarIndexSelector(
-	(state) => state.carStates.sivLineState,
+	(state) => state.carState.sivLineState,
 );
 const isTLKOnStateSelector = createCarStateByCarIndexSelector(
 	(state) => state.cabState?.isTLKOn,

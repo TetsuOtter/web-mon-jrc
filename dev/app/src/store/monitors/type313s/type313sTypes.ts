@@ -5,8 +5,12 @@ export type Type313sState = {
 	currentLocation: number;
 	timeMs?: number;
 
-	carStateList: Type313sCarState[];
+	formations: Type313sFormation[];
 	conductorState: Type313sConductorState;
+};
+
+export type Type313sFormation = {
+	carInfoList: Type313sCarInfoState[];
 };
 
 export type Type313sConductorState = {
@@ -14,7 +18,7 @@ export type Type313sConductorState = {
 	isGuidanceOn: boolean | null;
 };
 
-export type Type313sCarState = {
+export type Type313sCarInfoState = {
 	// 編成表示系
 	carType: string;
 	carNumber: number;
@@ -41,13 +45,13 @@ export type Type313sCarState = {
 	occupancyRate: number | null;
 
 	// 車両状態
-	carStates: Type313sCarStatus;
+	carState: Type313sCarState;
 
 	cabState?: Type313sCabState;
 	bogieState?: Type313sBogieCommonState;
 };
 
-export type Type313sCarStatus = {
+export type Type313sCarState = {
 	isMSOn?: boolean | null;
 	isCPOn?: boolean | null;
 	isMRPressureNormal: boolean | null;

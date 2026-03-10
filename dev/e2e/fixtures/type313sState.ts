@@ -24,7 +24,7 @@ export const TEST_STATE = {
 	currentLocation: 123.4,
 	timeMs: 45240000, // 12:34 = 754分 * 60000ミリ秒
 	trainNumber: "101",
-	carStateList: [
+	formations: [{ carStateList: [
 		{
 			...carCommon,
 			carType: "Mc",
@@ -150,7 +150,7 @@ export const TEST_STATE = {
 			},
 			bogieState: null,
 		},
-	],
+	] }],
 	conductorState: {
 		isRoomLightOn: true,
 		isGuidanceOn: true,

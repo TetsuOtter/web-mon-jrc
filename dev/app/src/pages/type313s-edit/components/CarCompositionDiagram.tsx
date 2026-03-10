@@ -2,10 +2,10 @@ import { memo } from "react";
 
 import styles from "./CarCompositionDiagram.module.css";
 
-import type { Type313sCarState } from "../../../store/monitors/type313s/type313sTypes";
+import type { Type313sCarInfoState } from "../../../store/monitors/type313s/type313sTypes";
 
 type Props = {
-	readonly carState: Type313sCarState;
+	readonly carState: Type313sCarInfoState;
 };
 
 export default memo<Props>(function CarCompositionDiagram({ carState }) {

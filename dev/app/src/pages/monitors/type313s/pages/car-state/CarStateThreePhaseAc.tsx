@@ -136,25 +136,25 @@ const rowListSelector = createTableRowListSelector(
 	),
 	createOnOffCellListSelector(
 		toWide("IvCN"),
-		(carState) => carState.carStates.sivLineState?.isIvCNOn,
+		(carState) => carState.carState.sivLineState?.isIvCNOn,
 	),
 	createOnOffCellListSelector(
 		toWide("IVS/MDS"),
-		(carState) => carState.carStates.sivLineState?.isIVSMDSOn,
+		(carState) => carState.carState.sivLineState?.isIVSMDSOn,
 	),
 	createOnOffCellListSelector(
 		"負荷半減",
-		(carState) => carState.carStates.isReduceLoadOn,
+		(carState) => carState.carState.isReduceLoadOn,
 	),
 );
 
 const sivRowListSelector = createTableRowListSelector(
 	createNumberCellListSelector(
 		toWide("SIV") + "電圧   (V)",
-		(carState) => carState.carStates.sivLineState?.sivVoltage,
+		(carState) => carState.carState.sivLineState?.sivVoltage,
 	),
 	createNumberCellListSelector(
 		toWide("SIV") + "周波数(Hz)",
-		(carState) => carState.carStates.sivLineState?.sivFrequency,
+		(carState) => carState.carState.sivLineState?.sivFrequency,
 	),
 );

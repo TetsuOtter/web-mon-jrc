@@ -223,7 +223,7 @@ const mmCurrentTableRowListSelector = createTableRowListSelector(
 const notchRowListSelector = createTableRowListSelector(
 	createNotchCellListSelector(
 		"受信ノッチ",
-		(carState) => carState.carStates.receivedNotchCommand,
+		(carState) => carState.carState.receivedNotchCommand,
 	),
 	createNotchCellListSelector(
 		"先頭ノッチ",

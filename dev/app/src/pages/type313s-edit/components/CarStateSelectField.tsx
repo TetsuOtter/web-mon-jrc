@@ -8,6 +8,7 @@ type SelectOption = {
 };
 
 type CarStateSelectFieldProps = {
+	readonly formationIndex: number;
 	readonly carIndex: number;
 	readonly fieldKey: string;
 	readonly label: string;
@@ -18,6 +19,7 @@ type CarStateSelectFieldProps = {
 };
 
 export default memo<CarStateSelectFieldProps>(function CarStateSelectField({
+	formationIndex,
 	carIndex,
 	fieldKey,
 	label,
@@ -28,7 +30,7 @@ export default memo<CarStateSelectFieldProps>(function CarStateSelectField({
 }) {
 	return (
 		<SelectField
-			id={`car-${carIndex}-${fieldKey}`}
+			id={`car-${formationIndex}-${carIndex}-${fieldKey}`}
 			label={label}
 			value={value}
 			options={options}

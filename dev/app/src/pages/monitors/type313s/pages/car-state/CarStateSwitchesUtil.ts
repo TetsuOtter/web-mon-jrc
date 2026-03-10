@@ -6,7 +6,7 @@ import {
 import { COLORS } from "../../constants";
 
 import type {
-	Type313sCarState,
+	Type313sCarInfoState,
 	VVVF2State,
 	CabSesState,
 } from "../../../../../store/monitors/type313s/type313sTypes";
@@ -17,10 +17,10 @@ import type { ColorValue } from "../../constants";
 const TABLE_ROW_COUNT = 18;
 
 export type ValueFromStateSelector<T> = (
-	carState: Type313sCarState,
+	carState: Type313sCarInfoState,
 ) => T | null | undefined;
 type ToCellListForRowSelector = (
-	carStateList: Type313sCarState[],
+	carStateList: Type313sCarInfoState[],
 ) => CellListForRow;
 
 type CellCreator<T> = (value: T | null | undefined) => CellInfo;
