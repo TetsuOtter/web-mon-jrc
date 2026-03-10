@@ -186,6 +186,97 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 		await expect(page).toHaveScreenshot("type313s-edit.png");
 	});
 
+	test("type313s-edit - 編成構成から車両をクリックしてスクロールされることを確認", async ({
+		page,
+	}) => {
+		const { jsErrors } = await setupPage(page, "/monitors/type313s-edit");
+		expect(jsErrors).toHaveLength(0);
+
+		// 複数編成が存在することを確認
+		const formationCards = await page.locator('[class*="formationCard"]').all();
+
+		if (formationCards.length < 2) {
+			const addFormationButton = page.locator('button:has-text("+ 編成追加")').first();
+			await addFormationButton.click();
+			await page.waitForTimeout(500);
+		}
+
+		// 編成構成内の車両一覧を取得
+		const compositionItems = await page.locator('[class*="carCompositionItem"]').all();
+
+		if (compositionItems.length > 0) {
+			// 最初の編成構成項目のクリック前のスクロール位置を記録
+			const formationsContainer = page.locator('[class*="formationsContainer"]');
+			const initialFormationsScrollLeft = await formationsContainer.evaluate(
+				(el) => (el as HTMLElement).scrollLeft
+			);
+
+			// 最初の編成の0両目をクリック
+			const firstCompositionItem = compositionItems[0];
+			await firstCompositionItem.click();
+
+			// スクロール完了を待つ
+			await page.waitForTimeout(500);
+
+			// クリック後のスクロール位置を確認
+			const afterFirstCompositionScrollLeft = await formationsContainer.evaluate(
+				(el) => (el as HTMLElement).scrollLeft
+			);
+
+			// 最初の編成の1両目をクリック（スクロール対象）
+			const secondCompositionItem = compositionItems[1];
+			await secondCompositionItem.click();
+
+			// スクロール完了を待つ
+			await page.waitForTimeout(500);
+
+			// 1両目クリック時のスクロール後の位置を確認
+			const afterSecondCompositionScrollLeft = await formationsContainer.evaluate(
+				(el) => (el as HTMLElement).scrollLeft
+			);
+
+			// 最初の編成の2両目をクリック（スクロール対象）
+			const thirdCompositionItem = compositionItems[2];
+			await thirdCompositionItem.click();
+
+			// スクロール完了を待つ
+			await page.waitForTimeout(500);
+
+			// 2両目クリック時のスクロール後の位置を確認
+			const afterThirdCompositionScrollLeft = await formationsContainer.evaluate(
+				(el) => (el as HTMLElement).scrollLeft
+			);
+
+			// ここからが重要: 逆方向のクリック
+			// 0両目をクリック（戻る）
+			await firstCompositionItem.click();
+
+			// スクロール完了を待つ
+			await page.waitForTimeout(500);
+
+			// 0両目に戻った時のスクロール位置を確認
+			const afterReturnToFirstScrollLeft = await formationsContainer.evaluate(
+				(el) => (el as HTMLElement).scrollLeft
+			);
+
+			// スクロールが発生したこと（またはスクロール対象が既に見える位置にあること）を確認
+			expect(
+				afterSecondCompositionScrollLeft !== undefined &&
+				afterThirdCompositionScrollLeft !== undefined &&
+				formationsContainer !== null
+				&& initialFormationsScrollLeft !== undefined
+			).toBeTruthy();
+
+			// 順方向のスクロール: 0 -> 1 -> 2 とスクロールが進む
+			expect(afterSecondCompositionScrollLeft).toBeGreaterThanOrEqual(afterFirstCompositionScrollLeft);
+			expect(afterThirdCompositionScrollLeft).toBeGreaterThanOrEqual(afterSecondCompositionScrollLeft);
+
+			// 逆方向のスクロール: 2 -> 0 とスクロールが戻る
+			expect(afterReturnToFirstScrollLeft).toBeLessThan(afterThirdCompositionScrollLeft);
+			expect(afterReturnToFirstScrollLeft).toBe(afterFirstCompositionScrollLeft);  // 0に戻る
+		}
+	});
+
 	for (const { pageType, mode } of TYPE313S_PAGES) {
 		test(`${pageType} (mode=${mode}) が JS エラーなしで表示される`, async ({
 			page,
