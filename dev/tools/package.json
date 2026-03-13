@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"tsc": "tsc --noEmit",
 		"convert": "node jis-bdf-to-unicode-bdf.ts",
 		"png-to-ts": "node png-to-ts-icon.ts",
 		"lint": "eslint .",

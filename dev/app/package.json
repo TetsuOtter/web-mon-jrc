@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "vite",
 		"dev:hash": "VITE_USE_HASH_ROUTER=true vite",
+		"tsc": "tsc",
 		"build": "tsc && vite build",
 		"lint": "eslint . --max-warnings 0",
 		"lint:fix": "eslint . --fix",
