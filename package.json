@@ -13,8 +13,8 @@
 		"build": "yarn workspace @web-mon-jrc/canvas-renderer build && yarn workspace web-mon-jrc build",
 		"test": "yarn workspace @web-mon-jrc/canvas-renderer test",
 		"test:watch": "yarn workspace @web-mon-jrc/canvas-renderer test:watch",
-		"lint": "yarn workspaces run lint",
-		"lint:fix": "yarn workspaces run lint:fix",
+		"lint": "yarn workspace web-mon-jrc lint && yarn workspace @web-mon-jrc/canvas-renderer lint && yarn workspace @web-mon-jrc/canvas-demo lint && yarn workspace @web-mon-jrc/e2e lint && yarn workspace web-mon-jrc-tools lint",
+		"lint:fix": "yarn workspace web-mon-jrc lint:fix && yarn workspace @web-mon-jrc/canvas-renderer lint:fix && yarn workspace @web-mon-jrc/canvas-demo lint:fix && yarn workspace @web-mon-jrc/e2e lint:fix && yarn workspace web-mon-jrc-tools lint:fix",
 		"fix": "yarn lint:fix"
 	},
 	"devDependencies": {

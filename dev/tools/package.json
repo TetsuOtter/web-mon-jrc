@@ -4,14 +4,22 @@
 	"type": "module",
 	"scripts": {
 		"convert": "node jis-bdf-to-unicode-bdf.ts",
-		"png-to-ts": "node png-to-ts-icon.ts"
+		"png-to-ts": "node png-to-ts-icon.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
 		"iconv-lite": "^0.7.1",
 		"pngjs": "^7.0.0"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.18.0",
 		"@types/node": "^25.0.3",
+		"@typescript-eslint/eslint-plugin": "^8.29.0",
+		"@typescript-eslint/parser": "^8.29.0",
+		"eslint": "^9.18.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.1.3",
 		"typescript": "^5.2.2"
 	}
 }

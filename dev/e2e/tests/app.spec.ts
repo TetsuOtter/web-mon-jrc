@@ -13,19 +13,27 @@ async function waitForCanvasContent(page: Page): Promise<void> {
 
 	while (Date.now() - fontLoadStart < fontLoadTimeout) {
 		const fontProgress = await page.evaluate(() => {
-			const progress = (window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress;
+			const progress = (
+				window as Window & {
+					__fontLoadProgress?: { loaded: number; total: number };
+				}
+			).__fontLoadProgress;
 			return progress || { loaded: 0, total: 0 };
 		});
 
 		// フォントロードが開始され、すべて完了していれば抜ける
 		if (fontProgress.total > 0 && fontProgress.loaded >= fontProgress.total) {
-			console.log(`[waitForCanvasContent] Font load complete: ${fontProgress.loaded}/${fontProgress.total}`);
+			console.log(
+				`[waitForCanvasContent] Font load complete: ${fontProgress.loaded}/${fontProgress.total}`,
+			);
 			break;
 		}
 
 		// まだロード中の場合は500ms待機
 		if (fontProgress.total > 0) {
-			console.log(`[waitForCanvasContent] Waiting for fonts: ${fontProgress.loaded}/${fontProgress.total}`);
+			console.log(
+				`[waitForCanvasContent] Waiting for fonts: ${fontProgress.loaded}/${fontProgress.total}`,
+			);
 		}
 		await page.waitForTimeout(500);
 	}
@@ -37,15 +45,18 @@ async function waitForCanvasContent(page: Page): Promise<void> {
 			const targetIdleCount = 5; // 5回アイドル状態を確認
 
 			const checkIdle = () => {
-				if ('requestIdleCallback' in window) {
-					requestIdleCallback(() => {
-						idleCount++;
-						if (idleCount >= targetIdleCount) {
-							resolve();
-						} else {
-							checkIdle();
-						}
-					}, { timeout: 1000 });
+				if ("requestIdleCallback" in window) {
+					requestIdleCallback(
+						() => {
+							idleCount++;
+							if (idleCount >= targetIdleCount) {
+								resolve();
+							} else {
+								checkIdle();
+							}
+						},
+						{ timeout: 1000 },
+					);
 				} else {
 					// requestIdleCallbackがサポートされていない場合はsetTimeoutで代替
 					setTimeout(() => {
@@ -68,7 +79,8 @@ async function waitForCanvasContent(page: Page): Promise<void> {
 
 	// PIXIアプリがあれば、追加のレンダリングを実行
 	await page.evaluate(() => {
-		const apps = (window as Window & { __testPixiApps?: unknown[] }).__testPixiApps;
+		const apps = (window as Window & { __testPixiApps?: unknown[] })
+			.__testPixiApps;
 		if (apps && apps.length > 0) {
 			for (const app of apps) {
 				const a = app as {
@@ -115,7 +127,7 @@ async function setupPage(
 		({ key, state }) => {
 			localStorage.setItem(key, JSON.stringify(state));
 			// E2Eテスト用フラグ: Canvasのオートスケールを無効化（localStorageに保存してページ遷移でも保持）
-			localStorage.setItem('__e2e_test_disable_autoscale', 'true');
+			localStorage.setItem("__e2e_test_disable_autoscale", "true");
 		},
 		{ key: TYPE313S_STORAGE_KEY, state: TEST_STATE },
 	);
@@ -168,9 +180,7 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 		await expect(page).toHaveScreenshot("index.png");
 	});
 
-	test("type313s-edit ページが JS エラーなしで表示される", async ({
-		page,
-	}) => {
+	test("type313s-edit ページが JS エラーなしで表示される", async ({ page }) => {
 		const { jsErrors } = await setupPage(page, "/monitors/type313s-edit");
 		expect(jsErrors).toHaveLength(0);
 		await expect(page).toHaveScreenshot("type313s-edit.png");
@@ -186,10 +196,10 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 			);
 			expect(jsErrors).toHaveLength(0);
 
-		// Canvas描画の微妙な差異を許容（オートスケール無効化でもフォントレンダリングに微小な差異が生じる）
-		await expect(page).toHaveScreenshot(`type313s-${pageType}.png`, {
-			maxDiffPixelRatio: 0.35, // 35%までの差異を許容（連続実行時の安定性向上）
-		});
+			// Canvas描画の微妙な差異を許容（オートスケール無効化でもフォントレンダリングに微小な差異が生じる）
+			await expect(page).toHaveScreenshot(`type313s-${pageType}.png`, {
+				maxDiffPixelRatio: 0.35, // 35%までの差異を許容（連続実行時の安定性向上）
+			});
 		});
 	}
 });

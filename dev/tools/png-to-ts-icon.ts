@@ -73,9 +73,9 @@ async function pngToIconData(pngPath: string): Promise<{
 	return new Promise((resolve, reject) => {
 		const stream = createReadStream(pngPath);
 
-		let png: PNG;
+		let _png: PNG;
 
-		stream.on("data", (chunk: Buffer) => {
+		stream.on("data", (_chunk: Buffer) => {
 			// pngjsは継承可能でパース処理をする
 		});
 
@@ -118,7 +118,7 @@ async function pngToIconData(pngPath: string): Promise<{
 function splitInto8BitChunks(bitString: string): string[] {
 	if (bitString.length % 8 !== 0) {
 		throw new Error(
-			`Bit string length must be multiple of 8, got ${bitString.length}`
+			`Bit string length must be multiple of 8, got ${bitString.length}`,
 		);
 	}
 
@@ -134,7 +134,7 @@ function splitInto8BitChunks(bitString: string): string[] {
  */
 function generateTypeScriptCode(
 	rows: string[][],
-	importPath: string = "./constants"
+	importPath: string = "./constants",
 ): string {
 	const lines: string[] = [];
 
@@ -164,7 +164,7 @@ function generateTypeScriptCode(
 async function convertSingleFile(
 	inputPath: string,
 	outputPath: string,
-	importPath: string = "./constants"
+	importPath: string = "./constants",
 ): Promise<string> {
 	if (!fs.existsSync(inputPath)) {
 		throw new Error(`Input file not found: ${inputPath}`);
@@ -198,7 +198,7 @@ async function batchConvert(
 	inputDir: string,
 	outputDir: string,
 	fileMap: FileConversionMap,
-	importPath: string = "./constants"
+	importPath: string = "./constants",
 ): Promise<string[]> {
 	// 出力ディレクトリを作成
 	if (!fs.existsSync(outputDir)) {
@@ -213,7 +213,7 @@ async function batchConvert(
 	};
 
 	console.log(
-		`Batch converting ${Object.keys(fileMap).length} files from ${inputDir}...`
+		`Batch converting ${Object.keys(fileMap).length} files from ${inputDir}...`,
 	);
 
 	for (const [inputFileName, outputFileName] of Object.entries(fileMap)) {
@@ -225,7 +225,7 @@ async function batchConvert(
 			const convertedPath = await convertSingleFile(
 				inputPath,
 				outputPath,
-				importPath
+				importPath,
 			);
 			results.success++;
 			results.files.push(convertedPath);
@@ -292,7 +292,7 @@ async function main() {
 		console.error("    If input_dir and output_dir are omitted, use defaults");
 		console.error("");
 		console.error(
-			"Default (no mode specified): Run batch mode with default paths"
+			"Default (no mode specified): Run batch mode with default paths",
 		);
 		console.error("");
 		console.error("Examples:");
@@ -321,7 +321,7 @@ async function main() {
 
 			if (Object.keys(FILE_CONVERSION_MAP).length === 0) {
 				throw new Error(
-					"FILE_CONVERSION_MAP is empty. Please define file mappings."
+					"FILE_CONVERSION_MAP is empty. Please define file mappings.",
 				);
 			}
 
@@ -329,7 +329,7 @@ async function main() {
 				inputDir,
 				outputDir,
 				FILE_CONVERSION_MAP,
-				importPath
+				importPath,
 			);
 			runLint(convertedFiles);
 		} else if (firstArg === "batch" && args.length === 1) {
@@ -344,7 +344,7 @@ async function main() {
 
 			if (Object.keys(FILE_CONVERSION_MAP).length === 0) {
 				throw new Error(
-					"FILE_CONVERSION_MAP is empty. Please define file mappings."
+					"FILE_CONVERSION_MAP is empty. Please define file mappings.",
 				);
 			}
 
@@ -352,7 +352,7 @@ async function main() {
 				inputDir,
 				outputDir,
 				FILE_CONVERSION_MAP,
-				importPath
+				importPath,
 			);
 			runLint(convertedFiles);
 		} else if (isSingleMode && args.length >= 2) {
@@ -370,17 +370,17 @@ async function main() {
 			const convertedPath = await convertSingleFile(
 				inputPath,
 				outputPath,
-				importPath
+				importPath,
 			);
 			console.log(`\n✓ Success!`);
 			runLint([convertedPath]);
 		} else {
 			console.error("Invalid arguments");
 			console.error(
-				"Usage: yarn png-to-ts <input.png> <output.ts> [importPath]"
+				"Usage: yarn png-to-ts <input.png> <output.ts> [importPath]",
 			);
 			console.error(
-				"    or: yarn png-to-ts batch [input_dir] [output_dir] [importPath]"
+				"    or: yarn png-to-ts batch [input_dir] [output_dir] [importPath]",
 			);
 			process.exit(1);
 		}

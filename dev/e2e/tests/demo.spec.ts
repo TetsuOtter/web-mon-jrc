@@ -92,7 +92,10 @@ test.describe("canvas-demo - JS エラーなし", () => {
 				.map((line) => line.trim())
 				.filter((line) => line.length > 0);
 			const lastLine = lines.at(-1) || "{}";
-			const result = JSON.parse(lastLine) as { ok?: boolean; failures?: string[] };
+			const result = JSON.parse(lastLine) as {
+				ok?: boolean;
+				failures?: string[];
+			};
 			expect(result.ok).toBe(true);
 		} catch (error) {
 			const e = error as Error & { stdout?: string; stderr?: string };
