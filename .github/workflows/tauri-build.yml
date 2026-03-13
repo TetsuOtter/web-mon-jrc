@@ -20,15 +20,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Yarn
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "yarn"
           cache-dependency-path: yarn.lock
-
-      - name: Setup Yarn
-        run: corepack enable
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -78,15 +78,15 @@ jobs:
           cache-on-failure: true
           prefix-key: ${{ matrix.target }}
 
+      - name: Setup Yarn
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "yarn"
           cache-dependency-path: yarn.lock
-
-      - name: Setup Yarn
-        run: corepack enable
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -133,6 +133,9 @@ jobs:
           name: frontend-dist
           path: dev/app/dist
 
+      - name: Setup Yarn
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -149,9 +152,6 @@ jobs:
           workspaces: "dev/app/src-tauri"
           cache-on-failure: true
           prefix-key: ${{ matrix.platform }}
-
-      - name: Setup Yarn
-        run: corepack enable
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
