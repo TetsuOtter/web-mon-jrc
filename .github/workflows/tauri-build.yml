@@ -25,24 +25,16 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
+          cache-dependency-path: yarn.lock
 
       - name: Setup Yarn
         run: corepack enable
 
-      - name: Install canvas-renderer dependencies
-        working-directory: ./dev/canvas-renderer
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build canvas-renderer
-        working-directory: ./dev/canvas-renderer
-        run: yarn build
-
-      - name: Install frontend dependencies
-        working-directory: ./dev/app
-        run: yarn install --frozen-lockfile
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
       - name: Build frontend
         working-directory: ./dev/app
@@ -91,24 +83,16 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
+          cache-dependency-path: yarn.lock
 
       - name: Setup Yarn
         run: corepack enable
 
-      - name: Install canvas-renderer dependencies
-        working-directory: ./dev/canvas-renderer
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build canvas-renderer
-        working-directory: ./dev/canvas-renderer
-        run: yarn build
-
-      - name: Install frontend dependencies
-        working-directory: ./dev/app
-        run: yarn install --frozen-lockfile
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
       - name: Build Icon
         working-directory: ./dev/app
@@ -154,9 +138,7 @@ jobs:
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
+          cache-dependency-path: yarn.lock
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -171,13 +153,11 @@ jobs:
       - name: Setup Yarn
         run: corepack enable
 
-      - name: Install canvas-renderer dependencies
-        working-directory: ./dev/canvas-renderer
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build canvas-renderer
-        working-directory: ./dev/canvas-renderer
-        run: yarn build
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
@@ -192,10 +172,6 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-
-      - name: Install frontend dependencies
-        working-directory: ./dev/app
-        run: yarn install --frozen-lockfile
 
       - name: Build Icon
         working-directory: ./dev/app
