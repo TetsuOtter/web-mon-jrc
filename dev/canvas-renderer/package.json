@@ -37,6 +37,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
+		"build:watch": "tsc --watch",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

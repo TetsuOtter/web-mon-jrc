@@ -1,0 +1,23 @@
+{
+	"private": true,
+	"name": "web-mon-jrc-workspace",
+	"workspaces": [
+		"dev/app",
+		"dev/canvas-renderer",
+		"dev/canvas-demo",
+		"dev/e2e",
+		"dev/tools"
+	],
+	"scripts": {
+		"dev": "concurrently -n canvas-renderer,app -c cyan,green \"yarn workspace @web-mon-jrc/canvas-renderer build:watch\" \"yarn workspace web-mon-jrc dev\"",
+		"build": "yarn workspace @web-mon-jrc/canvas-renderer build && yarn workspace web-mon-jrc build",
+		"test": "yarn workspace @web-mon-jrc/canvas-renderer test",
+		"test:watch": "yarn workspace @web-mon-jrc/canvas-renderer test:watch",
+		"lint": "yarn workspaces run lint",
+		"lint:fix": "yarn workspaces run lint:fix",
+		"fix": "yarn lint:fix"
+	},
+	"devDependencies": {
+		"concurrently": "^9.0.0"
+	}
+}
