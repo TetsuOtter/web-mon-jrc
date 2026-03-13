@@ -44,21 +44,18 @@
 		"lint:fix": "eslint . --fix",
 		"fix": "yarn lint:fix"
 	},
-	"peerDependencies": {
-		"react": "^19.0.0"
-	},
 	"dependencies": {
 		"bdfparser": "^2.2.5",
 		"pixi.js": "^8.0.0"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.18.0",
 		"@testing-library/dom": "^10.0.0",
 		"@testing-library/react": "^16.3.0",
 		"@types/react": "^19.1.0",
-		"@eslint/js": "^9.18.0",
 		"@typescript-eslint/eslint-plugin": "^8.29.0",
 		"@typescript-eslint/parser": "^8.29.0",
-		"@vitejs/plugin-react-swc": "3.5.0",
+		"@vitejs/plugin-react-swc": "3.11.0",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-import-resolver-typescript": "^4.4.4",
@@ -67,7 +64,7 @@
 		"eslint-plugin-react": "^7.37.0",
 		"eslint-plugin-react-hooks": "^5.0.0",
 		"eslint-plugin-react-refresh": "^0.4.6",
-		"jsdom": "^26.1.0",
+		"jsdom": "^28.1.0",
 		"prettier": "^3.3.2",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
