@@ -136,6 +136,7 @@ jobs:
       - name: Setup Yarn
         shell: bash
         run: |
+          npm uninstall -g yarn
           corepack enable
           corepack prepare yarn --activate
           echo "YARN_CACHE_FOLDER=${{ github.workspace }}/.yarn-cache" >> $GITHUB_ENV
