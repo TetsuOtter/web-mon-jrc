@@ -3,7 +3,7 @@ import { memo, useMemo } from "react";
 import { CanvasText } from "@web-mon-jrc/canvas-renderer";
 import { hexToRgb } from "@web-mon-jrc/canvas-renderer/utils/colorUtil";
 
-import { COLORS } from "../constants";
+import { COLORS, TEXT_COLOR_MAP } from "../constants";
 
 import Button from "./Button";
 
@@ -78,17 +78,3 @@ export default memo<TextButtonProps>(function TextButton({
 		</Button>
 	);
 });
-
-const TEXT_COLOR_MAP = {
-	[COLORS.BLACK]: COLORS.WHITE,
-	[COLORS.WHITE]: COLORS.BLACK,
-	[COLORS.RED]: COLORS.WHITE,
-	[COLORS.LIME]: COLORS.BLACK,
-	[COLORS.BLUE]: COLORS.WHITE,
-	[COLORS.YELLOW]: COLORS.BLACK,
-	[COLORS.AQUA]: COLORS.BLACK,
-	[COLORS.MAGENTA]: COLORS.WHITE,
-
-	[COLORS.GRAY]: COLORS.WHITE,
-	[COLORS.CYAN]: COLORS.BLACK,
-} as const satisfies Record<ColorValue, ColorValue>;

@@ -29,6 +29,19 @@ export const COLORS = {
 } as const satisfies Record<string, string>;
 export type ColorName = keyof typeof COLORS;
 export type ColorValue = (typeof COLORS)[ColorName];
+export const TEXT_COLOR_MAP = {
+	[COLORS.BLACK]: COLORS.WHITE,
+	[COLORS.WHITE]: COLORS.BLACK,
+	[COLORS.RED]: COLORS.WHITE,
+	[COLORS.LIME]: COLORS.BLACK,
+	[COLORS.BLUE]: COLORS.WHITE,
+	[COLORS.YELLOW]: COLORS.BLACK,
+	[COLORS.AQUA]: COLORS.BLACK,
+	[COLORS.MAGENTA]: COLORS.WHITE,
+
+	[COLORS.GRAY]: COLORS.WHITE,
+	[COLORS.CYAN]: COLORS.BLACK,
+} as const satisfies Record<ColorValue, ColorValue>;
 
 export const RGB_COLORS = Object.fromEntries(
 	Object.entries(COLORS).map(([name, hex]) => [name, hexToRgb(hex)]),

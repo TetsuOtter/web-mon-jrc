@@ -11,7 +11,9 @@ import {
 import {
 	carCountSelector,
 	createCarStateByCarIndexSelector,
+	seriesByCarIndexSelector,
 } from "../../../../../store/monitors/type313s/type313sSelector";
+import { CAR_SERIES } from "../../../../../store/monitors/type313s/type313sTypes";
 import { COLORS } from "../../constants";
 
 import CarImage from "./CarImage";
@@ -26,6 +28,7 @@ import {
 } from "./types";
 
 import type { CarImageBogieInfo, BaseCarImageInfo } from "./types";
+import type { CarSeries } from "../../../../../store/monitors/type313s/type313sTypes";
 import type { ColorValue } from "../../constants";
 
 const TOP = 50;
@@ -66,9 +69,11 @@ const CarImageByCarIndex: FC<CarImageByCarIndexProps> = ({ carIndex }) => {
 		isCarImageBogieInfoEqual,
 		carIndex,
 	);
+	const series = useAppSelectorWithParams(seriesByCarIndexSelector, carIndex);
 	const roofBackgroundColor = useAppSelectorWithParams(
 		roofBackgroundColorSelector,
 		carIndex,
+		series,
 	);
 	const carType = useAppSelectorWithParams(carTypeSelector, carIndex);
 	return (
@@ -105,10 +110,13 @@ const bogieInfoSelector = createCarStateByCarIndexSelector<CarImageBogieInfo>(
 	}),
 );
 const roofBackgroundColorSelector = createCarStateByCarIndexSelector<
-	ColorValue | undefined
->((carState) => {
+	ColorValue | undefined,
+	[series: CarSeries]
+>((carState, _carIndex, series) => {
 	if (carState.cabState?.orderedNotchCommand != null) {
 		return COLORS.BLUE;
+	} else if (series === CAR_SERIES[315]) {
+		return COLORS.WHITE;
 	}
 	return undefined;
 });
