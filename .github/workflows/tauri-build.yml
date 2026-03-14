@@ -134,16 +134,24 @@ jobs:
           path: dev/app/dist
 
       - name: Setup Yarn
+        shell: bash
         run: |
           corepack enable
           corepack prepare yarn --activate
+          echo "YARN_CACHE_FOLDER=${{ github.workspace }}/.yarn-cache" >> $GITHUB_ENV
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "yarn"
-          cache-dependency-path: yarn.lock
+
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.yarn-cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
