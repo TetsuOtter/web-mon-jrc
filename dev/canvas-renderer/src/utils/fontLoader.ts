@@ -27,7 +27,11 @@ const fontCache = new Map<AvailableFont, Promise<Font>>();
 
 // テスト用: フォントロードの進行状況を追跡
 if (typeof window !== "undefined") {
-	(window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress = {
+	(
+		window as Window & {
+			__fontLoadProgress?: { loaded: number; total: number };
+		}
+	).__fontLoadProgress = {
 		loaded: 0,
 		total: 0,
 	};
@@ -47,7 +51,11 @@ export async function loadFont(font: AvailableFont): Promise<Font> {
 	const fontPromise = (async () => {
 		// テスト用: ロード開始をカウント
 		if (typeof window !== "undefined") {
-			const progress = (window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress;
+			const progress = (
+				window as Window & {
+					__fontLoadProgress?: { loaded: number; total: number };
+				}
+			).__fontLoadProgress;
 			if (progress) {
 				progress.total++;
 			}
@@ -59,7 +67,11 @@ export async function loadFont(font: AvailableFont): Promise<Font> {
 
 		// テスト用: ロード完了をカウント
 		if (typeof window !== "undefined") {
-			const progress = (window as Window & { __fontLoadProgress?: { loaded: number; total: number } }).__fontLoadProgress;
+			const progress = (
+				window as Window & {
+					__fontLoadProgress?: { loaded: number; total: number };
+				}
+			).__fontLoadProgress;
 			if (progress) {
 				progress.loaded++;
 			}

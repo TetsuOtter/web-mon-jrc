@@ -1,4 +1,4 @@
-name: Lint
+name: Lint & Typecheck
 
 on:
   push:
@@ -18,56 +18,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Yarn
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
-            dev/canvas-demo/yarn.lock
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build canvas-renderer
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
+
+      - name: Run lint
+        run: yarn lint
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Yarn
         run: corepack enable
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "yarn"
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Build canvas-renderer
-        working-directory:  dev/canvas-renderer
-        run: yarn install --frozen-lockfile && yarn build
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
-      - name: Run lint for all directories
-        run: |
-          #!/bin/bash
-          set +e  # Continue on error
-
-          directories=("dev/app" "dev/canvas-renderer" "dev/canvas-demo")
-          failed_dirs=()
-
-          for dir in "${directories[@]}"; do
-            echo "=========================================="
-            echo "Installing dependencies in $dir..."
-            echo "=========================================="
-            (cd "$dir" && yarn install --frozen-lockfile) || failed_dirs+=("$dir (install)")
-
-            echo ""
-            echo "=========================================="
-            echo "Running lint in $dir..."
-            echo "=========================================="
-            (cd "$dir" && yarn lint) || failed_dirs+=("$dir (lint)")
-            echo ""
-          done
-
-          # Report results
-          echo "=========================================="
-          echo "Lint Results"
-          echo "=========================================="
-          if [ ${#failed_dirs[@]} -eq 0 ]; then
-            echo "✓ All lint checks passed!"
-            exit 0
-          else
-            echo "✗ Failed steps:"
-            for failed in "${failed_dirs[@]}"; do
-              echo "  - $failed"
-            done
-            exit 1
-          fi
+      - name: Run typecheck
+        run: yarn tsc

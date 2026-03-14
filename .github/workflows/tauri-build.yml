@@ -20,29 +20,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Yarn
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
+          cache-dependency-path: yarn.lock
 
-      - name: Setup Yarn
-        run: corepack enable
-
-      - name: Install canvas-renderer dependencies
-        working-directory: ./dev/canvas-renderer
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build canvas-renderer
-        working-directory: ./dev/canvas-renderer
-        run: yarn build
-
-      - name: Install frontend dependencies
-        working-directory: ./dev/app
-        run: yarn install --frozen-lockfile
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
       - name: Build frontend
         working-directory: ./dev/app
@@ -86,29 +78,21 @@ jobs:
           cache-on-failure: true
           prefix-key: ${{ matrix.target }}
 
+      - name: Setup Yarn
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
+          cache-dependency-path: yarn.lock
 
-      - name: Setup Yarn
-        run: corepack enable
-
-      - name: Install canvas-renderer dependencies
-        working-directory: ./dev/canvas-renderer
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build canvas-renderer
-        working-directory: ./dev/canvas-renderer
-        run: yarn build
-
-      - name: Install frontend dependencies
-        working-directory: ./dev/app
-        run: yarn install --frozen-lockfile
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
       - name: Build Icon
         working-directory: ./dev/app
@@ -149,14 +133,26 @@ jobs:
           name: frontend-dist
           path: dev/app/dist
 
+      - name: Setup Yarn
+        shell: bash
+        run: |
+          npm uninstall -g yarn
+          corepack enable
+          corepack prepare yarn --activate
+          echo "YARN_CACHE_FOLDER=${{ github.workspace }}/.yarn-cache" >> $GITHUB_ENV
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "yarn"
-          cache-dependency-path: |
-            dev/app/yarn.lock
-            dev/canvas-renderer/yarn.lock
+
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.yarn-cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -168,16 +164,11 @@ jobs:
           cache-on-failure: true
           prefix-key: ${{ matrix.platform }}
 
-      - name: Setup Yarn
-        run: corepack enable
-
-      - name: Install canvas-renderer dependencies
-        working-directory: ./dev/canvas-renderer
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build canvas-renderer
-        working-directory: ./dev/canvas-renderer
-        run: yarn build
+        run: yarn workspace @web-mon-jrc/canvas-renderer build
 
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
@@ -192,10 +183,6 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-
-      - name: Install frontend dependencies
-        working-directory: ./dev/app
-        run: yarn install --frozen-lockfile
 
       - name: Build Icon
         working-directory: ./dev/app
