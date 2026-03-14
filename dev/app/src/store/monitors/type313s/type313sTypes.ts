@@ -23,7 +23,6 @@ export type Type313sConductorState = {
 export type Type313sCarInfoState = {
 	// 編成表示系
 	carType: string;
-	carNumber: number;
 	hasLeftPantograph: boolean;
 	hasRightPantograph: boolean;
 

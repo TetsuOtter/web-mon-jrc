@@ -1,7 +1,5 @@
-import {
-	Type313sState,
-	CAR_SERIES,
-} from "../../app/src/store/monitors/type313s/type313sTypes";
+import type { Type313sState } from "../../app/src/store/monitors/type313s/type313sTypes";
+import { CAR_SERIES } from "../../app/src/store/monitors/type313s/type313sTypes";
 
 /**
  * テスト用の固定 type313s Redux ステート
@@ -40,7 +38,6 @@ export const TEST_STATE = {
 				{
 					...carCommon,
 					carType: "Mc",
-					carNumber: 1,
 					hasLeftPantograph: false,
 					hasRightPantograph: true,
 					carState: {
@@ -101,8 +98,7 @@ export const TEST_STATE = {
 				},
 				{
 					...carCommon,
-				carType: "M",
-					carNumber: 2,
+					carType: "M",
 					hasLeftPantograph: false,
 					hasRightPantograph: true,
 					carState: {
@@ -112,13 +108,13 @@ export const TEST_STATE = {
 						isBrakeChopperOn: false,
 						isTestSWOn: false,
 						isSnowBrakeOn: false,
-					sivLineState: undefined,
+						sivLineState: undefined,
 						isReduceLoadOn: false,
 						bcPressure: [300, 300, 300, 300],
 						mrPressure: 860,
 						receivedNotchCommand: "非常",
 					},
-				cabState: undefined,
+					cabState: undefined,
 					bogieState: {
 						isHBOn: true,
 						isCCOSNormal: true,
@@ -142,10 +138,9 @@ export const TEST_STATE = {
 						},
 					},
 				},
-								{
+				{
 					...carCommon,
 					carType: "Tc",
-					carNumber: 3,
 					hasLeftPantograph: false,
 					hasRightPantograph: false,
 					carState: {
@@ -180,7 +175,6 @@ export const TEST_STATE = {
 				{
 					...carCommon,
 					carType: "Mc",
-					carNumber: 4,
 					hasLeftPantograph: false,
 					hasRightPantograph: true,
 					carState: {
@@ -248,7 +242,6 @@ export const TEST_STATE = {
 				{
 					...carCommon,
 					carType: "Tc",
-					carNumber: 5,
 					hasLeftPantograph: false,
 					hasRightPantograph: false,
 					carState: {

@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { SLICE_NAME } from "./constants";
-import { createM, createMc, createTc } from "./type313sCarInfoUtil";
+import { create313_T } from "./type313sCarInfoUtil";
 import { loadType313sState } from "./type313sStorage";
-import { CAR_SERIES } from "./type313sTypes";
 
 import type {
 	Type313sConductorState,
@@ -15,13 +14,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 const defaultInitialState: Type313sState = {
 	currentLocation: 123.4,
 
-	formations: [
-		{
-			series: CAR_SERIES[313],
-			unitName: "SampleUnit",
-			carInfoList: [createMc(1), createM(2), createTc(3)],
-		},
-	],
+	formations: [create313_T()],
 	conductorState: {
 		isRoomLightOn: true,
 		isGuidanceOn: true,

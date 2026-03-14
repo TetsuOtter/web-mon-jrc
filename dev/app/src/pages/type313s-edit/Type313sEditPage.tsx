@@ -61,7 +61,7 @@ export default memo(function Type313sEditPage() {
 				{
 					series: CAR_SERIES[313],
 					unitName: `編成${formations.length + 1}`,
-					carInfoList: [createDefaultCarState(1)],
+					carInfoList: [createDefaultCarState()],
 				},
 			]),
 		);
@@ -97,20 +97,13 @@ export default memo(function Type313sEditPage() {
 				return;
 			}
 
-			const maxCarNumber = formation.carInfoList.reduce(
-				(maxValue, carState) => Math.max(maxValue, carState.carNumber),
-				0,
-			);
 			dispatch(
 				setFormations(
 					formations.map((f, fi) =>
 						fi === formationIndex
 							? {
 									...f,
-									carInfoList: [
-										...f.carInfoList,
-										createDefaultCarState(maxCarNumber + 1),
-									],
+									carInfoList: [...f.carInfoList, createDefaultCarState()],
 								}
 							: f,
 					),

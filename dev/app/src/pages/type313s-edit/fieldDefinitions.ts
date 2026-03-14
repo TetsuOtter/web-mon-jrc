@@ -166,10 +166,9 @@ export function createDefaultBogieCommonState(): Type313sBogieCommonState {
 	};
 }
 
-export function createDefaultCarState(carNumber: number): Type313sCarInfoState {
+export function createDefaultCarState(): Type313sCarInfoState {
 	return {
 		carType: "M",
-		carNumber,
 		hasLeftPantograph: false,
 		hasRightPantograph: false,
 		isDoorClosed: null,
@@ -213,13 +212,6 @@ export const CAR_BASIC_FIELDS: readonly CarStateBasicField[] = [
 		label: "車種",
 		getValue: (car) => car.carType,
 		setValue: (car, value) => ({ ...car, carType: value }),
-	},
-	{
-		type: "number",
-		fieldKey: "carNumber",
-		label: "車号",
-		getValue: (car) => car.carNumber,
-		setValue: (car, value) => ({ ...car, carNumber: value }),
 	},
 	{
 		type: "select",

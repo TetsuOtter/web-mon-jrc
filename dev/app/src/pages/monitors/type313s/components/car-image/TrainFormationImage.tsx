@@ -71,7 +71,6 @@ const CarImageByCarIndex: FC<CarImageByCarIndexProps> = ({ carIndex }) => {
 		carIndex,
 	);
 	const carType = useAppSelectorWithParams(carTypeSelector, carIndex);
-	const carNumber = useAppSelectorWithParams(carNumberSelector, carIndex);
 	return (
 		<CarImage
 			relX={CAR_IMAGE_WIDTH * carIndex}
@@ -80,7 +79,7 @@ const CarImageByCarIndex: FC<CarImageByCarIndexProps> = ({ carIndex }) => {
 			bogieInfo={bogieInfo}
 			roofBackgroundColor={roofBackgroundColor}
 			carType={carType}
-			carNumber={carNumber}
+			carNumber={carIndex + 1}
 		/>
 	);
 };
@@ -115,7 +114,4 @@ const roofBackgroundColorSelector = createCarStateByCarIndexSelector<
 });
 const carTypeSelector = createCarStateByCarIndexSelector(
 	(carState) => carState.carType,
-);
-const carNumberSelector = createCarStateByCarIndexSelector(
-	(carState) => carState.carNumber,
 );

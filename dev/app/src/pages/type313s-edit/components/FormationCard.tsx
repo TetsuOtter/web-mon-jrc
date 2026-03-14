@@ -61,7 +61,6 @@ export default memo<FormationCardProps>(function FormationCard({
 
 	return (
 		<div
-			// eslint-disable-next-line react/no-array-index-key
 			key={`formation-${formationIndex}`}
 			className={styles.formationCard}
 		>
@@ -114,7 +113,7 @@ export default memo<FormationCardProps>(function FormationCard({
 						<details
 							open
 							// eslint-disable-next-line react/no-array-index-key
-							key={`car-${formationIndex}-${carIndex}-${carState.carNumber}`}
+							key={`car-${formationIndex}-${carIndex}`}
 							ref={(el) => {
 								if (el) {
 									carDetailsRefs.current[globalCarIndex] = el;
@@ -124,7 +123,7 @@ export default memo<FormationCardProps>(function FormationCard({
 						>
 							<summary className={styles.subTitleRow}>
 								<span className={styles.subTitle}>
-									{carState.carNumber}号車 ({carState.carType})
+									{carIndex + 1}号車 ({carState.carType})
 								</span>
 								<button
 									type="button"

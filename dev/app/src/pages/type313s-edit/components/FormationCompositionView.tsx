@@ -89,7 +89,7 @@ export default memo<FormationCompositionViewProps>(
 										>
 											<CarCompositionDiagram carState={carState} />
 											<div className={styles.carInfo}>
-												<div className={styles.carId}>{carState.carNumber}</div>
+												<div className={styles.carId}>{carIndex + 1}</div>
 											</div>
 										</div>
 									);

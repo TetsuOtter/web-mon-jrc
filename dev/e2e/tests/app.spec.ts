@@ -196,19 +196,25 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 		const formationCards = await page.locator('[class*="formationCard"]').all();
 
 		if (formationCards.length < 2) {
-			const addFormationButton = page.locator('button:has-text("+ 編成追加")').first();
+			const addFormationButton = page
+				.locator('button:has-text("+ 編成追加")')
+				.first();
 			await addFormationButton.click();
 			await page.waitForTimeout(500);
 		}
 
 		// 編成構成内の車両一覧を取得
-		const compositionItems = await page.locator('[class*="carCompositionItem"]').all();
+		const compositionItems = await page
+			.locator('[class*="carCompositionItem"]')
+			.all();
 
 		if (compositionItems.length > 0) {
 			// 最初の編成構成項目のクリック前のスクロール位置を記録
-			const formationsContainer = page.locator('[class*="formationsContainer"]');
+			const formationsContainer = page.locator(
+				'[class*="formationsContainer"]',
+			);
 			const initialFormationsScrollLeft = await formationsContainer.evaluate(
-				(el) => (el as HTMLElement).scrollLeft
+				(el) => (el as HTMLElement).scrollLeft,
 			);
 
 			// 最初の編成の0両目をクリック
@@ -219,9 +225,10 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 			await page.waitForTimeout(500);
 
 			// クリック後のスクロール位置を確認
-			const afterFirstCompositionScrollLeft = await formationsContainer.evaluate(
-				(el) => (el as HTMLElement).scrollLeft
-			);
+			const afterFirstCompositionScrollLeft =
+				await formationsContainer.evaluate(
+					(el) => (el as HTMLElement).scrollLeft,
+				);
 
 			// 最初の編成の1両目をクリック（スクロール対象）
 			const secondCompositionItem = compositionItems[1];
@@ -231,9 +238,10 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 			await page.waitForTimeout(500);
 
 			// 1両目クリック時のスクロール後の位置を確認
-			const afterSecondCompositionScrollLeft = await formationsContainer.evaluate(
-				(el) => (el as HTMLElement).scrollLeft
-			);
+			const afterSecondCompositionScrollLeft =
+				await formationsContainer.evaluate(
+					(el) => (el as HTMLElement).scrollLeft,
+				);
 
 			// 最初の編成の2両目をクリック（スクロール対象）
 			const thirdCompositionItem = compositionItems[2];
@@ -243,9 +251,10 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 			await page.waitForTimeout(500);
 
 			// 2両目クリック時のスクロール後の位置を確認
-			const afterThirdCompositionScrollLeft = await formationsContainer.evaluate(
-				(el) => (el as HTMLElement).scrollLeft
-			);
+			const afterThirdCompositionScrollLeft =
+				await formationsContainer.evaluate(
+					(el) => (el as HTMLElement).scrollLeft,
+				);
 
 			// ここからが重要: 逆方向のクリック
 			// 0両目をクリック（戻る）
@@ -256,24 +265,32 @@ test.describe("type313s アプリ - JS エラーなし", () => {
 
 			// 0両目に戻った時のスクロール位置を確認
 			const afterReturnToFirstScrollLeft = await formationsContainer.evaluate(
-				(el) => (el as HTMLElement).scrollLeft
+				(el) => (el as HTMLElement).scrollLeft,
 			);
 
 			// スクロールが発生したこと（またはスクロール対象が既に見える位置にあること）を確認
 			expect(
 				afterSecondCompositionScrollLeft !== undefined &&
-				afterThirdCompositionScrollLeft !== undefined &&
-				formationsContainer !== null
-				&& initialFormationsScrollLeft !== undefined
+					afterThirdCompositionScrollLeft !== undefined &&
+					formationsContainer !== null &&
+					initialFormationsScrollLeft !== undefined,
 			).toBeTruthy();
 
 			// 順方向のスクロール: 0 -> 1 -> 2 とスクロールが進む
-			expect(afterSecondCompositionScrollLeft).toBeGreaterThanOrEqual(afterFirstCompositionScrollLeft);
-			expect(afterThirdCompositionScrollLeft).toBeGreaterThanOrEqual(afterSecondCompositionScrollLeft);
+			expect(afterSecondCompositionScrollLeft).toBeGreaterThanOrEqual(
+				afterFirstCompositionScrollLeft,
+			);
+			expect(afterThirdCompositionScrollLeft).toBeGreaterThanOrEqual(
+				afterSecondCompositionScrollLeft,
+			);
 
 			// 逆方向のスクロール: 2 -> 0 とスクロールが戻る
-			expect(afterReturnToFirstScrollLeft).toBeLessThan(afterThirdCompositionScrollLeft);
-			expect(afterReturnToFirstScrollLeft).toBe(afterFirstCompositionScrollLeft);  // 0に戻る
+			expect(afterReturnToFirstScrollLeft).toBeLessThan(
+				afterThirdCompositionScrollLeft,
+			);
+			expect(afterReturnToFirstScrollLeft).toBe(
+				afterFirstCompositionScrollLeft,
+			); // 0に戻る
 		}
 	});
 
