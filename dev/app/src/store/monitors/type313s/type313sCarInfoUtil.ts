@@ -456,3 +456,156 @@ function createBogieStateInitialValue(): Type313sBogieState {
 		isMCOS2On: true,
 	};
 }
+
+export type FormationTemplate = Readonly<{
+	name: string;
+	displayName: string;
+	series: 313 | 315;
+	carCount: number;
+	creator: () => Type313sFormation;
+}>;
+
+export const FORMATION_TEMPLATES: readonly FormationTemplate[] = [
+	// 313系
+	{
+		name: "Y0",
+		displayName: "Y0編成",
+		series: 313,
+		carCount: 4,
+		creator: create313_Y0,
+	},
+	{
+		name: "Y30_K",
+		displayName: "Y30/K編成",
+		series: 313,
+		carCount: 2,
+		creator: create313_Y30_K,
+	},
+	{
+		name: "B0_J0_1000",
+		displayName: "B0/J0編成(1000番台)",
+		series: 313,
+		carCount: 4,
+		creator: create313_B0_J0_1000,
+	},
+	{
+		name: "B100_J150_1500",
+		displayName: "B100/J150編成(1500番台)",
+		series: 313,
+		carCount: 3,
+		creator: create313_B100_J150_1500,
+	},
+	{
+		name: "V_B300_R100",
+		displayName: "V/B300/R100編成",
+		series: 313,
+		carCount: 2,
+		creator: create313_V_B300_R100,
+	},
+	{
+		name: "B200_S",
+		displayName: "B200/S編成",
+		series: 313,
+		carCount: 3,
+		creator: create313_B200_S,
+	},
+	{
+		name: "B0_J0_1100",
+		displayName: "B0/J0編成(1100番台)",
+		series: 313,
+		carCount: 4,
+		creator: create313_B0_J0_1100,
+	},
+	{
+		name: "B100_J150_1600",
+		displayName: "B100/J160編成(1600番台)",
+		series: 313,
+		carCount: 3,
+		creator: create313_B100_J150_1600,
+	},
+	{
+		name: "B150_J170",
+		displayName: "B150/J170編成",
+		series: 313,
+		carCount: 3,
+		creator: create313_B150_J170,
+	},
+	{
+		name: "T",
+		displayName: "T編成",
+		series: 313,
+		carCount: 3,
+		creator: create313_T,
+	},
+	{
+		name: "N",
+		displayName: "N編成",
+		series: 313,
+		carCount: 3,
+		creator: create313_N,
+	},
+	{
+		name: "W_2300",
+		displayName: "W編成(2300番台)",
+		series: 313,
+		carCount: 2,
+		creator: create313_W_2300,
+	},
+	{
+		name: "W_2350",
+		displayName: "W編成(2350番台)",
+		series: 313,
+		carCount: 2,
+		creator: create313_W_2350,
+	},
+	{
+		name: "V",
+		displayName: "V編成",
+		series: 313,
+		carCount: 2,
+		creator: create313_V,
+	},
+	{
+		name: "Y100",
+		displayName: "Y100編成",
+		series: 313,
+		carCount: 6,
+		creator: create313_Y100,
+	},
+	{
+		name: "J0",
+		displayName: "J0編成",
+		series: 313,
+		carCount: 4,
+		creator: create313_J0,
+	},
+	{
+		name: "B400_L_B500_R200",
+		displayName: "B400/L/B500/R200編成",
+		series: 313,
+		carCount: 2,
+		creator: create313_B400_L_B500_R200,
+	},
+	{
+		name: "Z",
+		displayName: "Z編成",
+		series: 313,
+		carCount: 2,
+		creator: create313_Z,
+	},
+	// 315系
+	{
+		name: "C0",
+		displayName: "C0編成",
+		series: 315,
+		carCount: 8,
+		creator: create315_C0,
+	},
+	{
+		name: "C100_U",
+		displayName: "C100/U編成",
+		series: 315,
+		carCount: 4,
+		creator: create315_C100_U,
+	},
+] as const;

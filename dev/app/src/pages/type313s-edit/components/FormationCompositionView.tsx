@@ -57,7 +57,7 @@ export default memo<FormationCompositionViewProps>(
 							className={styles.formationCompositionGroup}
 						>
 							<div className={styles.formationCompositionLabel}>
-								編成 {formationIndex + 1}
+								編成 {formationIndex + 1} ({formation.unitName})
 							</div>
 							<div className={styles.carCompositionListInline}>
 								{formation.carInfoList.map((carState, carIndex) => {

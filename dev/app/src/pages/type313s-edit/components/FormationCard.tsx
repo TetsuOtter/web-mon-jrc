@@ -65,7 +65,10 @@ export default memo<FormationCardProps>(function FormationCard({
 			className={styles.formationCard}
 		>
 			<div className={styles.formationHeader}>
-				<h3 className={styles.formationTitle}>編成 {formationIndex + 1}</h3>
+				<h3 className={styles.formationTitle}>
+					編成 {formationIndex + 1}{" "}
+					<span style={{ fontWeight: "normal" }}>({formation.unitName})</span>
+				</h3>
 				<div style={{ display: "flex", gap: "8px" }}>
 					<button
 						type="button"

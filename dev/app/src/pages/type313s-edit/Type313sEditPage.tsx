@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -6,20 +6,23 @@ import {
 	setFormations,
 	resetState,
 } from "../../store/monitors/type313s/type313sSlice";
-import {
-	type Type313sCarInfoState,
-	CAR_SERIES,
-} from "../../store/monitors/type313s/type313sTypes";
 
 import styles from "./Type313sEditPage.module.css";
 import ConductorStateSection from "./components/ConductorStateSection";
 import FormationCard from "./components/FormationCard";
 import FormationCompositionView from "./components/FormationCompositionView";
+import FormationSelector from "./components/FormationSelector";
 import TrainInfoSection from "./components/TrainInfoSection";
 import { createDefaultCarState } from "./fieldDefinitions";
 
+import type {
+	Type313sCarInfoState,
+	Type313sFormation,
+} from "../../store/monitors/type313s/type313sTypes";
+
 export default memo(function Type313sEditPage() {
 	const dispatch = useAppDispatch();
+	const [isSelectorOpen, setIsSelectorOpen] = useState(false);
 	const carDetailsRefs = useRef<(HTMLDetailsElement | null)[]>([]);
 	const carListContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
 	const formationsContainerRef = useRef<HTMLDivElement | null>(null);
@@ -52,20 +55,46 @@ export default memo(function Type313sEditPage() {
 	);
 
 	const handleAddFormation = useCallback(() => {
+		// 編成数の上限チェック
 		if (formations.length >= 6) {
 			return;
 		}
-		dispatch(
-			setFormations([
-				...formations,
-				{
-					series: CAR_SERIES[313],
-					unitName: `編成${formations.length + 1}`,
-					carInfoList: [createDefaultCarState()],
-				},
-			]),
+
+		// 全編成の車両数合計を計算（最小1両の編成を追加することを想定）
+		const totalCars = formations.reduce(
+			(sum, f) => sum + f.carInfoList.length,
+			0,
 		);
-	}, [formations, dispatch]);
+
+		// すでに12両に達していれば追加できない
+		if (totalCars >= 12) {
+			return;
+		}
+
+		setIsSelectorOpen(true);
+	}, [formations]);
+
+	const handleFormationSelect = useCallback(
+		(formation: Type313sFormation) => {
+			if (formations.length >= 6) {
+				return;
+			}
+
+			// 全編成の車両数合計を計算
+			const totalCars = formations.reduce(
+				(sum, f) => sum + f.carInfoList.length,
+				0,
+			);
+
+			// 新しい編成の車両数を含めて、全体で12両に達していれば追加できない
+			if (totalCars + formation.carInfoList.length > 12) {
+				return;
+			}
+
+			dispatch(setFormations([...formations, formation]));
+		},
+		[formations, dispatch],
+	);
 
 	const handleRemoveFormation = useCallback(
 		(formationIndex: number) => {
@@ -235,6 +264,16 @@ export default memo(function Type313sEditPage() {
 
 	return (
 		<div className={styles.container}>
+			<FormationSelector
+				isOpen={isSelectorOpen}
+				currentCarCount={formations.reduce(
+					(sum, f) => sum + f.carInfoList.length,
+					0,
+				)}
+				onSelect={handleFormationSelect}
+				onClose={() => setIsSelectorOpen(false)}
+			/>
+
 			<header className={styles.header}>
 				<h1>313系 モニター設定</h1>
 				<div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -274,7 +313,13 @@ export default memo(function Type313sEditPage() {
 									e.stopPropagation();
 									handleAddFormation();
 								}}
-								disabled={formations.length >= 6}
+								disabled={
+									formations.length >= 6 ||
+									formations.reduce(
+										(sum, f) => sum + f.carInfoList.length,
+										0,
+									) >= 12
+								}
 								className={styles.actionButton}
 							>
 								+ 編成追加
