@@ -11,8 +11,9 @@ import prettierPlugin from 'eslint-plugin-prettier'
 /**
  * 共有ESLintベース設定（flat config）。
  * @param {string} tsconfigPath - tsconfig.json へのパス
+ * @param {string} tsconfigRootDir - tsconfig.json のルートディレクトリ
  */
-export const createBaseConfig = (tsconfigPath) => [
+export const createBaseConfig = (tsconfigPath, tsconfigRootDir) => [
   { ignores: ['node_modules', 'packages', 'dist'] },
   js.configs.recommended,
   ...tsPlugin.configs['flat/strict'],
@@ -31,6 +32,7 @@ export const createBaseConfig = (tsconfigPath) => [
       parser: tsParser,
       parserOptions: {
         projectService: true,
+        tsconfigRootDir,
       },
     },
     settings: {
