@@ -89,8 +89,10 @@ export default memo<CarImageProps>(function CarImage({
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const baseSprite = new Sprite(Texture.from(baseImage as any));
+		baseSprite.texture.source.scaleMode = "nearest";
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const bogieSprite = new Sprite(Texture.from(bogieImage as any));
+		bogieSprite.texture.source.scaleMode = "nearest";
 		graphicsContainer.addChild(baseSprite);
 		graphicsContainer.addChild(bogieSprite);
 

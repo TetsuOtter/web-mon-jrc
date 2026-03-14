@@ -91,6 +91,7 @@ export default memo<PropsWithChildren<CanvasDotPatternProps>>(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const texture = Texture.from(canvas as any);
 			const sprite = new Sprite(texture);
+			sprite.texture.source.scaleMode = "nearest";
 			sprite.width = width;
 			sprite.height = height;
 			graphicsContainer.addChild(sprite);
