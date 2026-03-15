@@ -161,8 +161,21 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 		});
 
 		useEffect(() => {
-			if (graphicsContainer.destroyed) return;
+			console.log("CanvasQuadrilateral: useEffect triggered", {
+				destroyed: graphicsContainer?.destroyed,
+				childrenBefore: graphicsContainer?.children?.length,
+			});
+
+			if (graphicsContainer.destroyed) {
+				console.log(
+					"CanvasQuadrilateral: graphicsContainer destroyed, returning",
+				);
+				return;
+			}
 			clearContainer(graphicsContainer);
+			console.log("CanvasQuadrilateral: cleared container", {
+				childrenAfter: graphicsContainer.children.length,
+			});
 
 			const g = new Graphics();
 			const w = lineWidth || 1;
@@ -176,32 +189,68 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 			const x4 = Math.round(xR2) - minX;
 			const y4 = Math.round(yR2) - minY;
 
+			console.log("CanvasQuadrilateral: local coordinates", {
+				x1,
+				y1,
+				x2,
+				y2,
+				x3,
+				y3,
+				x4,
+				y4,
+			});
+
+			// 外側ポリゴンをストローク色で塗りつぶし
+			console.log("CanvasQuadrilateral: drawing outer polygon", {
+				coords: [x1, y1, x3, y3, x4, y4, x2, y2],
+				color: actualStrokeColor,
+			});
+			g.poly([x1, y1, x3, y3, x4, y4, x2, y2]);
+			g.fill(actualStrokeColor);
+
+			// 内側ポリゴンをフィル色で塗りつぶし（フィル色が指定されている場合）
 			if (fillColor) {
 				const offset = w / 2;
-				g.poly([
-					x1 + offset,
-					y1 + offset,
-					x3 + offset,
-					y3 + offset,
-					x4 + offset,
-					y4 + offset,
-					x2 + offset,
-					y2 + offset,
-				]);
+				const offsetPoints = offsetQuadrilateral(
+					x1,
+					y1,
+					x3,
+					y3,
+					x4,
+					y4,
+					x2,
+					y2,
+					offset,
+				);
+				console.log("CanvasQuadrilateral: drawing inner polygon", {
+					offset,
+					offsetPoints,
+					color: fillColor,
+				});
+				g.poly(offsetPoints);
 				g.fill(fillColor);
+				console.log("CanvasQuadrilateral: inner polygon created", {
+					offsetPoints,
+				});
 			}
 
-			g.moveTo(x1, y1);
-			g.lineTo(x2, y2);
-			g.moveTo(x1, y1);
-			g.lineTo(x3, y3);
-			g.moveTo(x3, y3);
-			g.lineTo(x4, y4);
-			g.moveTo(x2, y2);
-			g.lineTo(x4, y4);
-			g.stroke({ color: actualStrokeColor, width: w });
-
 			graphicsContainer.addChild(g);
+			console.log("CanvasQuadrilateral: graphics added to container", {
+				containerChildren: graphicsContainer.children.length,
+			});
+
+			// デバッグ用：各頂点位置を小さいドットでマーク
+			const debugG = new Graphics();
+			debugG.circle(x1, y1, 1);
+			debugG.fill("yellow");
+			debugG.circle(x3, y3, 1);
+			debugG.fill("yellow");
+			debugG.circle(x4, y4, 1);
+			debugG.fill("yellow");
+			debugG.circle(x2, y2, 1);
+			debugG.fill("yellow");
+			graphicsContainer.addChild(debugG);
+			console.log("CanvasQuadrilateral: debug vertices marked");
 		}, [
 			graphicsContainer,
 			xL1,
@@ -229,6 +278,75 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 		);
 	},
 );
+
+/**
+ * 四角形の各頂点を内側にオフセットさせる
+ * @param x1 左上X
+ * @param y1 左上Y
+ * @param x3 右上X
+ * @param y3 右上Y
+ * @param x4 右下X
+ * @param y4 右下Y
+ * @param x2 左下X
+ * @param y2 左下Y
+ * @param offset オフセット距離
+ * @returns オフセット後の座標配列 [x1, y1, x3, y3, x4, y4, x2, y2]
+ */
+function offsetQuadrilateral(
+	x1: number,
+	y1: number,
+	x3: number,
+	y3: number,
+	x4: number,
+	y4: number,
+	x2: number,
+	y2: number,
+	offset: number,
+): number[] {
+	// ポリゴン順序は時計回り: (x1,y1) → (x3,y3) → (x4,y4) → (x2,y2)
+	// 時計回りポリゴンの内側向き法線を計算
+	// 方向ベクトル(dx, dy)を90度時計回りに回転: (dy, -dx)
+	const getNormal = (
+		fromX: number,
+		fromY: number,
+		toX: number,
+		toY: number,
+	): [number, number] => {
+		const dx = toX - fromX;
+		const dy = toY - fromY;
+		const len = Math.hypot(dx, dy);
+		if (len === 0) return [0, 0];
+		return [dy / len, -dx / len];
+	};
+
+	// 各辺に対する内側向き法線
+	const nTop = getNormal(x1, y1, x3, y3); // 上辺: 左上 → 右上
+	const nRight = getNormal(x3, y3, x4, y4); // 右辺: 右上 → 右下
+	const nBottom = getNormal(x4, y4, x2, y2); // 下辺: 右下 → 左下
+	const nLeft = getNormal(x2, y2, x1, y1); // 左辺: 左下 → 左上
+
+	// 各頂点は2つの辺の交点。その2つの法線の平均方向にオフセット
+	const offsetVertex = (
+		px: number,
+		py: number,
+		n1: [number, number],
+		n2: [number, number],
+	): [number, number] => {
+		const avgX = (n1[0] + n2[0]) / 2;
+		const avgY = (n1[1] + n2[1]) / 2;
+		const len = Math.hypot(avgX, avgY);
+		if (len === 0) return [px, py];
+		const factor = offset / len;
+		return [px + avgX * factor, py + avgY * factor];
+	};
+
+	const [ofs1X, ofs1Y] = offsetVertex(x1, y1, nLeft, nTop); // 左上：左辺と上辺の交点
+	const [ofs3X, ofs3Y] = offsetVertex(x3, y3, nTop, nRight); // 右上：上辺と右辺の交点
+	const [ofs4X, ofs4Y] = offsetVertex(x4, y4, nRight, nBottom); // 右下：右辺と下辺の交点
+	const [ofs2X, ofs2Y] = offsetVertex(x2, y2, nBottom, nLeft); // 左下：下辺と左辺の交点
+
+	return [ofs1X, ofs1Y, ofs3X, ofs3Y, ofs4X, ofs4Y, ofs2X, ofs2Y];
+}
 
 function isPointNearLine(
 	clickX: number,

@@ -110,4 +110,38 @@ test.describe("canvas-demo - JS エラーなし", () => {
 			);
 		}
 	});
+
+	test("CanvasQuadrilateral のストローク・フィルがピクセルパーフェクト", async () => {
+		try {
+			const { stdout } = await execFileAsync(
+				"node",
+				["dev/e2e/tests/scripts/check-quadrilateral-pixels.mjs"],
+				{ cwd: process.cwd() },
+			);
+			const lines = stdout
+				.split("\n")
+				.map((line) => line.trim())
+				.filter((line) => line.length > 0);
+			const lastLine = lines.at(-1) || "{}";
+			const result = JSON.parse(lastLine) as {
+				ok?: boolean;
+				failures?: string[];
+			};
+			if (!result.ok) {
+				console.error("Quadrilateral pixel check failures:", result.failures);
+			}
+			expect(result.ok).toBe(true);
+		} catch (error) {
+			const e = error as Error & { stdout?: string; stderr?: string };
+			throw new Error(
+				[
+					"Quadrilateral pixel check script failed.",
+					e.stdout ? `stdout: ${e.stdout}` : "",
+					e.stderr ? `stderr: ${e.stderr}` : "",
+				]
+					.filter(Boolean)
+					.join("\n"),
+			);
+		}
+	});
 });

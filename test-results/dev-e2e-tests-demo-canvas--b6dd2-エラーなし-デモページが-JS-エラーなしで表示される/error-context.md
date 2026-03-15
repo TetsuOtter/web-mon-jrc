@@ -1,0 +1,43 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - heading "Canvas Renderer Demo" [level=1] [ref=e4]
+  - generic [ref=e5]:
+    - heading "クリックイベント対応デモ" [level=2] [ref=e6]
+    - paragraph [ref=e7]: 以下のオブジェクトをクリックしてみてください：
+  - generic [ref=e13]:
+    - heading "アンチエイリアスなし（鮮明）な描画テスト" [level=2] [ref=e14]
+    - paragraph [ref=e15]: 以下のキャンバスは整数座標に丸めて描画されており、ピクセルパーフェクトな表示になっています。
+  - generic [ref=e18]:
+    - heading "描画順序変更デモ" [level=2] [ref=e19]
+    - paragraph [ref=e20]: ボタンで図形の描画順序を変更すると、Z-order（重なり順）が変わります：
+    - generic [ref=e21]:
+      - button "順序を入れ替える (0 ↔ 1)" [ref=e22] [cursor=pointer]
+      - button "順序を入れ替える (1 ↔ 2)" [ref=e23] [cursor=pointer]
+      - button "リセット" [ref=e24] [cursor=pointer]
+    - generic [ref=e25]:
+      - paragraph [ref=e26]:
+        - strong [ref=e27]: "現在の描画順序:"
+        - text: rect → circle1 → circle2
+      - paragraph [ref=e28]:
+        - text: 後に描画されたオブジェクトが手前に表示されます。
+        - text: 重なっている部分をクリックすると、手前のオブジェクトがハンドラーを受け取ります。
+  - generic [ref=e31]:
+    - heading "部分再描画デモ（点滅）" [level=2] [ref=e32]
+    - paragraph [ref=e33]:
+      - text: 各図形は異なる間隔で独立して点滅します。点滅のたびに
+      - strong [ref=e34]: その図形の領域のみ
+      - text: が クリア＋再描画され、背景や他の静的オブジェクトは再描画されません。
+    - paragraph [ref=e37]: DevTools の Rendering → Paint flashing を有効にすると、点滅図形の領域のみが 再描画されていることを視覚的に確認できます。
+  - generic [ref=e38]:
+    - heading "Quadrilateral ストローク/フィル テスト" [level=2] [ref=e39]
+    - paragraph [ref=e40]: 平行四辺形 (20,10)-(40,10)-(30,40)-(10,40) に 赤 4px ストローク・黒フィル
+    - paragraph [ref=e47]: CanvasRect テスト
+    - generic [ref=e48]:
+      - paragraph [ref=e49]: 確認項目：
+      - list [ref=e50]:
+        - listitem [ref=e51]: (20,10), (40,10), (30,40), (10,40) が赤でストローク
+        - listitem [ref=e52]: 各頂点の外側方向が白であること（例：(20,10)なら(19,9), (19,10), (20,9)が白）
+        - listitem [ref=e53]: ストロークの内側が黒でフィル
+```

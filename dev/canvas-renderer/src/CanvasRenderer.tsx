@@ -79,27 +79,33 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 				preserveDrawingBuffer: true,
 			})
 			.then(() => {
-				if (!cancelled) {
-					app.stage.sortableChildren = true;
-					const latestSize = latestSizeRef.current;
-					app.renderer.resize(latestSize.width, latestSize.height);
-					applyBackground(app, latestFillRef.current);
-					setStageContainer(app.stage);
-					// テスト用: スクリーンショット撮影前にPIXIを制御できるよう公開
-					const testApps = (
+				if (cancelled) {
+					// StrictMode の二重マウントなどでアンマウントされた場合、
+					// init() 完了後でも適切に破棄してWebGLコンテキストを解放する
+					app.destroy(false, { children: true });
+					return;
+				}
+				app.stage.sortableChildren = true;
+				const latestSize = latestSizeRef.current;
+				app.renderer.resize(latestSize.width, latestSize.height);
+				applyBackground(app, latestFillRef.current);
+				setStageContainer(app.stage);
+				// テスト用: スクリーンショット撮影前にPIXIを制御できるよう公開
+				const testApps = (
+					window as Window & { __testPixiApps?: Application[] }
+				).__testPixiApps;
+				if (testApps) {
+					testApps.push(app);
+				} else {
+					(
 						window as Window & { __testPixiApps?: Application[] }
-					).__testPixiApps;
-					if (testApps) {
-						testApps.push(app);
-					} else {
-						(
-							window as Window & { __testPixiApps?: Application[] }
-						).__testPixiApps = [app];
-					}
+					).__testPixiApps = [app];
 				}
 			})
 			.catch((error: unknown) => {
-				console.error("Failed to initialize PIXI Application:", error);
+				if (!cancelled) {
+					console.error("Failed to initialize PIXI Application:", error);
+				}
 			});
 
 		return () => {

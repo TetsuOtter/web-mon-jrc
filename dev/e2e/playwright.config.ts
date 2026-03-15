@@ -9,7 +9,7 @@ export default defineConfig({
 	reporter: [["html", { open: "never" }], ["list"]],
 
 	use: {
-		baseURL: "http://localhost:5173",
+		baseURL: "http://localhost:5174",
 		trace: "on-first-retry",
 		screenshot: "only-on-failure",
 	},
@@ -22,12 +22,6 @@ export default defineConfig({
 	],
 
 	webServer: [
-		{
-			command: "yarn dev",
-			cwd: "../app",
-			port: 5173,
-			reuseExistingServer: true,
-		},
 		{
 			command: "yarn --cwd ../canvas-renderer build && yarn dev",
 			cwd: "../canvas-demo",
