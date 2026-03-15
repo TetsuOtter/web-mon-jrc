@@ -52,6 +52,15 @@ function createCanvasContextMock() {
 	};
 }
 
+// ResizeObserver のモック
+if (!globalThis.ResizeObserver) {
+	globalThis.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+}
+
 // HTMLCanvasElement.getContext のモック
 Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
 	value: vi.fn(function (this: HTMLCanvasElement, contextId: string) {

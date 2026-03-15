@@ -4,7 +4,6 @@ import { CanvasRenderer, CanvasRect } from "@web-mon-jrc/canvas-renderer";
 import CanvasQuadrilateral from "@web-mon-jrc/canvas-renderer/objects/CanvasQuadrilateral";
 
 export default memo(function QuadrilateralTest() {
-	console.log("QuadrilateralTest: rendering component");
 	return (
 		<div
 			style={{ marginBottom: "30px" }}
@@ -21,7 +20,6 @@ export default memo(function QuadrilateralTest() {
 				fill="white"
 				style={{ border: "1px solid black", marginRight: "30px" }}
 			>
-				{console.log("CanvasRenderer: rendering with children")}
 				{/* ストローク外側の確認用背景 */}
 				<CanvasRect
 					relX={0}

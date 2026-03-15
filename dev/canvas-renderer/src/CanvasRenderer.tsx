@@ -26,16 +26,19 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	children,
 	renderRequestCount: _renderRequestCount,
 }) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
+	// PIXIのcanvasを格納するホストdiv（canvasはJSXでなくPIXIが生成する）
+	const canvasHostRef = useRef<HTMLDivElement>(null);
 	const appRef = useRef<Application | null>(null);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const [stageContainer, setStageContainer] = useState<Container | null>(null);
 	const [scale, setScale] = useState(1);
 	const latestSizeRef = useRef({ width, height });
 	const latestFillRef = useRef<string | undefined>(fill);
+	const latestScaleRef = useRef(scale);
 
 	latestSizeRef.current = { width, height };
 	latestFillRef.current = fill;
+	latestScaleRef.current = scale;
 
 	const applyBackground = (
 		app: Application,
@@ -51,9 +54,12 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	};
 
 	// PIXIアプリケーションを初期化（マウント時のみ）
+	// canvasはJSXの<canvas>を使わず、PIXIに生成させてhostDivに追加する。
+	// これによりStrictModeの二重マウントで同一canvasに対して複数のapp.init()が
+	// 同時実行され、WebGLコンテキストが破壊されるフリーズを防ぐ。
 	useEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
+		const host = canvasHostRef.current;
+		if (!host) return;
 
 		let cancelled = false;
 		const app = new Application();
@@ -68,7 +74,8 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 
 		app
 			.init({
-				canvas,
+				// canvasを指定しない → PIXIが独自にcanvas要素を生成する
+				// これにより各マウントが独立したWebGLコンテキストを持つ
 				width,
 				height,
 				backgroundColor,
@@ -82,13 +89,20 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 				if (cancelled) {
 					// StrictMode の二重マウントなどでアンマウントされた場合、
 					// init() 完了後でも適切に破棄してWebGLコンテキストを解放する
-					app.destroy(false, { children: true });
+					app.destroy(true, { children: true });
 					return;
 				}
 				app.stage.sortableChildren = true;
 				const latestSize = latestSizeRef.current;
 				app.renderer.resize(latestSize.width, latestSize.height);
 				applyBackground(app, latestFillRef.current);
+
+				// canvasのスタイルを設定してhostDivに追加
+				const canvas = app.canvas;
+				canvas.style.transform = `scale(${latestScaleRef.current})`;
+				canvas.style.transformOrigin = "center";
+				host.appendChild(canvas);
+
 				setStageContainer(app.stage);
 				// テスト用: スクリーンショット撮影前にPIXIを制御できるよう公開
 				const testApps = (
@@ -123,8 +137,12 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 				}
 			}
 			// renderer は init() 完了後にのみ存在するため、未初期化の場合はスキップ
+			// (未完了の場合は .then() 内で cancelled チェックにより destroy される)
 			if (appToDestroy?.renderer) {
-				appToDestroy.destroy(false, { children: true });
+				if (appToDestroy.canvas.parentNode) {
+					appToDestroy.canvas.parentNode.removeChild(appToDestroy.canvas);
+				}
+				appToDestroy.destroy(true, { children: true });
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,9 +151,10 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	// stageContainerが設定されてReact childrenがマウントされた後、
 	// PIXIが最初のフレームを描画してからpixiReadyをセットする
 	useEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas || stageContainer == null) return;
+		const app = appRef.current;
+		if (!app?.renderer || stageContainer == null) return;
 
+		const canvas = app.canvas;
 		let id2: ReturnType<typeof requestAnimationFrame>;
 		// 2フレーム待ってPIXIが子要素を描画してからフラグをセット
 		const id1 = requestAnimationFrame(() => {
@@ -163,6 +182,13 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		if (!app || !app.renderer) return;
 		applyBackground(app, fill);
 	}, [fill]);
+
+	// スケール変更に対応（PIXIのcanvasに直接適用）
+	useEffect(() => {
+		const app = appRef.current;
+		if (!app?.renderer) return;
+		app.canvas.style.transform = `scale(${scale})`;
+	}, [scale]);
 
 	// wrapper divのサイズを監視してcanvasのスケールを計算
 	// E2Eテスト環境ではオートスケールを無効化してscale=1に固定
@@ -215,24 +241,14 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		[styleProps],
 	);
 
-	const canvasStyle = useMemo(
-		(): CSSProperties => ({
-			transform: `scale(${scale})`,
-			transformOrigin: "center",
-		}),
-		[scale],
-	);
-
 	return (
 		<>
 			<div
 				ref={wrapperRef}
 				style={wrapperStyle}
 			>
-				<canvas
-					ref={canvasRef}
-					style={canvasStyle}
-				/>
+				{/* PIXIのcanvasはapp.init()完了後にJSで追加される */}
+				<div ref={canvasHostRef} />
 			</div>
 			{stageContainer != null && (
 				<CanvasObjectContext
