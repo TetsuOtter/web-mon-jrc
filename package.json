@@ -9,7 +9,8 @@
 		"dev/tools"
 	],
 	"scripts": {
-		"dev": "concurrently -n canvas-renderer,app -c cyan,green \"yarn workspace @web-mon-jrc/canvas-renderer build:watch\" \"yarn workspace web-mon-jrc dev\"",
+		"dev": "bash scripts/dev.sh",
+		"dev:demo": "bash scripts/dev-demo.sh",
 		"build": "yarn workspace @web-mon-jrc/canvas-renderer build && yarn workspace web-mon-jrc build",
 		"test": "yarn workspace @web-mon-jrc/canvas-renderer test",
 		"test:watch": "yarn workspace @web-mon-jrc/canvas-renderer test:watch",
