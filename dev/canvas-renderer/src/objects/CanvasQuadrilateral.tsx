@@ -194,8 +194,9 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 			g.fill(actualStrokeColor);
 
 			// 内側ポリゴン（ストローク幅分インセット）をフィル色で上書き
+			// expandedPts を基点にインセットすることで全辺のストローク幅を均一にする
 			if (fillColor) {
-				const insetPts = computeInsetPolygon(polyPts, w);
+				const insetPts = computeInsetPolygon(expandedPts ?? polyPts, w);
 				if (insetPts) {
 					g.poly(insetPts.flat());
 					g.fill(fillColor);

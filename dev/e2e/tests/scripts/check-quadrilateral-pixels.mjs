@@ -225,6 +225,30 @@ async function run() {
 			}
 		}
 
+		// テスト5: 上下辺のストローク幅が均一であること（lineWidth=4）
+		// 上辺中点(30,10)から下方向に赤ピクセルを数える
+		let topStrokeWidth = 0;
+		for (let y = 10; y < png.height; y++) {
+			if (isRed(png, 30, y)) topStrokeWidth++;
+			else break;
+		}
+		// 下辺中点(20,40)から上方向に赤ピクセルを数える
+		let bottomStrokeWidth = 0;
+		for (let y = 40; y >= 0; y--) {
+			if (isRed(png, 20, y)) bottomStrokeWidth++;
+			else break;
+		}
+		console.error(`上辺ストローク幅: ${topStrokeWidth}px, 下辺ストローク幅: ${bottomStrokeWidth}px`);
+		if (topStrokeWidth !== 4) {
+			failures.push(`上辺のストローク幅が4でない: ${topStrokeWidth}px`);
+		}
+		if (bottomStrokeWidth !== 4) {
+			failures.push(`下辺のストローク幅が4でない: ${bottomStrokeWidth}px`);
+		}
+		if (topStrokeWidth !== bottomStrokeWidth) {
+			failures.push(`上辺(${topStrokeWidth}px)と下辺(${bottomStrokeWidth}px)のストローク幅が異なる`);
+		}
+
 		const result = {
 			ok: failures.length === 0,
 			failures,
