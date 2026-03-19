@@ -178,7 +178,6 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 			const x4 = Math.round(xR2) - minX;
 			const y4 = Math.round(yR2) - minY;
 
-			// 頂点リスト（スクリーン座標系でのCW順）
 			const polyPts: [number, number][] = [
 				[x1, y1],
 				[x3, y3],
@@ -186,11 +185,18 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 				[x2, y2],
 			];
 
-			// 外側ポリゴン（インセットなし）をストローク色で塗りつぶし
-			// インセットを0にすることで隣接ピクセルまで確実に塗りつぶし、
-			// 頂点補完 rect との連続性を保つ
+			// ポリゴン全体をストローク色で塗りつぶし
 			g.poly(polyPts.flat());
 			g.fill(actualStrokeColor);
+
+			// ポリゴン辺に沿った1pxストロークで境界ピクセルを補完
+			// （GPU のポリゴンラスタライズは右辺・下辺の境界ピクセルを除外するため）
+			g.moveTo(x1 + 0.5, y1 + 0.5);
+			g.lineTo(x3 + 0.5, y3 + 0.5);
+			g.lineTo(x4 + 0.5, y4 + 0.5);
+			g.lineTo(x2 + 0.5, y2 + 0.5);
+			g.closePath();
+			g.stroke({ color: actualStrokeColor, width: 1 });
 
 			// 内側ポリゴン（ストローク幅分インセット）をフィル色で上書き
 			if (fillColor) {
@@ -199,22 +205,6 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 					g.poly(insetPts.flat());
 					g.fill(fillColor);
 				}
-			}
-
-			// 頂点ピクセル補完：右辺の頂点 (xR1, xR2) はピクセル中心がポリゴン境界外に
-			// 位置するため、頂点座標の 1x1px 矩形で補完する
-			g.rect(x3, y3, 1, 1);
-			g.fill(actualStrokeColor);
-			g.rect(x4, y4, 1, 1);
-			g.fill(actualStrokeColor);
-
-			// 右辺エッジ中点ピクセル補完：右辺の中間点のピクセル中心もポリゴン境界外に
-			// 位置するため補完する
-			if (fillColor) {
-				const edgeMidX = Math.round((x3 + x4) / 2);
-				const edgeMidY = Math.round((y3 + y4) / 2);
-				g.rect(edgeMidX, edgeMidY, 1, 1);
-				g.fill(fillColor);
 			}
 
 			graphicsContainer.addChild(g);
@@ -320,7 +310,6 @@ function computeInsetPolygon(
 		const dy = py1 - py0;
 		const len = Math.hypot(dx, dy);
 		if (len < 1e-10) return null;
-		// CWポリゴン（スクリーン座標系）の外向き法線: (dy/len, -dx/len)
 		const nx = dy / len;
 		const ny = -dx / len;
 		normals.push([nx, ny]);

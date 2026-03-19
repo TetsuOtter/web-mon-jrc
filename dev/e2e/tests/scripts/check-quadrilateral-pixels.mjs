@@ -189,12 +189,30 @@ async function run() {
 			}
 		}
 
-		// テスト3: ストローク内側が黒でフィルされていること（サンプル点）
+		// テスト3: 辺の中間点がストローク色（赤）であること
+		const edgeMidpoints = [
+			{ x: 30, y: 10, name: "上辺中点" },
+			{ x: 35, y: 25, name: "右辺中点" },
+			{ x: 20, y: 40, name: "下辺中点" },
+			{ x: 15, y: 25, name: "左辺中点" },
+		];
+
+		for (const { x, y, name } of edgeMidpoints) {
+			const color = getPixel(png, x, y);
+			console.error(`${name}(${x},${y}): ${colorToString(color)}`);
+			if (!isRed(png, x, y)) {
+				failures.push(
+					`${name} (${x},${y}) が赤でない: ${colorToString(color)}`,
+				);
+			}
+		}
+
+		// テスト4: ストローク内側が黒でフィルされていること（サンプル点）
 		const innerPoints = [
-			{ x: 25, y: 20, name: "上辺内側" },
-			{ x: 35, y: 25, name: "右辺内側" },
-			{ x: 20, y: 35, name: "左辺内側" },
-			{ x: 25, y: 30, name: "中央" },
+			{ x: 25, y: 20, name: "上部内側" },
+			{ x: 25, y: 25, name: "中央" },
+			{ x: 20, y: 35, name: "下部内側" },
+			{ x: 25, y: 30, name: "中央下" },
 		];
 
 		for (const point of innerPoints) {

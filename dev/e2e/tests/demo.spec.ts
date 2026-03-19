@@ -115,7 +115,7 @@ test.describe("canvas-demo - JS エラーなし", () => {
 		try {
 			const { stdout } = await execFileAsync(
 				"node",
-				["dev/e2e/tests/scripts/check-quadrilateral-pixels.mjs"],
+				["tests/scripts/check-quadrilateral-pixels.mjs"],
 				{ cwd: process.cwd() },
 			);
 			const lines = stdout
