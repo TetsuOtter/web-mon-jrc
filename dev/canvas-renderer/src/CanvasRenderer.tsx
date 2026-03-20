@@ -224,6 +224,8 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 			for (const entry of entries) {
 				const { width: wrapperWidth, height: wrapperHeight } =
 					entry.contentRect;
+				// wrapperが空（canvasがまだ追加されていない）状態で発火した場合はスキップ
+				if (wrapperWidth <= 0 || wrapperHeight <= 0) continue;
 				const scaleX = wrapperWidth / width;
 				const scaleY = wrapperHeight / height;
 				const newScale = Math.min(scaleX, scaleY);

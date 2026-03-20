@@ -32,9 +32,13 @@ export default memo<CanvasHorizontalLineProps>(function CanvasHorizontalLine({
 	const rectWidth = maxX - minX + 1;
 	const rectHeight = w;
 
+	// relY は線の最下端ピクセル行（bottom edge）として扱う
+	// 例: width=2, relY=211 → y=210〜211 に描画
+	const topY = relY - (w - 1);
+
 	const { graphicsContainer } = usePixiObject({
 		relX: minX,
-		relY: relY,
+		relY: topY,
 		width: rectWidth,
 		height: rectHeight,
 		onClick,
