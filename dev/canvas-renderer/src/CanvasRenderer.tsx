@@ -53,6 +53,17 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		}
 	};
 
+	const applyCanvasDisplaySize = (
+		canvas: HTMLCanvasElement,
+		renderWidth: number,
+		renderHeight: number,
+		displayScale: number,
+	): void => {
+		canvas.style.display = "block";
+		canvas.style.width = `${renderWidth * displayScale}px`;
+		canvas.style.height = `${renderHeight * displayScale}px`;
+	};
+
 	// PIXIアプリケーションを初期化（マウント時のみ）
 	// canvasはJSXの<canvas>を使わず、PIXIに生成させてhostDivに追加する。
 	// これによりStrictModeの二重マウントで同一canvasに対して複数のapp.init()が
@@ -99,8 +110,12 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 
 				// canvasのスタイルを設定してhostDivに追加
 				const canvas = app.canvas;
-				canvas.style.transform = `scale(${latestScaleRef.current})`;
-				canvas.style.transformOrigin = "center";
+				applyCanvasDisplaySize(
+					canvas,
+					latestSize.width,
+					latestSize.height,
+					latestScaleRef.current,
+				);
 				host.appendChild(canvas);
 
 				setStageContainer(app.stage);
@@ -174,6 +189,7 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 		const app = appRef.current;
 		if (!app || !app.renderer) return;
 		app.renderer.resize(width, height);
+		applyCanvasDisplaySize(app.canvas, width, height, latestScaleRef.current);
 	}, [width, height]);
 
 	// 背景色変更に対応
@@ -187,8 +203,8 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 	useEffect(() => {
 		const app = appRef.current;
 		if (!app?.renderer) return;
-		app.canvas.style.transform = `scale(${scale})`;
-	}, [scale]);
+		applyCanvasDisplaySize(app.canvas, width, height, scale);
+	}, [scale, width, height]);
 
 	// wrapper divのサイズを監視してcanvasのスケールを計算
 	// E2Eテスト環境ではオートスケールを無効化してscale=1に固定
