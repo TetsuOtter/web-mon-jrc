@@ -135,6 +135,9 @@ async function setupPage(
 	// 対象URLに移動
 	await page.goto(url);
 
+	// app.spec では canvas-demo への誤遷移を即検知する
+	await expect(page.locator("body")).not.toContainText("Canvas Renderer Demo");
+
 	// PIXI を使うページは data-pixi-ready が付くまで待つ。
 	// 付かないページ（Canvasなし）はタイムアウト後にスキップ。
 	const pixiReady = await page

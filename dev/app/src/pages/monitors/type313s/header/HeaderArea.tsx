@@ -171,7 +171,7 @@ export default memo<HeaderAreaProps>(function HeaderArea({ icon, pageName }) {
 				xR2={TRAIN_TYPE_TRAIN_DEST_SEPARATOR_XR_BOTTOM}
 				yR2={HEADER_HEIGHT - 1}
 				lineWidth={LINE_WIDTH}
-				strokeColor={COLORS.RED}
+				strokeColor={COLORS.WHITE}
 				fillColor={COLORS.BLACK}
 			/>
 			<CanvasVerticalLine

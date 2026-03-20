@@ -105,3 +105,20 @@ if (isTauri()) {
   // Web版専用の処理
 }
 ```
+
+## E2Eテスト実行ポリシー
+
+- ローカル環境: Dockerコンテナ内でE2Eテストを実行
+- GitHub Actions: ホスト環境でE2Eテストを実行
+
+実行コマンド:
+
+```bash
+yarn workspace @web-mon-jrc/e2e test
+```
+
+スナップショット更新:
+
+```bash
+yarn workspace @web-mon-jrc/e2e test:update
+```

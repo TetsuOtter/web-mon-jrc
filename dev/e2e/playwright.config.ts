@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
 	testDir: "./tests",
+	globalSetup: "./global-setup.ts",
 	fullyParallel: false,
 	workers: 1,
 	retries: 0,
@@ -9,7 +10,7 @@ export default defineConfig({
 	reporter: [["html", { open: "never" }], ["list"]],
 
 	use: {
-		baseURL: "http://localhost:5174",
+		baseURL: "http://localhost:5173",
 		trace: "on-first-retry",
 		screenshot: "only-on-failure",
 	},
@@ -19,11 +20,21 @@ export default defineConfig({
 			name: "chromium",
 			use: { ...devices["Desktop Chrome"] },
 		},
+		{
+			name: "webkit",
+			use: { ...devices["Desktop Safari"] },
+		},
 	],
 
 	webServer: [
 		{
-			command: "yarn --cwd ../canvas-renderer build && yarn dev",
+			command: "yarn dev --force",
+			cwd: "../app",
+			port: 5173,
+			reuseExistingServer: true,
+		},
+		{
+			command: "yarn dev --force",
 			cwd: "../canvas-demo",
 			port: 5174,
 			reuseExistingServer: true,
