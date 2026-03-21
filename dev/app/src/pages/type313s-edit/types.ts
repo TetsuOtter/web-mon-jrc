@@ -1,6 +1,6 @@
 import type { Type313sCarInfoState } from "../../store/monitors/type313s/type313sTypes";
 import type { AppSelector } from "../../store/types";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import type { AnyAction } from "@reduxjs/toolkit";
 
 export type StringFormFieldConfig = {
 	readonly id: string;
@@ -8,7 +8,7 @@ export type StringFormFieldConfig = {
 	readonly valueType: "string";
 	readonly placeholder?: string;
 	readonly selector: AppSelector<string>;
-	readonly actionCreator: (value: string) => PayloadAction<string>;
+	readonly actionCreator: (value: string) => AnyAction;
 };
 
 export type NumberFormFieldConfig = {
@@ -17,7 +17,7 @@ export type NumberFormFieldConfig = {
 	readonly valueType: "number";
 	readonly step?: string;
 	readonly selector: AppSelector<number>;
-	readonly actionCreator: (value: number) => PayloadAction<number>;
+	readonly actionCreator: (value: number) => AnyAction;
 	readonly parser?: (value: string) => number;
 };
 

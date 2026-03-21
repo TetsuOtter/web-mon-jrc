@@ -7,7 +7,6 @@ import StringField from "./StringField";
 
 import type { Type313sCarInfoState } from "../../../store/monitors/type313s/type313sTypes";
 import type { StringFormFieldConfig } from "../types";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 type CarStateStringFieldProps = {
 	readonly formationIndex: number;
@@ -62,7 +61,7 @@ export default memo<CarStateStringFieldProps>(function CarStateStringField({
 								}
 							: f,
 					),
-				) as unknown as PayloadAction<string>,
+				),
 		}),
 		[
 			carIndex,

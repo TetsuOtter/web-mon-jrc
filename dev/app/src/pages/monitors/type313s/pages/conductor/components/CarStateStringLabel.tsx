@@ -17,7 +17,7 @@ export type CarStateStringLabelProps = {
 	readonly align?: CanvasTextProps["align"];
 	readonly verticalAlign?: CanvasTextProps["verticalAlign"];
 	readonly textColor: string;
-	readonly textSelector: CarStateByCarIndexSelector<string | undefined>;
+	readonly textSelector: CarStateByCarIndexSelector<string | undefined, []>;
 	readonly scaleX?: number;
 	readonly scaleY?: number;
 };

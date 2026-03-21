@@ -10,7 +10,7 @@ import type { AppSelector } from "../../types";
 
 export type CarStateByCarIndexSelector<
 	T,
-	TParams extends unknown[],
+	TParams extends unknown[] = [],
 > = AppSelector<T, [carIndex: number, ...params: TParams]>;
 
 export const trainNumberSelector: AppSelector<Type313sState["trainNumber"]> = (

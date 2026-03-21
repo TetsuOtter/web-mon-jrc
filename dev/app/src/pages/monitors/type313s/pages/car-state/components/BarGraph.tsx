@@ -21,7 +21,7 @@ const LEFT_FROM_TRAIN_FORMATION = 4;
 const LINE_COLOR = COLORS.WHITE;
 
 export type ValueDef = {
-	valueSelector: CarStateByCarIndexSelector<number | null | undefined>;
+	valueSelector: CarStateByCarIndexSelector<number | null | undefined, []>;
 	color: ColorValue;
 	maxValue: number;
 };
@@ -105,7 +105,7 @@ export default memo<BarGraphProps>(function BarGraph({
 const valueListSelectorCreator =
 	(
 		defList: BarGraphProps["valueDefList"],
-	): CarStateByCarIndexSelector<(number | null | undefined)[]> =>
+	): CarStateByCarIndexSelector<(number | null | undefined)[], []> =>
 	(state, carIndex) => {
 		return defList.map((def) =>
 			def ? def.valueSelector(state, carIndex) : null,

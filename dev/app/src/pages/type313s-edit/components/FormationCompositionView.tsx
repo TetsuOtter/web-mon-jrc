@@ -13,23 +13,9 @@ type FormationCompositionViewProps = {
 
 export default memo<FormationCompositionViewProps>(
 	function FormationCompositionView({ formations, onCompositionItemClick }) {
-		console.log(
-			"[FormationCompositionView] rendered with formations:",
-			formations?.length,
-			"onCompositionItemClick:",
-			typeof onCompositionItemClick,
-		);
 		if (!formations || !Array.isArray(formations)) {
-			console.error(
-				"[FormationCompositionView] formations is not an array:",
-				formations,
-			);
 			return <div>エラー: formations が見つかりません</div>;
 		}
-		console.log(
-			"[FormationCompositionView] formations.length:",
-			formations.length,
-		);
 		// Calculate global car index for each car across all formations
 		const getGlobalCarIndex = (
 			targetFormationIndex: number,
@@ -71,10 +57,6 @@ export default memo<FormationCompositionViewProps>(
 											key={`composition-${formationIndex}-${carIndex}`}
 											className={styles.carCompositionItem}
 											onClick={() => {
-												console.log(
-													"[carCompositionItem] clicked, globalCarIndex:",
-													globalCarIndex,
-												);
 												onCompositionItemClick(globalCarIndex);
 											}}
 											role="button"

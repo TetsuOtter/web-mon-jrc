@@ -120,9 +120,8 @@ export default memo<CanvasRendererProps>(function CanvasRenderer({
 
 				setStageContainer(app.stage);
 				// テスト用: スクリーンショット撮影前にPIXIを制御できるよう公開
-				const testApps = (
-					window as Window & { __testPixiApps?: Application[] }
-				).__testPixiApps;
+				const testApps = (window as Window & { __testPixiApps?: Application[] })
+					.__testPixiApps;
 				if (testApps) {
 					testApps.push(app);
 				} else {

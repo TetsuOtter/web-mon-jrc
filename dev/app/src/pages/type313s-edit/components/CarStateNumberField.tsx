@@ -7,7 +7,6 @@ import NumberField from "./NumberField";
 
 import type { Type313sCarInfoState } from "../../../store/monitors/type313s/type313sTypes";
 import type { NumberFormFieldConfig } from "../types";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 type CarStateNumberFieldProps = {
 	readonly formationIndex: number;
@@ -65,7 +64,7 @@ export default memo<CarStateNumberFieldProps>(function CarStateNumberField({
 								}
 							: f,
 					),
-				) as unknown as PayloadAction<number>,
+				),
 		}),
 		[
 			carIndex,
