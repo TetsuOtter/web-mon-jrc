@@ -5,10 +5,14 @@
 	"type": "module",
 	"scripts": {
 		"tsc": "tsc --noEmit",
-		"test": "playwright test",
-		"test:update": "playwright test --update-snapshots",
-		"test:ui": "playwright test --ui",
-		"test:headed": "playwright test --headed",
+		"test": "bash ./run-e2e.sh test",
+		"test:update": "bash ./run-e2e.sh update",
+		"test:ui": "bash ./run-e2e.sh ui",
+		"test:headed": "bash ./run-e2e.sh headed",
+		"test:host": "playwright test",
+		"test:update:host": "playwright test --update-snapshots",
+		"test:ui:host": "playwright test --ui",
+		"test:headed:host": "playwright test --headed",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
 	},
@@ -22,6 +26,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.1.3",
 		"pngjs": "^7.0.0",
-		"typescript": "^5.2.2"
+		"typescript": "^5.2.2",
+		"web-mon-jrc": "workspace:*"
 	}
 }

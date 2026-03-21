@@ -223,7 +223,7 @@ const MM_SELECTOR_LIST = [
 ] as const satisfies ValueFromStateSelector<number>[];
 const BC_SELECTOR_LIST = [
 	(carState) => {
-		const list = carState.carStates.bcPressure;
+		const list = carState.carState.bcPressure;
 		if (carState.cabState?.side === "left") {
 			return avg(list[2], list[3]);
 		} else {
@@ -231,7 +231,7 @@ const BC_SELECTOR_LIST = [
 		}
 	},
 	(carState) => {
-		const list = carState.carStates.bcPressure;
+		const list = carState.carState.bcPressure;
 		if (carState.cabState?.side != null) {
 			return undefined;
 		} else {
@@ -258,7 +258,7 @@ const BAR_VALUE_DEF_LIST = MM_SELECTOR_LIST.map(
 const brakeChopperRowListSelector = createTableRowListSelector(
 	createBrakeChopperOnCellListSelector(
 		"ブレーキチョッパ",
-		(carState) => carState.carStates.isBrakeChopperOn,
+		(carState) => carState.carState.isBrakeChopperOn,
 	),
 );
 
@@ -278,7 +278,7 @@ const mmBcTableRowListSelector = createTableRowListSelector(
 const notchRowListSelector = createTableRowListSelector(
 	createNotchCellListSelector(
 		"受信ノッチ",
-		(carState) => carState.carStates.receivedNotchCommand,
+		(carState) => carState.carState.receivedNotchCommand,
 	),
 	createNotchCellListSelector(
 		"先頭ノッチ",

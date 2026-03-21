@@ -25,7 +25,7 @@ import type {
 	Type313sBogieCommonState,
 	Type313sBogieState,
 	Type313sCabState,
-	Type313sCarState,
+	Type313sCarInfoState,
 	VVVF2State,
 } from "../../store/monitors/type313s/type313sTypes";
 
@@ -166,10 +166,9 @@ export function createDefaultBogieCommonState(): Type313sBogieCommonState {
 	};
 }
 
-export function createDefaultCarState(carNumber: number): Type313sCarState {
+export function createDefaultCarState(): Type313sCarInfoState {
 	return {
 		carType: "M",
-		carNumber,
 		hasLeftPantograph: false,
 		hasRightPantograph: false,
 		isDoorClosed: null,
@@ -187,7 +186,7 @@ export function createDefaultCarState(carNumber: number): Type313sCarState {
 		isRoomLightOn: null,
 		occupancy: null,
 		occupancyRate: null,
-		carStates: {
+		carState: {
 			isMSOn: undefined,
 			isCPOn: undefined,
 			isMRPressureNormal: null,
@@ -213,13 +212,6 @@ export const CAR_BASIC_FIELDS: readonly CarStateBasicField[] = [
 		label: "車種",
 		getValue: (car) => car.carType,
 		setValue: (car, value) => ({ ...car, carType: value }),
-	},
-	{
-		type: "number",
-		fieldKey: "carNumber",
-		label: "車号",
-		getValue: (car) => car.carNumber,
-		setValue: (car, value) => ({ ...car, carNumber: value }),
 	},
 	{
 		type: "select",
@@ -414,11 +406,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "MS",
 		options: BOOLEAN_OR_UNDEFINED_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanOrUndefinedToSelectValue(car.carStates.isMSOn),
+			nullableBooleanOrUndefinedToSelectValue(car.carState.isMSOn),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isMSOn: selectValueToNullableBooleanOrUndefined(value),
 			},
 		}),
@@ -429,11 +421,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "CP",
 		options: BOOLEAN_OR_UNDEFINED_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanOrUndefinedToSelectValue(car.carStates.isCPOn),
+			nullableBooleanOrUndefinedToSelectValue(car.carState.isCPOn),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isCPOn: selectValueToNullableBooleanOrUndefined(value),
 			},
 		}),
@@ -444,11 +436,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "MR圧正常",
 		options: NULLABLE_BOOLEAN_NORMAL_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanToSelectValue(car.carStates.isMRPressureNormal),
+			nullableBooleanToSelectValue(car.carState.isMRPressureNormal),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isMRPressureNormal: selectValueToNullableBoolean(value),
 			},
 		}),
@@ -459,11 +451,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "試験SW",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanToSelectValue(car.carStates.isTestSWOn),
+			nullableBooleanToSelectValue(car.carState.isTestSWOn),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isTestSWOn: selectValueToNullableBoolean(value),
 			},
 		}),
@@ -474,11 +466,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "雪ブレーキ",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanToSelectValue(car.carStates.isSnowBrakeOn),
+			nullableBooleanToSelectValue(car.carState.isSnowBrakeOn),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isSnowBrakeOn: selectValueToNullableBoolean(value),
 			},
 		}),
@@ -489,11 +481,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "減負荷",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanToSelectValue(car.carStates.isReduceLoadOn),
+			nullableBooleanToSelectValue(car.carState.isReduceLoadOn),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isReduceLoadOn: selectValueToNullableBoolean(value),
 			},
 		}),
@@ -502,19 +494,19 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		type: "nullable-number",
 		fieldKey: "mrPressure",
 		label: "MR圧力",
-		getValue: (car) => car.carStates.mrPressure,
+		getValue: (car) => car.carState.mrPressure,
 		setValue: (car, value) => ({
 			...car,
-			carStates: { ...car.carStates, mrPressure: value },
+			carState: { ...car.carState, mrPressure: value },
 		}),
 	},
 	{
 		type: "nullable-number",
 		fieldKey: "bcPressure0",
 		label: "BC圧力 #1",
-		getValue: (car) => car.carStates.bcPressure[0],
+		getValue: (car) => car.carState.bcPressure[0],
 		setValue: (car, value) => {
-			const nextBcPressure = [...car.carStates.bcPressure] as [
+			const nextBcPressure = [...car.carState.bcPressure] as [
 				number | null,
 				number | null,
 				number | null,
@@ -523,7 +515,7 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 			nextBcPressure[0] = value;
 			return {
 				...car,
-				carStates: { ...car.carStates, bcPressure: nextBcPressure },
+				carState: { ...car.carState, bcPressure: nextBcPressure },
 			};
 		},
 	},
@@ -531,9 +523,9 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		type: "nullable-number",
 		fieldKey: "bcPressure1",
 		label: "BC圧力 #2",
-		getValue: (car) => car.carStates.bcPressure[1],
+		getValue: (car) => car.carState.bcPressure[1],
 		setValue: (car, value) => {
-			const nextBcPressure = [...car.carStates.bcPressure] as [
+			const nextBcPressure = [...car.carState.bcPressure] as [
 				number | null,
 				number | null,
 				number | null,
@@ -542,7 +534,7 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 			nextBcPressure[1] = value;
 			return {
 				...car,
-				carStates: { ...car.carStates, bcPressure: nextBcPressure },
+				carState: { ...car.carState, bcPressure: nextBcPressure },
 			};
 		},
 	},
@@ -550,9 +542,9 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		type: "nullable-number",
 		fieldKey: "bcPressure2",
 		label: "BC圧力 #3",
-		getValue: (car) => car.carStates.bcPressure[2],
+		getValue: (car) => car.carState.bcPressure[2],
 		setValue: (car, value) => {
-			const nextBcPressure = [...car.carStates.bcPressure] as [
+			const nextBcPressure = [...car.carState.bcPressure] as [
 				number | null,
 				number | null,
 				number | null,
@@ -561,7 +553,7 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 			nextBcPressure[2] = value;
 			return {
 				...car,
-				carStates: { ...car.carStates, bcPressure: nextBcPressure },
+				carState: { ...car.carState, bcPressure: nextBcPressure },
 			};
 		},
 	},
@@ -569,9 +561,9 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		type: "nullable-number",
 		fieldKey: "bcPressure3",
 		label: "BC圧力 #4",
-		getValue: (car) => car.carStates.bcPressure[3],
+		getValue: (car) => car.carState.bcPressure[3],
 		setValue: (car, value) => {
-			const nextBcPressure = [...car.carStates.bcPressure] as [
+			const nextBcPressure = [...car.carState.bcPressure] as [
 				number | null,
 				number | null,
 				number | null,
@@ -580,7 +572,7 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 			nextBcPressure[3] = value;
 			return {
 				...car,
-				carStates: { ...car.carStates, bcPressure: nextBcPressure },
+				carState: { ...car.carState, bcPressure: nextBcPressure },
 			};
 		},
 	},
@@ -590,11 +582,11 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		label: "ブレーキチョッパ",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			nullableBooleanToSelectValue(car.carStates.isBrakeChopperOn),
+			nullableBooleanToSelectValue(car.carState.isBrakeChopperOn),
 		fromSelectValue: (car, value) => ({
 			...car,
-			carStates: {
-				...car.carStates,
+			carState: {
+				...car.carState,
 				isBrakeChopperOn: selectValueToNullableBoolean(value),
 			},
 		}),
@@ -603,10 +595,10 @@ export const CAR_STATES_FIELDS: readonly CarStateBasicField[] = [
 		type: "nullable-string",
 		fieldKey: "receivedNotchCommand",
 		label: "受信ノッチ指令",
-		getValue: (car) => car.carStates.receivedNotchCommand,
+		getValue: (car) => car.carState.receivedNotchCommand,
 		setValue: (car, value) => ({
 			...car,
-			carStates: { ...car.carStates, receivedNotchCommand: value },
+			carState: { ...car.carState, receivedNotchCommand: value },
 		}),
 	},
 ] as const;
@@ -618,19 +610,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "CgK for SIV",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? nullableBooleanToSelectValue(car.carStates.sivLineState.isCgKForSIVOn)
+			car.carState.sivLineState
+				? nullableBooleanToSelectValue(car.carState.sivLineState.isCgKForSIVOn)
 				: "null",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isCgKForSIVOn: selectValueToNullableBoolean(value),
 					},
 				},
@@ -643,19 +635,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "IvMS",
 		options: BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? booleanToSelectValue(car.carStates.sivLineState.isIvMSOn)
+			car.carState.sivLineState
+				? booleanToSelectValue(car.carState.sivLineState.isIvMSOn)
 				: "false",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isIvMSOn: value === "true",
 					},
 				},
@@ -668,19 +660,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "IvHB",
 		options: BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? booleanToSelectValue(car.carStates.sivLineState.isIvHBOn)
+			car.carState.sivLineState
+				? booleanToSelectValue(car.carState.sivLineState.isIvHBOn)
 				: "false",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isIvHBOn: value === "true",
 					},
 				},
@@ -693,19 +685,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "IvL",
 		options: BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? booleanToSelectValue(car.carStates.sivLineState.isIvLOn)
+			car.carState.sivLineState
+				? booleanToSelectValue(car.carState.sivLineState.isIvLOn)
 				: "false",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isIvLOn: value === "true",
 					},
 				},
@@ -718,19 +710,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "SIV",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? nullableBooleanToSelectValue(car.carStates.sivLineState.isSIVOn)
+			car.carState.sivLineState
+				? nullableBooleanToSelectValue(car.carState.sivLineState.isSIVOn)
 				: "null",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isSIVOn: selectValueToNullableBoolean(value),
 					},
 				},
@@ -743,19 +735,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "3相MK",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? nullableBooleanToSelectValue(car.carStates.sivLineState.is3phMKOn)
+			car.carState.sivLineState
+				? nullableBooleanToSelectValue(car.carState.sivLineState.is3phMKOn)
 				: "null",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						is3phMKOn: selectValueToNullableBoolean(value),
 					},
 				},
@@ -768,19 +760,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "IvCN",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? nullableBooleanToSelectValue(car.carStates.sivLineState.isIvCNOn)
+			car.carState.sivLineState
+				? nullableBooleanToSelectValue(car.carState.sivLineState.isIvCNOn)
 				: "null",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isIvCNOn: selectValueToNullableBoolean(value),
 					},
 				},
@@ -793,19 +785,19 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		label: "IVSMDS",
 		options: NULLABLE_BOOLEAN_OPTIONS,
 		toSelectValue: (car) =>
-			car.carStates.sivLineState
-				? nullableBooleanToSelectValue(car.carStates.sivLineState.isIVSMDSOn)
+			car.carState.sivLineState
+				? nullableBooleanToSelectValue(car.carState.sivLineState.isIVSMDSOn)
 				: "null",
 		fromSelectValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						isIVSMDSOn: selectValueToNullableBoolean(value),
 					},
 				},
@@ -816,17 +808,17 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		type: "nullable-number",
 		fieldKey: "sivVoltage",
 		label: "SIV電圧",
-		getValue: (car) => car.carStates.sivLineState?.sivVoltage ?? null,
+		getValue: (car) => car.carState.sivLineState?.sivVoltage ?? null,
 		setValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						sivVoltage: value,
 					},
 				},
@@ -837,17 +829,17 @@ export const SIV_LINE_STATE_FIELDS: readonly SivLineStateField[] = [
 		type: "nullable-number",
 		fieldKey: "sivFrequency",
 		label: "SIV周波数",
-		getValue: (car) => car.carStates.sivLineState?.sivFrequency ?? null,
+		getValue: (car) => car.carState.sivLineState?.sivFrequency ?? null,
 		setValue: (car, value) => {
-			if (!car.carStates.sivLineState) {
+			if (!car.carState.sivLineState) {
 				return car;
 			}
 			return {
 				...car,
-				carStates: {
-					...car.carStates,
+				carState: {
+					...car.carState,
 					sivLineState: {
-						...car.carStates.sivLineState,
+						...car.carState.sivLineState,
 						sivFrequency: value,
 					},
 				},

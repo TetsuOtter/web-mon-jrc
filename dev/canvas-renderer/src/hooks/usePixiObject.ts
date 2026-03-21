@@ -82,6 +82,7 @@ export function usePixiObject({
 	if (!graphicsContainerRef.current || graphicsContainerRef.current.destroyed) {
 		graphicsContainerRef.current = new Container();
 		graphicsContainerRef.current.zIndex = -1;
+		graphicsContainerRef.current.visible = true;
 	}
 
 	const container = containerRef.current;

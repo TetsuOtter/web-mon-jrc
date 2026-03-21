@@ -1,28 +1,29 @@
 import { memo, useMemo } from "react";
 
 import { useAppSelector } from "../../../store/hooks";
-import { setCarStateList } from "../../../store/monitors/type313s/type313sSlice";
+import { setFormations } from "../../../store/monitors/type313s/type313sSlice";
 
 import StringField from "./StringField";
 
-import type { Type313sCarState } from "../../../store/monitors/type313s/type313sTypes";
+import type { Type313sCarInfoState } from "../../../store/monitors/type313s/type313sTypes";
 import type { StringFormFieldConfig } from "../types";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 type CarStateStringFieldProps = {
+	readonly formationIndex: number;
 	readonly carIndex: number;
 	readonly fieldKey: string;
 	readonly label: string;
-	readonly getValue: (carState: Type313sCarState) => string;
+	readonly getValue: (carState: Type313sCarInfoState) => string;
 	readonly setValue: (
-		carState: Type313sCarState,
+		carState: Type313sCarInfoState,
 		nextValue: string,
-	) => Type313sCarState;
+	) => Type313sCarInfoState;
 	readonly placeholder?: string;
 	readonly className?: string;
 };
 
 export default memo<CarStateStringFieldProps>(function CarStateStringField({
+	formationIndex,
 	carIndex,
 	fieldKey,
 	label,
@@ -31,28 +32,47 @@ export default memo<CarStateStringFieldProps>(function CarStateStringField({
 	placeholder,
 	className,
 }) {
-	const carStateList = useAppSelector(
-		(state) => state.monitors.type313s.carStateList,
+	const formations = useAppSelector(
+		(state) => state.monitors.type313s.formations,
 	);
 
 	const config = useMemo<StringFormFieldConfig>(
 		() => ({
-			id: `car-${carIndex}-${fieldKey}`,
+			id: `car-${formationIndex}-${carIndex}-${fieldKey}`,
 			label,
 			valueType: "string",
 			placeholder,
 			selector: (state) => {
-				const targetCarState = state.monitors.type313s.carStateList[carIndex];
+				const targetCarState =
+					state.monitors.type313s.formations[formationIndex]?.carInfoList[
+						carIndex
+					];
 				return targetCarState ? getValue(targetCarState) : "";
 			},
 			actionCreator: (nextValue: string) =>
-				setCarStateList(
-					carStateList.map((carState, index) =>
-						index === carIndex ? setValue(carState, nextValue) : carState,
+				setFormations(
+					formations.map((f, fi) =>
+						fi === formationIndex
+							? {
+									...f,
+									carInfoList: f.carInfoList.map((carState, ci) =>
+										ci === carIndex ? setValue(carState, nextValue) : carState,
+									),
+								}
+							: f,
 					),
-				) as unknown as PayloadAction<string>,
+				),
 		}),
-		[carIndex, carStateList, fieldKey, getValue, label, placeholder, setValue],
+		[
+			carIndex,
+			formationIndex,
+			formations,
+			fieldKey,
+			getValue,
+			label,
+			placeholder,
+			setValue,
+		],
 	);
 
 	return (

@@ -9,7 +9,7 @@ import {
 import { Graphics, Sprite, Texture } from "pixi.js";
 
 import { toWide } from "../../../../../utils/toWide";
-import { COLORS, FONT_SIZE_1X } from "../../constants";
+import { COLORS, FONT_SIZE_1X, TEXT_COLOR_MAP } from "../../constants";
 
 import { getBaseCarImage } from "./baseCarImageCache";
 import { getBogieImage } from "./bogieImageCache";
@@ -30,6 +30,7 @@ import {
 } from "./constants";
 
 import type { CarImageBogieInfo, BaseCarImageInfo } from "./types";
+import type { ColorValue } from "../../constants";
 import type {
 	ClickEventHandler,
 	ClickDetector,
@@ -44,8 +45,8 @@ type CarImageProps = {
 	baseInfo: BaseCarImageInfo;
 	bogieInfo: CarImageBogieInfo;
 
-	roofBackgroundColor?: string;
-	bodyBackgroundColor?: string;
+	roofBackgroundColor?: ColorValue;
+	bodyBackgroundColor?: ColorValue;
 	carType?: string;
 	carNumber: number;
 
@@ -88,8 +89,10 @@ export default memo<CarImageProps>(function CarImage({
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const baseSprite = new Sprite(Texture.from(baseImage as any));
+		baseSprite.texture.source.scaleMode = "nearest";
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const bogieSprite = new Sprite(Texture.from(bogieImage as any));
+		bogieSprite.texture.source.scaleMode = "nearest";
 		graphicsContainer.addChild(baseSprite);
 		graphicsContainer.addChild(bogieSprite);
 
@@ -167,7 +170,7 @@ export default memo<CarImageProps>(function CarImage({
 					relX={0}
 					relY={ROOF_Y + CAB_BORDER}
 					align="center"
-					fillColor={COLORS.WHITE}
+					fillColor={TEXT_COLOR_MAP[roofBackgroundColor ?? COLORS.BLACK]}
 					text={carType}
 				/>
 			)}

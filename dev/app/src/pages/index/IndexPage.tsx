@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 
 import { ROUTES } from "../../router-paths";
+import { PAGE_TYPES } from "../monitors/type313s/pages/pageTypes";
 
 export default memo(function IndexPage() {
 	return (
@@ -13,7 +14,7 @@ export default memo(function IndexPage() {
 						<Link to={ROUTES.SETTINGS.path}>Settings</Link>
 					</li>
 					<li>
-						<Link to={ROUTES.TYPE313S.path}>Type 313S</Link>
+						<Link to={`/monitors/type313s/${PAGE_TYPES.MENU}`}>Type 313S</Link>
 					</li>
 					<li>
 						<Link to={ROUTES.TYPE313S_EDIT.path}>Type 313S Edit</Link>

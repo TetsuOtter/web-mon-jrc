@@ -161,7 +161,9 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 		});
 
 		useEffect(() => {
-			if (graphicsContainer.destroyed) return;
+			if (graphicsContainer.destroyed) {
+				return;
+			}
 			clearContainer(graphicsContainer);
 
 			const g = new Graphics();
@@ -176,30 +178,30 @@ export default memo<PropsWithChildren<CanvasQuadrilateralProps>>(
 			const x4 = Math.round(xR2) - minX;
 			const y4 = Math.round(yR2) - minY;
 
-			if (fillColor) {
-				const offset = w / 2;
-				g.poly([
-					x1 + offset,
-					y1 + offset,
-					x3 + offset,
-					y3 + offset,
-					x4 + offset,
-					y4 + offset,
-					x2 + offset,
-					y2 + offset,
-				]);
-				g.fill(fillColor);
-			}
+			const polyPts: [number, number][] = [
+				[x1, y1],
+				[x3, y3],
+				[x4, y4],
+				[x2, y2],
+			];
 
-			g.moveTo(x1, y1);
-			g.lineTo(x2, y2);
-			g.moveTo(x1, y1);
-			g.lineTo(x3, y3);
-			g.moveTo(x3, y3);
-			g.lineTo(x4, y4);
-			g.moveTo(x2, y2);
-			g.lineTo(x4, y4);
-			g.stroke({ color: actualStrokeColor, width: w });
+			// GPU のポリゴンラスタライザは「右辺・下辺」の境界ピクセルを除外する
+			// （左上塗りつぶしルール）ため、そのエッジを 1px 外側に展開したポリゴンを
+			// 使ってストロークエリアを塗りつぶす。これにより 1px ライン補完を使わずに
+			// すべての境界ピクセルが自然に含まれる。
+			const expandedPts = expandExcludedEdges(polyPts);
+			g.poly((expandedPts ?? polyPts).flat());
+			g.fill(actualStrokeColor);
+
+			// 内側ポリゴン（ストローク幅分インセット）をフィル色で上書き
+			// expandedPts を基点にインセットすることで全辺のストローク幅を均一にする
+			if (fillColor) {
+				const insetPts = computeInsetPolygon(expandedPts ?? polyPts, w);
+				if (insetPts) {
+					g.poly(insetPts.flat());
+					g.fill(fillColor);
+				}
+			}
 
 			graphicsContainer.addChild(g);
 		}, [
@@ -287,4 +289,86 @@ function isPointInQuadrilateral(
 	}
 
 	return inside;
+}
+
+/**
+ * GPU の左上塗りつぶしルールで除外される「右辺・下辺」エッジ
+ * （外向き法線の x または y が正のエッジ）を 1px 外側に展開する。
+ * これにより 1px 補完ラインなしですべての境界ピクセルが自然に含まれる。
+ */
+function expandExcludedEdges(
+	pts: [number, number][],
+): [number, number][] | null {
+	const n = pts.length;
+	const normals: [number, number][] = [];
+	const consts: number[] = [];
+
+	for (let i = 0; i < n; i++) {
+		const [px0, py0] = pts[i];
+		const [px1, py1] = pts[(i + 1) % n];
+		const dx = px1 - px0;
+		const dy = py1 - py0;
+		const len = Math.hypot(dx, dy);
+		if (len < 1e-10) return null;
+		const nx = dy / len;
+		const ny = -dx / len;
+		normals.push([nx, ny]);
+		// 外向き法線の x または y が正 → GPU が境界ピクセルを除外するエッジ
+		const expansion = nx > 0 || ny > 0 ? 1 : 0;
+		consts.push(nx * px0 + ny * py0 + expansion);
+	}
+
+	const result: [number, number][] = [];
+	for (let i = 0; i < n; i++) {
+		const prev = (i + n - 1) % n;
+		const ni = normals[prev];
+		const ci = consts[prev];
+		const nj = normals[i];
+		const cj = consts[i];
+		const det = ni[0] * nj[1] - nj[0] * ni[1];
+		if (Math.abs(det) < 1e-10) return null;
+		const x = (ci * nj[1] - cj * ni[1]) / det;
+		const y = (ni[0] * cj - nj[0] * ci) / det;
+		result.push([x, y]);
+	}
+
+	return result;
+}
+
+function computeInsetPolygon(
+	pts: [number, number][],
+	d: number,
+): [number, number][] | null {
+	const n = pts.length;
+	const normals: [number, number][] = [];
+	const consts: number[] = [];
+
+	for (let i = 0; i < n; i++) {
+		const [px0, py0] = pts[i];
+		const [px1, py1] = pts[(i + 1) % n];
+		const dx = px1 - px0;
+		const dy = py1 - py0;
+		const len = Math.hypot(dx, dy);
+		if (len < 1e-10) return null;
+		const nx = dy / len;
+		const ny = -dx / len;
+		normals.push([nx, ny]);
+		consts.push(nx * px0 + ny * py0);
+	}
+
+	const result: [number, number][] = [];
+	for (let i = 0; i < n; i++) {
+		const prev = (i + n - 1) % n;
+		const ni = normals[prev];
+		const ci = consts[prev] - d;
+		const nj = normals[i];
+		const cj = consts[i] - d;
+		const det = ni[0] * nj[1] - nj[0] * ni[1];
+		if (Math.abs(det) < 1e-10) return null;
+		const x = (ci * nj[1] - cj * ni[1]) / det;
+		const y = (ni[0] * cj - nj[0] * ci) / det;
+		result.push([x, y]);
+	}
+
+	return result;
 }

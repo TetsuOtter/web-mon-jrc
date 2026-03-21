@@ -2188,6 +2188,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.1.3"
     pngjs: "npm:^7.0.0"
     typescript: "npm:^5.2.2"
+    web-mon-jrc: "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -6591,7 +6592,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"web-mon-jrc@workspace:dev/app":
+"web-mon-jrc@workspace:*, web-mon-jrc@workspace:dev/app":
   version: 0.0.0-use.local
   resolution: "web-mon-jrc@workspace:dev/app"
   dependencies:

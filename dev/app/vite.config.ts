@@ -9,7 +9,8 @@ export default defineConfig(({ mode: _mode }) => ({
 	},
 	optimizeDeps: {
 		exclude: ["@web-mon-jrc/canvas-renderer"],
-		include: ["react", "react-dom"],
+		include: ["react", "react-dom", "pixi.js", "eventemitter3"],
+		needsInterop: ["eventemitter3"],
 	},
 	// Tauri expects a fixed port, fail if that port is not available
 	clearScreen: false,

@@ -6,21 +6,23 @@ import CarStateNumberField from "./CarStateNumberField";
 import CarStateSelectField from "./CarStateSelectField";
 import CarStateStringField from "./CarStateStringField";
 
-import type { Type313sCarState } from "../../../store/monitors/type313s/type313sTypes";
+import type { Type313sCarInfoState } from "../../../store/monitors/type313s/type313sTypes";
 import type { CarStateBasicField } from "../types";
 
 type CarStateFormFieldProps = {
+	readonly formationIndex: number;
 	readonly carIndex: number;
 	readonly field: CarStateBasicField;
-	readonly carState: Type313sCarState;
+	readonly carState: Type313sCarInfoState;
 	readonly updateCarState: (
 		index: number,
-		updater: (car: Type313sCarState) => Type313sCarState,
+		updater: (car: Type313sCarInfoState) => Type313sCarInfoState,
 	) => void;
 	readonly className?: string;
 };
 
 export default memo<CarStateFormFieldProps>(function CarStateFormField({
+	formationIndex,
 	carIndex,
 	field,
 	carState,
@@ -32,6 +34,7 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 			return (
 				<CarStateStringField
 					key={field.fieldKey}
+					formationIndex={formationIndex}
 					carIndex={carIndex}
 					fieldKey={field.fieldKey}
 					label={field.label}
@@ -45,6 +48,7 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 			return (
 				<CarStateNumberField
 					key={field.fieldKey}
+					formationIndex={formationIndex}
 					carIndex={carIndex}
 					fieldKey={field.fieldKey}
 					label={field.label}
@@ -58,6 +62,7 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 			return (
 				<CarStateNullableNumberField
 					key={field.fieldKey}
+					formationIndex={formationIndex}
 					carIndex={carIndex}
 					fieldKey={field.fieldKey}
 					label={field.label}
@@ -72,6 +77,7 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 			return (
 				<CarStateNullableStringField
 					key={field.fieldKey}
+					formationIndex={formationIndex}
 					carIndex={carIndex}
 					fieldKey={field.fieldKey}
 					label={field.label}
@@ -85,6 +91,7 @@ export default memo<CarStateFormFieldProps>(function CarStateFormField({
 			return (
 				<CarStateSelectField
 					key={field.fieldKey}
+					formationIndex={formationIndex}
 					carIndex={carIndex}
 					fieldKey={field.fieldKey}
 					label={field.label}

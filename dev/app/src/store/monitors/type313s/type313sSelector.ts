@@ -1,9 +1,17 @@
 import { type313sSelector } from "../monitorsSelector";
 
-import type { Type313sState, Type313sCarState } from "./type313sTypes";
+import type {
+	Type313sState,
+	Type313sCarInfoState,
+	Type313sFormation,
+	CarSeries,
+} from "./type313sTypes";
 import type { AppSelector } from "../../types";
 
-export type CarStateByCarIndexSelector<T> = AppSelector<T, [carIndex: number]>;
+export type CarStateByCarIndexSelector<
+	T,
+	TParams extends unknown[] = [],
+> = AppSelector<T, [carIndex: number, ...params: TParams]>;
 
 export const trainNumberSelector: AppSelector<Type313sState["trainNumber"]> = (
 	state,
@@ -20,18 +28,51 @@ export const currentLocationSelector: AppSelector<
 export const timeMsSelector: AppSelector<Type313sState["timeMs"]> = (state) =>
 	type313sSelector(state).timeMs;
 
-// 編成・車両リスト
-export const carStateListSelector: AppSelector<
-	Type313sState["carStateList"]
-> = (state) => type313sSelector(state).carStateList;
-export const carCountSelector: AppSelector<number> = (state) =>
-	type313sSelector(state).carStateList.length;
+// 編成
+export const formationsSelector: AppSelector<Type313sFormation[]> = (state) =>
+	type313sSelector(state).formations;
+export const formationInfoByCarIndexSelector: AppSelector<
+	Type313sFormation,
+	[carIndex: number]
+> = (state, carIndex) => {
+	const formations = type313sSelector(state).formations;
+	let carCountSoFar = 0;
+	for (const formation of formations) {
+		if (carIndex < carCountSoFar + formation.carInfoList.length) {
+			return formation;
+		}
+		carCountSoFar += formation.carInfoList.length;
+	}
+	throw new Error(`Invalid carIndex: ${carIndex}`);
+};
+export const seriesByCarIndexSelector: AppSelector<
+	CarSeries,
+	[carIndex: number]
+> = (state, carIndex) =>
+	formationInfoByCarIndexSelector(state, carIndex).series;
 
-export function createCarStateByCarIndexSelector<T>(
-	sel: (carState: Type313sCarState, carIndex: number) => T,
-): CarStateByCarIndexSelector<T> {
-	return (state, carIndex) =>
-		sel(type313sSelector(state).carStateList[carIndex], carIndex);
+// 編成・車両リスト（全編成をフラットに展開）
+export const carStateListSelector: AppSelector<Type313sCarInfoState[]> = (
+	state,
+) => type313sSelector(state).formations.flatMap((f) => f.carInfoList);
+export const carCountSelector: AppSelector<number> = (state) =>
+	type313sSelector(state).formations.reduce(
+		(sum, f) => sum + f.carInfoList.length,
+		0,
+	);
+
+export function createCarStateByCarIndexSelector<
+	T,
+	TParams extends unknown[] = [],
+>(
+	sel: (
+		carState: Type313sCarInfoState,
+		carIndex: number,
+		...params: TParams
+	) => T,
+): CarStateByCarIndexSelector<T, TParams> {
+	return (state, carIndex, ...params) =>
+		sel(carStateListSelector(state)[carIndex], carIndex, ...params);
 }
 
 // 車掌状態（編成全体）

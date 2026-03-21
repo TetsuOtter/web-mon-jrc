@@ -12,6 +12,7 @@ import {
 } from "@web-mon-jrc/canvas-renderer";
 
 import BlinkingItem from "./components/BlinkingItem";
+import QuadrilateralTest from "./components/QuadrilateralTest";
 
 export default memo(function CanvasDemo() {
 	const [clickedPoint, setClickedPoint] = useState<{
@@ -712,6 +713,8 @@ export default memo(function CanvasDemo() {
 					再描画されていることを視覚的に確認できます。
 				</p>
 			</div>
+
+			<QuadrilateralTest />
 		</div>
 	);
 });

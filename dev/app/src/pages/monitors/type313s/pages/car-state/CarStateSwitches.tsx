@@ -86,7 +86,7 @@ function useTableDefinition(carCount: number) {
 const rowsForPage1Selector = createTableRowListSelector(
 	createOnOffCellListSelector(
 		toWide("MS"),
-		(carState) => carState.carStates.isMSOn,
+		(carState) => carState.carState.isMSOn,
 	),
 	createOnOffCellListSelector(
 		toWide("HB"),
@@ -171,15 +171,15 @@ const rowsForPage1Selector = createTableRowListSelector(
 const rowsForPage2Selector = createTableRowListSelector(
 	createOnOffCellListSelector(
 		toWide("SIV"),
-		(carState) => carState.carStates.sivLineState?.isSIVOn,
+		(carState) => carState.carState.sivLineState?.isSIVOn,
 	),
 	createWorkingOrNotCellListSelector(
 		toWide("CP"),
-		(carState) => carState.carStates.isCPOn,
+		(carState) => carState.carState.isCPOn,
 	),
 	createNormalOrNotYellowCellListSelector(
 		"元溜圧力",
-		(carState) => carState.carStates.isMRPressureNormal,
+		(carState) => carState.carState.isMRPressureNormal,
 	),
 	createCabSesCellListSelector(
 		toWide("CabSes"),
@@ -191,7 +191,7 @@ const rowsForPage2Selector = createTableRowListSelector(
 	),
 	createOnOffCellListSelector(
 		`${toWide("CgK(")}SIV${toWide(")")}`,
-		(carState) => carState.carStates.sivLineState?.isCgKForSIVOn,
+		(carState) => carState.carState.sivLineState?.isCgKForSIVOn,
 	),
 	createOnOffCellListSelector(
 		`${toWide("CgK(")}VVVF2${toWide(")")}`,
@@ -199,7 +199,7 @@ const rowsForPage2Selector = createTableRowListSelector(
 	),
 	createIsTestSWOnCellListSelector(
 		toWide("車上試験SW"),
-		(carState) => carState.carStates.isTestSWOn,
+		(carState) => carState.carState.isTestSWOn,
 	),
 	createOnOffCellListSelector(
 		toWide("BH非常"),
@@ -211,7 +211,7 @@ const rowsForPage2Selector = createTableRowListSelector(
 	),
 	createOnOffCellListSelector(
 		toWide("耐雪B"),
-		(carState) => carState.carStates?.isSnowBrakeOn,
+		(carState) => carState.carState?.isSnowBrakeOn,
 	),
 	createOnOffCellListSelector(
 		toWide("直予備B"),
